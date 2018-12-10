@@ -1,0 +1,167 @@
+﻿@{ Layout = null;}
+@using System.Data
+@using Microsoft.AspNetCore.Http;
+@model Mango.Manager.ViewModels.ManagerPageViewModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>51Core.Net后台管理系统</title>
+    <link href="~/style/easyui/themes/bootstrap/easyui.css" rel="stylesheet" />
+    <link href="~/style/easyui/themes/bootstrap/layout.css" rel="stylesheet" />
+    <link href="~/style/easyui/themes/icon.css" rel="stylesheet" />
+
+    <link href="~/style/easyui/themes/wu.css" rel="stylesheet" />
+    <link href="~/style/easyui/themes/index.css" rel="stylesheet" />
+    <script src="~/lib/jquery/jquery-2.1.4.min.js"></script>
+
+    <script src="~/style/easyui/jquery.easyui.min.js"></script>
+    <script src="~/style/easyui/locale/easyui-lang-zh_CN.min.js"></script>
+
+
+
+    <style>
+        .panel-body {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="easyui-layout">
+    <!--      头部logodiv      -->
+    <!--      头部logodiv      -->
+    <div class="wu-header" data-options="region:'north',border:false,split:true" style="height: 60px;">
+        <div class="head-left">
+            <span>51Core.Net管理后台</span>
+            <!-- <img src="images/logo.png" alt=""> -->
+        </div>
+        <div class="head-right">
+            <div class="head-right-img cf">
+                <p style="margin-top:0px;">
+                    @ViewContext.HttpContext.Session.GetString("AdminName")
+                    <br/>
+                    专业源自于专注--51Core.Net
+                </p>
+            </div>
+            <span class="shu-span">|</span>
+            <a class="tc-a" href="/Home/LoginOut" style="margin-left:0px;">退出</a>
+        </div>
+    </div><!--      头部logodiv 结束位置      -->
+    <!--      中部左边的折栏     -->
+    <!--      中部左边的折栏     -->
+    <!-- end of header -->
+    <!-- begin of sidebar -->
+    <div class="wu-sidebar" data-options="region:'west',split:true,border:true,title:'导航菜单'">
+        <div class="easyui-accordion" data-options="border:false,fit:true" id="showPowerList">
+            @foreach (var row in Model.ListData)
+            {
+                if (row["ParentId"].ToString() == "0")
+                {
+                <div title="@row["MenuName"]" data-options="iconCls:'icon-application-cascade'" style="padding:5px;">
+                    <ul class="easyui-tree wu-side-tree">
+                        @foreach (var dr in Model.ListData)
+                        {
+                            if (dr["ParentId"].ToString() == row["MenuId"].ToString())
+                            {
+                            <li><a href="javascript:;" data-link="@("/"+dr["ControllerName"]+"/"+dr["ActionName"])" iframe="1">@dr["MenuName"]</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+                }
+            }
+        </div>
+    </div>
+
+    <!-- begin of main -->
+    <div class="wu-main" data-options="region:'center'">
+        <div id="wu-tabs" class="easyui-tabs" data-options="border:false,fit:true">
+            <div title="首页" data-options="closable:false,iconCls:'icon-tip',cls:'pd3'" class="back-imgf"></div>
+        </div>
+    </div>
+    <!-- end of main -->
+    <!-- begin of footer -->
+    <div class="wu-footer" data-options="region:'south',border:true,split:true" style="height: 40px;">
+        &copy; 2018 &nbsp;51Core.Net &nbsp;版权所有
+    </div>
+    <!-- end of footer -->
+    <script type="text/javascript">
+        $(function () {
+            $('.wu-side-tree a').bind("click", function () {
+                var title = $(this).text();
+                var url = $(this).attr('data-link');
+                var iconCls = $(this).attr('data-icon');
+                var iframe = $(this).attr('iframe') == 1 ? true : false;
+                addTab(title, url, iconCls, iframe);
+            });
+        });
+        /**
+      * Name 选项卡初始化
+      */
+        $('#wu-tabs').tabs({
+            tools: [{
+                iconCls: 'icon-reload',
+                border: false,
+                handler: function () {
+                    $('#wu-datagrid').datagrid('reload');
+                }
+            }]
+        });
+
+        /**
+      * Name 添加菜单选项
+      * Param title 名称
+      * Param href 链接
+      * Param iconCls 图标样式
+      * Param iframe 链接跳转方式（true为iframe，false为href）
+      */
+        function addTab(title, href, iconCls, iframe) {
+            var tabPanel = $('#wu-tabs');
+            if (!tabPanel.tabs('exists', title)) {
+                var content = '<iframe scrolling="auto" frameborder="0"  src="' + href + '" style="width:100%;height:100%;"></iframe>';
+                if (iframe) {
+                    tabPanel.tabs('add', {
+                        title: title,
+                        content: content,
+                        iconCls: iconCls,
+                        fit: true,
+                        cls: 'pd3',
+                        closable: true
+                    });
+                }
+                else {
+                    tabPanel.tabs('add', {
+                        title: title,
+                        href: href,
+                        iconCls: iconCls,
+                        fit: true,
+                        cls: 'pd3',
+                        closable: true
+                    });
+                }
+            }
+            else {
+                tabPanel.tabs('select', title);
+                tabPanel.tabs('update', {
+                    tab: tabPanel.tabs('getSelected'),
+                    options: {
+                        content: content
+                    }
+                });
+            }
+        }
+        /**
+      * Name 移除菜单选项
+      */
+        function removeTab() {
+            var tabPanel = $('#wu-tabs');
+            var tab = tabPanel.tabs('getSelected');
+            if (tab) {
+                var index = tabPanel.tabs('getTabIndex', tab);
+                tabPanel.tabs('close', index);
+            }
+        }
+
+    </script>
+</body>
+</html>
+

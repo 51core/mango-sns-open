@@ -1,0 +1,3 @@
+public virtual DbSet<m_Code> m_Code { get; set; }
+public virtual DbSet<m_CodeBlock> m_CodeBlock { get; set; }
+public virtual DbSet<m_CodeLanguage> m_CodeLanguage { get; set; }

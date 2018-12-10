@@ -1,0 +1,196 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Mango.Manager.csproj" />
+    <None Include="Mango.Manager.csproj.user" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Login2.cshtml" />
+    <None Include="Views\ManagerAccount\Index.cshtml" />
+    <None Include="Views\ManagerMenu\Index.cshtml" />
+    <None Include="Views\ManagerRole\Index.cshtml" />
+    <None Include="Views\ManagerSystem\Cache.cshtml" />
+    <None Include="Views\Navigation\Classify.cshtml" />
+    <None Include="Views\Navigation\Index.cshtml" />
+    <None Include="Views\Posts\Index.cshtml" />
+    <None Include="Views\Posts\Tags.cshtml" />
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_CookieConsentPartial.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Views\User\Group.cshtml" />
+    <None Include="Views\User\Index.cshtml" />
+    <None Include="Views\User\Menu.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+    <None Include="wwwroot\js\common.js" />
+    <None Include="wwwroot\lib\artdialog\dialog-plus.js" />
+    <None Include="wwwroot\lib\artdialog\dialog.js" />
+    <None Include="wwwroot\lib\artdialog\dialog.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery-1.11.3.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery-2.1.4.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery-3.1.1.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery-3.2.0.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery.form.js" />
+    <None Include="wwwroot\lib\jquery\jquery.validator.js" />
+    <None Include="wwwroot\lib\jquery\jquery.validator.min.js" />
+    <None Include="wwwroot\lib\layer\layer.js" />
+    <None Include="wwwroot\lib\layer\mobile\layer.js" />
+    <None Include="wwwroot\lib\umeditor\dialogs\emotion\emotion.js" />
+    <None Include="wwwroot\lib\umeditor\dialogs\formula\formula.js" />
+    <None Include="wwwroot\lib\umeditor\dialogs\image\image.js" />
+    <None Include="wwwroot\lib\umeditor\dialogs\link\link.js" />
+    <None Include="wwwroot\lib\umeditor\dialogs\map\map.js" />
+    <None Include="wwwroot\lib\umeditor\dialogs\video\video.js" />
+    <None Include="wwwroot\lib\umeditor\lang\en\en.js" />
+    <None Include="wwwroot\lib\umeditor\lang\zh-cn\zh-cn.js" />
+    <None Include="wwwroot\lib\umeditor\third-party\jquery.min.js" />
+    <None Include="wwwroot\lib\umeditor\third-party\mathquill\font\stixgeneral-bundle\stixgeneral-webfont.svg" />
+    <None Include="wwwroot\lib\umeditor\third-party\mathquill\font\stixgeneral-bundle\stixgeneralbol-webfont.svg" />
+    <None Include="wwwroot\lib\umeditor\third-party\mathquill\font\stixgeneral-bundle\stixgeneralbolita-webfont.svg" />
+    <None Include="wwwroot\lib\umeditor\third-party\mathquill\font\stixgeneral-bundle\stixgeneralitalic-webfont.svg" />
+    <None Include="wwwroot\lib\umeditor\third-party\mathquill\font\Symbola.svg" />
+    <None Include="wwwroot\lib\umeditor\third-party\mathquill\mathquill.js" />
+    <None Include="wwwroot\lib\umeditor\third-party\mathquill\mathquill.min.js" />
+    <None Include="wwwroot\lib\umeditor\umeditor.config.js" />
+    <None Include="wwwroot\lib\umeditor\umeditor.js" />
+    <None Include="wwwroot\lib\umeditor\umeditor.min.js" />
+    <None Include="wwwroot\lib\ztree\css\awesomeStyle\awesome.less" />
+    <None Include="wwwroot\lib\ztree\css\awesomeStyle\fa.less" />
+    <None Include="wwwroot\lib\ztree\js\jquery-1.4.4.min.js" />
+    <None Include="wwwroot\lib\ztree\js\jquery.ztree.all.js" />
+    <None Include="wwwroot\lib\ztree\js\jquery.ztree.all.min.js" />
+    <None Include="wwwroot\lib\ztree\js\jquery.ztree.core.js" />
+    <None Include="wwwroot\lib\ztree\js\jquery.ztree.core.min.js" />
+    <None Include="wwwroot\lib\ztree\js\jquery.ztree.excheck.js" />
+    <None Include="wwwroot\lib\ztree\js\jquery.ztree.excheck.min.js" />
+    <None Include="wwwroot\lib\ztree\js\jquery.ztree.exedit.js" />
+    <None Include="wwwroot\lib\ztree\js\jquery.ztree.exedit.min.js" />
+    <None Include="wwwroot\lib\ztree\js\jquery.ztree.exhide.js" />
+    <None Include="wwwroot\lib\ztree\js\jquery.ztree.exhide.min.js" />
+    <None Include="wwwroot\style\bootstrap\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\style\bootstrap\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\style\bootstrap\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\style\bootstrap\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\style\bootstrap\css\bootstrap.css.map" />
+    <None Include="wwwroot\style\bootstrap\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\style\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="wwwroot\style\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="wwwroot\style\bootstrap\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\style\bootstrap\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\style\bootstrap\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\style\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\style\bootstrap\js\bootstrap.js" />
+    <None Include="wwwroot\style\bootstrap\js\bootstrap.js.map" />
+    <None Include="wwwroot\style\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\style\bootstrap\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\style\easyui\easyloader.js" />
+    <None Include="wwwroot\style\easyui\easyloader.min.js" />
+    <None Include="wwwroot\style\easyui\jquery.easyui.js" />
+    <None Include="wwwroot\style\easyui\jquery.easyui.min.js" />
+    <None Include="wwwroot\style\easyui\jquery.easyui.min.min.js" />
+    <None Include="wwwroot\style\easyui\jquery.easyui.mobile.js" />
+    <None Include="wwwroot\style\easyui\jquery.easyui.mobile.min.js" />
+    <None Include="wwwroot\style\easyui\jquery.min.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-af.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-am.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-ar.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-bg.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-ca.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-cs.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-cz.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-da.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-de.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-el.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-en.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-es.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-fa.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-fr.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-it.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-jp.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-ko.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-nl.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-pl.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-pt_BR.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-ru.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-sv_SE.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-tr.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-ua.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-zh_CN.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-zh_CN.min.js" />
+    <None Include="wwwroot\style\easyui\locale\easyui-lang-zh_TW.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.accordion.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.calendar.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.combo.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.combobox.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.combogrid.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.combotree.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.combotreegrid.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.datagrid.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.datalist.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.datebox.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.datetimebox.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.datetimespinner.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.dialog.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.draggable.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.droppable.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.filebox.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.form.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.layout.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.linkbutton.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.maskedbox.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.menu.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.menubutton.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.messager.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.mobile.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.numberbox.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.numberspinner.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.pagination.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.panel.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.parser.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.passwordbox.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.progressbar.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.propertygrid.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.resizable.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.searchbox.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.slider.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.spinner.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.splitbutton.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.switchbutton.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.tabs.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.tagbox.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.textbox.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.timespinner.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.tooltip.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.tree.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.treegrid.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.validatebox.js" />
+    <None Include="wwwroot\style\easyui\plugins\jquery.window.js" />
+    <None Include="wwwroot\style\easyui\themes\material\images\Thumbs.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mango.Common\Mango.Common.csproj" />
+    <ProjectReference Include="..\Mango.Entity\Mango.Entity.csproj" />
+    <ProjectReference Include="..\Mango.Framework.Core\Mango.Framework.Core.csproj" />
+    <ProjectReference Include="..\Mango.Framework.Services\Mango.Framework.Services.csproj" />
+    <ProjectReference Include="..\Mango.Models\Mango.Models.csproj" />
+    <ProjectReference Include="..\Mango.Repository\Mango.Repository.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="/lib/jquery/jquery-3.2.0.min.js"></script>
+
+    <link href="/style/css/zui.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="input-group" style="margin-top:10px;">
+            <span class="input-group-addon">文件标题:</span>
+            <input type="text" oninput="MonitorTitleInput()" id="Title" class="form-control" placeholder="文件标题">
+        </div>
+        <div class="input-group" style="margin-top:10px;">
+            <span class="input-group-addon">下载地址:</span>
+            <input type="text" oninput="MonitorLinkInput()"  id="LinkUrl" class="form-control" placeholder="下载地址">
+        </div>
+        <div class="input-group" style="margin-top:10px;">
+            <span class="input-group-addon">提取密码:</span>
+            <input type="text" oninput="MonitorPasswordInput()"  id="Password" class="form-control" placeholder="提取密码">
+        </div>
+    </div>
+    <script type="text/javascript" src="attachment.js"></script>
+</body>
+</html>

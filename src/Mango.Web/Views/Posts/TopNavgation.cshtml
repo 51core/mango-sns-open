@@ -1,0 +1,20 @@
+﻿@model List<Mango.Models.PostsChannelModel>
+
+<div class="col-lg-12">
+    <div class="col-lg-9">
+        <ul class="pager pager-pills pager-loose " style="margin:2px;" id="channelList">
+            <li style="display:none;"></li>
+            <li data-id="0"><a href="/posts">全频道</a></li>
+            @foreach (var item in Model)
+            {
+                <li data-id="@item.ChannelId"><a href="/posts/channel/@item.ChannelId">@item.ChannelName</a></li>
+            }
+            <li style="display:none;"></li>
+        </ul>
+    </div>
+    <div class="col-lg-3">
+        <a class="btn btn-success" href="/posts/add" style="margin-bottom:10px;">发布新帖</a>
+    </div>
+    <hr style="margin-top:10px;" class="col-lg-12" />
+</div>
+

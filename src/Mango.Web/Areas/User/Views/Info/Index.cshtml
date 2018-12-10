@@ -1,0 +1,380 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "我的个人信息";
+}
+@model Mango.Models.UserInfoModel
+
+<div class="container-fixed">
+    <div class="row">
+        <div class="col-lg-2 ">
+             @Html.PartialAsync("~/Areas/User/Views/Menu.cshtml").Result
+        </div>
+
+        <div class="col-lg-10">
+
+            <table class="table">
+               
+                <tbody>
+                    <tr>
+                        <td style="width:100px;">用户名:</td>
+                        <td>
+                            <span>@Model.UserName</span>
+                        </td>
+                        <td>
+                            <input type="button" class="btn" value="修改密码" id="btn_EditPassword" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>头像:</td>
+                        <td>
+                            <img src="@Model.HeadUrl"  style="width:120px;height:120px;" id="avatar"  class="avatar" />
+                        </td>
+                        <td>
+                            <input type="file" id="showInputImageFile" style="FILTER: alpha(opacity=0); moz-opacity: 0; opacity: 0;" />
+                            <input type="button" class="btn" value="更换头像" id="showImageFileUploadBtn" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>昵称:</td>
+                        <td>
+                            <span id="showNickName">@Model.NickName</span>
+                        </td>
+                        <td>
+                            <input type="button" class="btn" value="编辑" id="btn_EditNickName" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>性别:</td>
+                        <td>
+                            <span id="showSex">@Model.Sex</span>
+                        </td>
+                        <td>
+                            <input type="button" class="btn" value="编辑" id="btn_EditSex" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>所在城市:</td>
+                        <td>
+                            <span  id="showAddress">@Model.Address</span>
+                        </td>
+                        <td>
+                            <input type="button" class="btn" value="编辑" id="btn_EditAddress"  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>个人标签:</td>
+                        <td>
+                            <span  id="showTags">@Model.Tags</span>
+                        </td>
+                        <td>
+                            <input type="button" class="btn" value="编辑" id="btn_EditTags"  />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+@section Scripts{
+<script src="~/lib/artdialog/dialog.min.js"></script>
+<script src="~/lib/jquery/jquery.validator.min.js"></script>
+<script src="~/lib/jquery/jquery.form.js"></script>
+ <script src="~/lib/flyupload/upload.js"></script>
+<script type="text/javascript">
+//修改个人标签
+$("#btn_EditTags").click(function () {
+    var html = ' <form class="form-horizontal" id="formTags" method="post">';
+    html += '<div class="form-group">';
+    html += '<div class="col-md-10">';
+    html += '<input type="hidden" class="form-control" id="FieldName" name="fieldName" value="Tags">';
+    html += '<input type="text" class="form-control" id="FieldValue" name="fieldValue" placeholder="请输入个人标签(签名)(必填)" value="@Model.Tags">';
+    html += '</div>';
+    html += '</div>';
+    html += '</form>';
+    var d = dialog({
+        title: '修改个人标签',
+        content: html,
+        cancel: true,
+        cancelValue: '取消',
+        cancelDisplay: false,
+        okValue: '保存',
+        ok: function () {
+            //加载验证
+            var config = new Array();
+            config.push({
+                id: $("#FieldValue"),
+                required: {},
+                length: { min: 1, max: 30 }
+            });
+            var v = $.Validator({
+                items: config
+            });
+            if (v.Create()) {
+                $("#formTags").ajaxSubmit({
+                    url: '/user/info/edit',
+                    success: function (result) {
+                        if (result) {
+                            alert("修改成功");
+                            $("#showTags").text($("#FieldValue").val());
+                            window.location.href = window.location.href;
+                        }
+                    }
+                });
+            }
+            else {
+                return false;
+            }
+        },
+        width: '380px'
+    });
+    d.showModal();
+});
+//修改所在城市
+$("#btn_EditAddress").click(function () {
+    var html = ' <form class="form-horizontal" id="formAddress" method="post">';
+    html += '<div class="form-group">';
+    html += '<div class="col-md-10">';
+    html += '<input type="hidden" class="form-control" id="FieldName" name="fieldName" value="Address">';
+    html += '<input type="text" class="form-control" id="FieldValue" name="fieldValue" placeholder="请输入所在城市(必填)" value="@Model.Address">';
+    html += '</div>';
+    html += '</div>';
+    html += '</form>';
+    var d = dialog({
+        title: '修改所在城市',
+        content: html,
+        cancel: true,
+        cancelValue: '取消',
+        cancelDisplay: false,
+        okValue: '保存',
+        ok: function () {
+            //加载验证
+            var config = new Array();
+            config.push({
+                id: $("#FieldValue"),
+                required: {},
+                length: { min: 1, max: 30 }
+            });
+            var v = $.Validator({
+                items: config
+            });
+            if (v.Create()) {
+                $("#formAddress").ajaxSubmit({
+                    url: '/user/info/edit',
+                    success: function (result) {
+                        if (result) {
+                            alert("修改成功");
+                            $("#showAddress").text($("#FieldValue").val());
+                            window.location.href = window.location.href;
+                        }
+                    }
+                });
+            }
+            else {
+                return false;
+            }
+        },
+        width: '380px'
+    });
+    d.showModal();
+});
+//修改性别
+$("#btn_EditSex").click(function () {
+    var html = ' <form class="form-horizontal" id="formSex" method="post">';
+    html += '<div class="form-group">';
+    html += '<div class="col-md-10">';
+    html += '<input type="hidden" class="form-control" id="FieldName" name="fieldName" value="Sex">';
+    html += '<select type="text" class="form-control" id="FieldValue" name="fieldValue" placeholder="请输入昵称(必填)" ><option value="男" @(Model.Sex.Contains("男")?"selected=selected":"")>男</option><option value="女" @(Model.Sex.Contains("女")?"selected=selected":"")>女</option></select>';
+    html += '</div>';
+    html += '</div>';
+    html += '</form>';
+    var d = dialog({
+        title: '修改性别',
+        content: html,
+        cancel: true,
+        cancelValue: '取消',
+        cancelDisplay: false,
+        okValue: '保存',
+        ok: function () {
+            //加载验证
+            var config = new Array();
+            config.push({
+                id: $("#FieldValue"),
+                required: {}
+            });
+            var v = $.Validator({
+                items: config
+            });
+            if (v.Create()) {
+                $("#formSex").ajaxSubmit({
+                    url: '/user/info/edit',
+                    success: function (result) {
+                        if (result) {
+                            alert("修改成功");
+                            $("#showSex").text($("#FieldValue").val());
+                            window.location.href = window.location.href;
+                        }
+                    }
+                });
+            }
+            else {
+                return false;
+            }
+        },
+        width: '380px'
+    });
+    d.showModal();
+});
+//修改昵称
+$("#btn_EditNickName").click(function () {
+    var html = ' <form class="form-horizontal" id="formNickName" method="post">';
+    html += '<div class="form-group">';
+    html += '<div class="col-md-10">';
+    html += '<input type="hidden" class="form-control" id="FieldName" name="fieldName" value="NickName">';
+    html += '<input type="text" class="form-control" id="FieldValue" name="fieldValue" placeholder="请输入昵称(必填)" value="@Model.NickName">';
+    html += '</div>';
+    html += '</div>';
+    html += '</form>';
+    var d = dialog({
+        title: '修改昵称',
+        content: html,
+        cancel: true,
+        cancelValue: '取消',
+        cancelDisplay: false,
+        okValue: '保存',
+        ok: function () {
+            //加载验证
+            var config = new Array();
+            config.push({
+                id: $("#FieldValue"),
+                required: {},
+                length: { min: 2, max: 15 }
+            });
+            var v = $.Validator({
+                items: config
+            });
+            if (v.Create()) {
+                $("#formNickName").ajaxSubmit({
+                    url: '/user/info/edit',
+                    success: function (result) {
+                        if (result) {
+                            alert("修改成功");
+                            $("#showNickName").text($("#FieldValue").val());
+                            window.location.href = window.location.href;
+                        }
+                    }
+                });
+            }
+            else {
+                return false;
+            }
+        },
+        width: '380px'
+    });
+    d.showModal();
+});
+//修改密码
+$("#btn_EditPassword").click(function () {
+
+    var html = ' <form class="form-horizontal" id="formPassword" method="post">';
+
+    html += '<div class="form-group">';
+    html += '<label for="exampleInputAccount4" class="col-sm-2">原密码:</label>';
+    html += '<div class="col-md-10">';
+    html += '<input type="text" class="form-control" id="OldPassword" name="oldPassword" placeholder="请输入原登录密码(必填)">';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="form-group">';
+    html += '<label for="exampleInputPassword4" class="col-sm-2">新密码:</label>';
+    html += '<div class="col-md-10">';
+    html += '<input type="text" class="form-control" id="NewPassword" name="newPassword" placeholder="请输入新的登录密码(必填)">';
+    html += '</div>';
+    html += '</div>';
+
+    html += '</form>';
+    var d = dialog({
+        title: '修改密码:',
+        content: html,
+        cancel: true,
+        cancelValue: '取消',
+        cancelDisplay: false,
+        okValue: '保存',
+        ok: function () {
+            //加载验证
+            var config = new Array();
+            config.push({
+                id: $("#OldPassword"),
+                required: {},
+                length: { min: 6, max: 20 }
+            });
+            config.push({
+                id: $("#NewPassword"),
+                required: {},
+                length: { min: 6, max: 20 }
+            });
+            var v = $.Validator({
+                items: config
+            });
+            if (v.Create()) {
+                $("#formPassword").ajaxSubmit({
+                    url: '/user/info/password',
+                    success: function (result) {
+                        if (result) {
+                            alert("修改成功");
+                            window.location.href = window.location.href;
+                        }
+                    }
+                });
+            }
+            else {
+                return false;
+            }
+        },
+        width: '380px'
+    });
+    d.showModal();
+});
+    </script>
+<script type="text/javascript">
+    $(window).ready(function () {
+        //选中左边菜单栏
+        $("#leftmenu_Info").addClass("active");
+    });
+    //处理图片上传
+    $("#showImageFileUploadBtn").click(function () {
+        $('#showInputImageFile').trigger('click');
+    });
+    var oldAvatar = '@Model.HeadUrl';
+    $.FlyUpload({
+        url: '',
+        id: 'showInputImageFile',
+        auto: true,
+        preview: function (url) {
+            $("#avatar").removeAttr("style");
+            $("#avatar").attr('src', '/images/loading.gif');
+        },
+        success: function (url) {
+            url = ImageServerUrl + url;
+            $.ajax({
+                type: 'post',
+                url: '/user/info/edit',
+                data: 'fieldName=avatar&fieldValue=' + url,
+                success: function (result) {
+                    if (result) {
+                        $("#avatar").attr('src', url);
+                        $("#avatar").attr('style', 'width:120px;height:120px;');
+                    }
+                    else { 
+                        $("#avatar").attr('src', oldAvatar);
+                        $("#avatar").attr('style', 'width:120px;height:120px;');
+                    }
+                },
+                error: function (ex) { 
+                    $("#avatar").attr('src', oldAvatar);
+                    $("#avatar").attr('style', 'width:120px;height:120px;');
+                }
+            });
+        }
+    });
+</script>
+}

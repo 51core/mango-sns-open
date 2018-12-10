@@ -1,0 +1,187 @@
+/*        下面的css内容       */
+.north{
+  height:60px;
+  /*background: url('../images/bg_header.jpg')no-repeat;
+  overflow-y: hidden;*/
+  border: none;
+  margin:5px 0;
+}
+.head-left{
+ width: 350px;
+ height: 60px;
+ float: left;
+ margin-left: 20px;
+}
+.head-left span{
+ font-size: 30px;
+ line-height: 60px;
+ color:#fff;
+}
+.head-right{
+  width: 550px;
+  height: 60px;
+  float: right;
+}
+.head-right-img{
+  width: 280px;
+  height: 40px;
+  float: left;
+  margin-top: 10px;
+}
+.head-right-img img{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  float: left;
+}
+.head-right-img p{
+  font-size: 13px;
+  color:#fff;
+  margin-left: 15px;
+  float: left;
+  line-height: 20px;
+}
+.shu-span{
+  height: 20px;
+  float: left;
+  line-height: 60px;
+  color: #fff;
+  margin-left: 20px;
+}
+.grzl-a{
+  font-size: 13px;
+  color:#fff !important;
+  padding-left: 20px;
+  float: left;
+  line-height: 60px;
+  margin-left: 20px;
+  background: url('../images/icon_gr.png')no-repeat 0 50%;
+  background-size: 15px 15px;
+}
+.tc-a{
+  font-size: 13px;
+  color:#fff !important;
+  padding-left: 20px;
+  float: left;
+  line-height: 60px;
+  margin-left: 20px;
+  background: url('../images/icon_tc.png')no-repeat 0 50%;
+  background-size: 15px 15px;
+}
+/*      中部首页样式   */
+.back-imgf{
+ width: 100%;
+ height: 100%;
+ position: relative;
+ top: 0;
+ left: 0;
+ background: url('../img/backg0.jpg')no-repeat;
+ background-size: 100% 100%;
+}
+/*      底部样式   */
+.wu-footer{
+  height:20px;
+  padding:5px;
+  line-height: 20px;
+  overflow:hidden;
+  /*background:#e0ecff;*/
+  background: #6caef5;
+  border-color: #6caef5;
+  text-align: center;
+}
+/*table样式的调试css*/
+table{
+  border-collapse: collapse;
+  border-spacing: 0;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  margin-bottom: 5px;
+}
+table td{
+  /*white-space: nowrap;*/
+  text-align: center;
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 9pt;
+}
+thead tr th{
+ /*background-color: #41c7db;*/
+ border-bottom-width: 2px;
+ border: 1px solid #ddd;
+ padding: 8px;
+ font-size: 9pt;
+}
+table tr:hover{
+  background-color: #f6f6f6;
+}
+.news{
+  width: 150px;
+  height: auto;
+  /*border: 1px solid red;*/
+  margin: 0 4px;
+}
+.news-look{
+  width: 150px;
+  height: 30px;
+  text-align: center;
+  margin: 10px 0;
+  background-color: #E0ECFF;
+}
+.news-look span{
+  font-size: 16px;
+  color: #000000;
+  line-height: 30px;
+}
+.news-bot{
+  width: 150px;
+  height: 590px;
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  left: 0;
+  /*border: 1px solid red;*/
+}
+.news-bot ul{
+  width: 150px;
+  height: auto;
+}
+.news-bot ul li{
+ width: 150px;
+ height: 40px;
+ border: 1px solid #426e9e;
+ background: rgba(133, 182, 231, 0.3);
+ margin: 5px 0;
+}
+.new-bot-num{
+  width: 30px;
+  height: 30px;
+  margin: 5px 0;
+  border-radius: 50%;
+  background-color: #00a0e9;
+  margin-left: 4px;
+  text-align: center;
+  float: left;
+}
+.new-bot-num span{
+  font-size: 20px;
+  color:#fff;
+  line-height: 30px;
+}
+.new-bot-nei{
+ width: 110px;
+ height: 35px;
+ float: right;
+ margin: 2px 0;
+}
+.new-bot-nei p{
+  font-size: 11px;
+  color:#2a2a2a;
+  word-break: break-all;
+  line-height: 16px;
+  text-overflow: -o-ellipsis-lastline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}

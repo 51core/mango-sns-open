@@ -1,0 +1,182 @@
+﻿@{
+}
+@model Mango.Manager.ViewModels.ManagerPageViewModel
+
+<table class="table">
+    <tbody>
+        <tr>
+            <td>
+                <input type="button" class="btn btn-success" id="btn_Add" value="添加导航" />
+            </td>
+        </tr>
+    </tbody>
+</table>
+<table class="table table-hover table-list table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>导航名称</th>
+            <th>所属分类</th>
+            <th>点击次数</th>
+            <th>是否显示</th>
+            <th>链接地址</th>
+            <th>备注信息</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model.ListData)
+        {
+            <tr>
+                <td>
+                    @row["NavigationId"]
+                </td>
+                <td>
+                    @row["NavigationName"]
+                </td>
+                <td>
+                    @row["ClassifyName"]
+                </td>
+                <td>
+                    @row["ClickCount"]
+                </td>
+                <td>
+                    @(row["IsShow"].ToString().ToLower() == "true" ? "是" : "否")
+                </td>
+                <td>
+                    @row["NavigationUrl"]
+                </td>
+                <td>
+                    @row["Remark"]
+                </td>
+                <td>
+                    <a href="javascript:;" class="edit"  data-id="@row["NavigationId"]" data-cid="@row["CId"]" data-name="@row["NavigationName"]" data-show="@row["IsShow"]" data-url="@row["NavigationUrl"]" data-remark="@row["Remark"]">修改</a>
+                    <a href="javascript:;" class="del" data-id="@row["NavigationId"]">删除</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="row">
+    <div class="col-12">
+        <ul class="pagination  justify-content-center">
+            @Html.MPager(ViewContext.HttpContext.Request, Model.TotalCount)
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var navigationClassify = null;
+    $(window).ready(function () {
+        $.ajax({
+            type: 'post',
+            url: '/Navigation/LoadNavigationClassify',
+            data: '',
+            success: function (result) {
+                navigationClassify = JSON.parse(result);
+            }
+        });
+    });
+    //添加
+    $("#btn_Add").click(function () {
+        var html = '<form id="formAdd" method="post" action="/Navigation/AddNavigation"><table class="table">';
+        html += '<tr><td>所属分类:</td><td><select id="CId" name="CId"  class="form-control" style="width:300px;">';
+        $.each(navigationClassify, function (i, item) {
+            html += '<option value="' + item.CId + '">' + item.ClassifyName + '</option>';
+        });
+
+        html += '</select></td></tr>';
+
+        html += '<tr><td>导航名称:</td><td><input type="text" id="NavigationName" name="NavigationName" class="form-control" style="width:300px;" value=""></td></tr>';
+        html += '<tr><td>链接地址:</td><td><input type="text" id="NavigationUrl" name="NavigationUrl" class="form-control" style="width:300px;" value=""></td></tr>';
+        html += '<tr><td>是否显示:</td><td><select id="IsShow" name="IsShow"  class="form-control" style="width:300px;">';
+        html += '<option value="true">是</option>';
+        html += '<option value="false">否</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>备注信息:</td><td><textarea type="text" id="Remark" name="Remark" class="form-control" style="width:300px;" value=""></textarea></td></tr>';
+        html += '</table></form>';
+        layer.open({
+            type: 1,
+            title: '添加导航:',
+            shadeClose: true,
+            content: html,
+            btn: ['保 存'],
+            btn1: function () {
+                $("#formAdd").ajaxSubmit({
+                    success: function (result) {
+                        if (result) {
+                            ShowMessage('保存成功', '');
+                        }
+                    }
+                });
+            },
+            area: ['450px', '390px']
+        });
+    });    
+    //修改数据
+    $(".edit").click(function () {
+        var id = $(this).attr("data-id");
+        var name = $(this).attr("data-name");
+        var isShow = $(this).attr("data-show");
+        var cid = $(this).attr("data-cid");
+        var url = $(this).attr("data-url");
+        var remark = $(this).attr("data-remark");
+        var html = '<form id="formEdit" method="post" action="/Navigation/EditNavigation"><table class="table">';
+        html += '<tr><td>所属分类:</td><td><select id="CId" name="CId"  class="form-control" style="width:300px;">';
+        $.each(navigationClassify, function (i, item) {
+            html += '<option value="' + item.CId + '">' + item.ClassifyName + '</option>';
+        });
+
+        html += '</select></td></tr>';
+
+        html += '<tr><td>导航名称:</td><td><input type="text" id="NavigationName" name="NavigationName" class="form-control" style="width:300px;" value="' + name + '"></td></tr>';
+        html += '<tr><td>链接地址:</td><td><input type="text" id="NavigationUrl" name="NavigationUrl" class="form-control" style="width:300px;" value="' + url + '"></td></tr>';
+        html += '<tr><td>是否显示:</td><td><select id="IsShow" name="IsShow"  class="form-control" style="width:300px;">';
+        html += '<option value="true">是</option>';
+        html += '<option value="false">否</option>';
+        html += '</select></td></tr>';
+        html += '<tr><td>备注信息:</td><td><textarea type="text" id="Remark" name="Remark" class="form-control" style="width:300px;">' + remark + '</textarea></td></tr>';
+        html += '</table><input type="hidden" name="NavigationId" id="NavigationId" value="' + id + '" /></form>';
+        layer.open({
+            type: 1,
+            title: '编辑导航:',
+            shadeClose: true,
+            content: html,
+            btn: ['保 存'],
+            btn1: function () {
+                $("#formEdit").ajaxSubmit({
+                    success: function (result) {
+                        if (result) {
+                            ShowMessage('保存成功', '');
+                        }
+                    }
+                });
+            },
+            area: ['450px', '390px']
+        });
+        $("#IsShow option[value='" + isShow + "']").attr("selected", true);
+        $("#CId option[value='" + cid + "']").attr("selected", true);
+    });    
+    //删除数据
+    $(".del").click(function () {
+        var id = $(this).attr("data-id");
+        //询问框
+        layer.confirm('确认删除该记录？', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+
+            $.ajax({
+                type: 'post',
+                url: '/Navigation/DeleteNavigation',
+                data: 'navigationId=' + id,
+                success: function (result) {
+                    if (result) {
+                        ShowMessage('删除成功', '');
+                    }
+                }
+            });
+        }, function () {
+            return true;
+        });
+
+    });    
+</script>

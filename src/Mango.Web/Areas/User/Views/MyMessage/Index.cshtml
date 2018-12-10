@@ -1,0 +1,48 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "我的消息";
+}
+@model Mango.Web.ViewModels.MessageViewModel
+<div class="container-fixed">
+    <div class="row">
+        <div class="col-lg-2 ">
+            @Html.PartialAsync("~/Areas/User/Views/Menu.cshtml").Result
+        </div>
+
+        <div class="col-lg-10">
+            <div class="items">
+                @foreach (var item in Model.ListData)
+                {
+                <div class="item">
+                    <div class="item-heading">
+                        <h4><a href="###">帖子消息</a></h4>
+                    </div>
+                    <div class="item-content">
+                        @Html.Raw(item.Contents)
+                    </div>
+                </div>
+                }
+            </div>
+            <ul class="pager ">
+                @if (Model.TotalCount > 0)
+                {
+                    @Html.Pager(ViewContext.HttpContext.Request, 10, Model.TotalCount)
+                }
+                else
+                { 
+                    <li>没有数据记录...</li>
+                }
+            </ul>
+        </div>
+
+    </div>
+</div>
+@section Scripts{
+    <script src="~/lib/artdialog/dialog.min.js"></script>
+    <script type="text/javascript">
+    $(window).ready(function () {
+        //选中左边菜单栏
+        $("#leftmenu_Message").addClass("active");
+    });
+    </script>
+}

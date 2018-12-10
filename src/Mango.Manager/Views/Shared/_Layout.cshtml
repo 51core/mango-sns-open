@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>51Core.Net后台管理系统</title>
+
+    <script src="~/lib/jquery/jquery-2.1.4.min.js"></script>
+    <script src="~/lib/jquery/jquery.form.js"></script>
+
+    <link href="~/style/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/style/bootstrap/js/bootstrap.min.js"></script>
+        
+    <script src="~/js/common.js"></script>
+    <script src="~/lib/layer/layer.js"></script>
+    @RenderSection("Style", required: false)
+</head>
+<body>
+    <div class="container-fluid" style="margin-top:10px;">
+        @RenderBody()
+    </div>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,207 @@
+﻿@{
+    ViewData["Title"] = "系统菜单管理";
+}
+@model Mango.Manager.ViewModels.ManagerPageViewModel
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/ManagerMenu/AddMenu" method="post" id="FormAddMenu">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">菜单名称</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="MenuName" value="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">区域名</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="AreaName" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">控制器</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="ControllerName" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Action名称</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="ActionName" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">所属上级</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" name="ParentId">
+                                <option value="0">无上级菜单</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btn_SaveMenuForAdd">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/ManagerMenu/EditMenu" method="post" id="FormEditMenu">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">菜单名称</label>
+                        <div class="col-sm-9">
+                            <input type="hidden" name="MenuId" />
+                            <input type="text" class="form-control" name="MenuName" value="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">区域名</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="AreaName" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">控制器</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="ControllerName" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Action名称</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="ActionName" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">所属上级</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" name="ParentId" id="ParentId">
+                                <option value="0">无上级菜单</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btn_SaveMenuForEdit">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table">
+    <tbody>
+        <tr>
+            <td>
+                <input type="button" class="btn btn-success" id="btn_Add" value="添加菜单" data-toggle="modal" data-target="#exampleModal" />
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table  table-sm table-hover table-list table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>菜单名称</th>
+            <th>区域名</th>
+            <th>控制器名</th>
+            <th>Action(动作)名</th>
+            <th>所属上级</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model.ListData)
+        {
+            <tr>
+                <td>
+                    @row["MenuId"]
+                </td>
+                <td>
+                    @Html.Raw(row["ParentId"].ToString() == "0" ? "" : "&nbsp;&nbsp;&nbsp;&nbsp;") @row["MenuName"]
+                </td>
+                <td>
+                    @row["AreaName"]
+                </td>
+                <td>
+                    @row["ControllerName"]
+                </td>
+                <td>
+                    @row["ActionName"]
+                </td>
+                <td>
+                    @row["ParentId"]
+                </td>
+                <td>
+                    <a href="javascript:EditMenu(@row["MenuId"], '@row["MenuName"]', '@row["AreaName"]', '@row["ControllerName"]', '@row["ActionName"]', @row["ParentId"]);" class="del">编辑</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script type="text/javascript">
+    function EditMenu(mid, MName, AreaName, ControllerName, ActionName, ParentId) {
+        $("#FormEditMenu").find('[name=MenuId]').val(mid);
+        $("#FormEditMenu").find('[name=MenuName]').val(MName);
+        $("#FormEditMenu").find('[name=AreaName]').val(AreaName);
+        $("#FormEditMenu").find('[name=ControllerName]').val(ControllerName);
+        $("#FormEditMenu").find('[name=ActionName]').val(ActionName);
+        $("#FormEditMenu").find("option[value=" + ParentId + "]").attr("selected", true);
+        $("#editModal").modal('show');
+    }
+    $("#btn_SaveMenuForEdit").click(function () {
+        $("#FormEditMenu").ajaxSubmit({
+            success: function (res) {
+                if (res) {
+                    alert('修改成功');
+                    window.location.href = window.location.href;
+                }
+            }
+        });
+    });
+    //
+    $("#btn_SaveMenuForAdd").click(function () {
+        $("#FormAddMenu").ajaxSubmit({
+            success: function (res) {
+                if (res) {
+                    alert('添加成功');
+                    window.location.href = window.location.href;
+                }
+            }
+        });
+    });
+    $(window).ready(function () {
+        //加载一级菜单
+        $.ajax({
+            type: 'get',
+            url: '/ManagerMenu/GetMenuByParent',
+            success: function (res) {
+                for (var i = 0; i < res.length; i++) {
+                    var htm = '<option value="' + res[i].data.MenuId + '">' + res[i].data.MenuName + '</option>';
+                    $("#ParentId").append(htm);
+                    $("#FormAddMenu").find('[name=ParentId]').append(htm);
+                }
+            }
+        });
+    });
+</script>

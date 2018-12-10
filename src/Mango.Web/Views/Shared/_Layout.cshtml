@@ -1,0 +1,177 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{ 
+    Mango.Common.WebSite webSite = new Mango.Common.WebSite();
+    Mango.Web.ViewModels.WebSiteViewModel model = new Mango.Web.ViewModels.WebSiteViewModel();
+    model.WebSiteNavigationData = webSite.GetWebSiteNavigationByCache();
+    model.WebSiteConfigData = webSite.GetWebSiteConfigByCache();
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]-@(model.WebSiteConfigData.WebSiteName)[@(model.WebSiteConfigData.WebSiteTitle)]</title>
+    <meta name="keywords" content="@(model.WebSiteConfigData.WebSiteKeyWord)" />
+    <meta name="description" content="@(model.WebSiteConfigData.WebSiteDescription)" />
+    <link href="~/style/css/zui.min.css" rel="stylesheet" />
+    <link href="~/style/css/zui-theme.min.css" rel="stylesheet" />
+    @RenderSection("Style", required: false)
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?f5ada2c0247981a666a32feaccfce613";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+</head>
+<body>
+    @{
+        string fromUrl = Html.ViewContext.HttpContext.Request.GetAbsoluteUri();
+        fromUrl = fromUrl.Contains("register") ? "/posts" : fromUrl;
+    }
+    <nav class="navbar  navbar-default" role="navigation" id="tag_global_nav">
+        <div class="container-fixed">
+            <!-- 导航头部 -->
+            <div class="navbar-header">
+                @Html.PartialAsync("~/Views/WebSite/Navigation.cshtml", model).Result
+            </div>
+            <!-- 导航项目 -->
+            <div class="collapse navbar-collapse navbar-collapse-example">
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="暂不开放搜索功能">
+                    </div>
+                    <button type="button" class="btn btn-default" onclick="javascript:void(0)">搜索</button>
+                   
+                </form>
+                <!-- 右侧的导航项目 -->
+                <ul class="nav navbar-nav navbar-right">
+
+                    @if (Html.ViewContext.HttpContext.Session.GetString("UserId") == null)
+                    {
+                        if (model.WebSiteConfigData.IsLogin)
+                        {
+                        <li class="@(Html.ViewContext.RouteData.Values["action"].ToString().ToLower() == "login" ? "active" : "")"><a href="/passport/login?fromurl=@(fromUrl)">登录</a></li>
+                        }
+                        if (model.WebSiteConfigData.IsRegister)
+                        {
+                        <li class=" @(Html.ViewContext.RouteData.Values["action"].ToString().ToLower() == "register" ? "active" : "")"><a href="/passport/register">注册账号</a></li>
+                        }
+                    }
+                    else
+                    {
+                        <li>
+                            <a style="height:28px;padding-right:0px;" href="javascript:void(0)"  id="msg_push_showlist">
+                                <i class="icon icon-bell icon-2x" style="font-size:22px;"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <span class="label label-info  label-badge" style="padding-left:5px;padding-right:5px;" id="msg_push_count">0</span>
+                        </li>
+
+                        <li class="dropdown" style="margin-left:15px;">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding:2px;">
+                                <img src="@Html.ViewContext.HttpContext.Session.GetString("HeadUrl")" style="width:35px;height:35px;" class="img-circle" title=" @Html.ViewContext.HttpContext.Session.GetString("NickName")">
+
+                                @*<b class="caret"></b>*@
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/user/info">个人中心</a></li>
+                                <li><a href="/passport/outlogin">退出登录</a></li>
+                            </ul>
+                        </li>
+
+                    }
+                </ul>
+            </div>
+            <!-- END .navbar-collapse -->
+        </div>
+
+    </nav>
+
+    @RenderBody()
+
+    <div class="container-fixed">
+        <hr />
+        <div class="row text text-center">
+            <div class="col-lg-12">
+                @(model.WebSiteConfigData.CopyrightText)
+            </div>
+            <div class="col-lg-12">
+                <a href="http://www.miitbeian.gov.cn" target="_blank">@(model.WebSiteConfigData.FilingNo)</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="~/js/appconfig.js"></script>
+
+
+    <script src="~/lib/jquery/jquery-3.2.0.min.js"></script>
+    <script src="~/style/js/zui.lite.min.js"></script>
+    <script src="~/style/js/zui.min.js"></script>
+    <script src="~/style/js/zui.lite.min.js"></script>
+
+    <script src="~/lib/layer/layer.min.js"></script>
+    <script src="~/lib/artdialog/dialog.js"></script>
+
+    @if (Html.ViewContext.HttpContext.Session.GetString("UserId") != null)
+    {
+        <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+        <script src="~/js/message.js"></script>
+        <script type="text/javascript">
+            $("#msg_push_showlist").click(function () {
+                
+                //加载数据
+                $.ajax({
+                    type: 'get',
+                    url: '/message/GetMessageList',
+                    success: function (res) {
+                        var html='';
+                        html += '<div class="list"  style="overflow-y:auto;" id="msg_push_list_data">';
+                        html += '<div class="items items-hover">';
+                        
+                        $.each(res, function (i, item) {
+                            console.log(item);
+                            //html += '<li class="list-group-item">' + item.contents + '</li>';
+                            html += '<div class="item"><div class="item-heading"><h4>' + item.contents + '</h4></div></div>';
+                        });
+                        html += '</div>'
+                        html += '</div>';
+                        var d = dialog({
+                            title: '新消息通知',
+                            content: html,
+                            height: 300,
+                            width: 500,
+                            id:'msg_push_list_dialog'
+                        });
+                        d.show(document.getElementById("msg_push_showlist"));
+                        $("#msg_push_list_data").parent().attr("style", $("#msg_push_list_data").parent().attr("style") + "overflow-y:scroll;");
+                        $("#msg_push_count").text("0");
+                        //更改未读消息状态
+                        $.ajax({
+                            type: 'post',
+                            url: '/message/UpdateReadState',
+                            success: function (res) {
+                                console.log(res);
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+    }
+    <script type="text/javascript">
+        var controllerName = "@Html.ViewContext.RouteData.Values["controller"].ToString().ToLower()";
+        $("#topNavgationTag").find("li").each(function (i) {
+            if ($(this).attr('data-id').indexOf(controllerName)>-1) {
+                    $(this).addClass("active");
+                }
+            });
+    </script>
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

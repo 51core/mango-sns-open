@@ -1,0 +1,94 @@
+﻿@{ Layout = null;}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>51Core.Net后台管理系统</title>
+    <script src="~/lib/jquery/jquery-3.2.0.min.js"></script>
+    <script src="~/lib/jquery/jquery.form.js"></script>
+    <link href="~/style/default/css/commom.css" rel="stylesheet" />
+
+    <link href="~/style/default/css/denglu.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="back-vew">
+        <div class="back-vew-auto">
+            <div class="back-vew-top">
+                <span>51Core.Net后台管理系统</span>
+            </div>
+            <div class="back-vew-login">
+                <form id="formLogin" action="/Home/Login" method="post">
+                    <div class="login-bot">
+                        <div class="login-bot-auto cf">
+                            <ul>
+                                <li>
+                                    <div class="icon-img fl">
+                                        <img src="/style/default/deluimg/icon_zh.jpg" alt="">
+                                    </div>
+                                    <input class="input-name fl" name="adminName" type="text" placeholder="用户名">
+                                </li>
+                                <li>
+                                    <div class="icon-img fl">
+                                        <img src="/style/default/deluimg/icon_mm.jpg" alt="">
+                                    </div>
+                                    <input class="input-pass fl" name="password" type="password" placeholder="密码">
+                                </li>
+                                <li>
+                                    <div class="icon-img fl">
+                                        <img src="/style/default/deluimg/icon_yzm.jpg" alt="">
+                                    </div>
+                                    <input class="input-num fl" name="code" type="text" placeholder="验证码">
+                                    <div class="erw-img fr">
+                                        <img src="/Authorization/ValidateCode" alt="看不清?点击更换" onclick="this.src = this.src + '?'" style="vertical-align:middle;">
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="incomplete"></div>
+                            <a href="javascript:;">
+                                <div class="denglu-btn">登录</div>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $('.denglu-btn').on('click', function () {
+                var adminName = $('input[name="adminName"]').val();
+                var password = $('input[name="password"]').val();
+                var code = $('input[name="code"]').val();
+
+                //判断是不是手机号码
+                if (adminName == "") {
+                    $('.incomplete').show().html("*账号不能为空");
+                }
+                else if (password == "") {
+                    $('.incomplete').show().html("*密码不能为空");
+                }
+                else if (code == "") {
+                    $('.incomplete').show().html("*验证码不能为空");
+                }
+                else {
+                    $("#formLogin").ajaxSubmit({
+                        success: function (res) { 
+                            if (res == "ok") {
+                                window.location.href = '/Home/Index';
+                            }
+                            else {
+                                $('.incomplete').show().html(res);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+
+</body>
+</html>
+

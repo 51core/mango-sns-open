@@ -1,0 +1,135 @@
+/*      外边的背景大图      */
+.back-vew{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  top: 0;
+  left: 0;
+  background: url('../deluimg/font_back.png')no-repeat;
+  /*background: url('../deluimg/bei.jpg')no-repeat;*/
+  background-size: 100% 100%;
+  min-width: 1200px;
+}
+/*     中部的div居中      */
+.back-vew-auto{
+  width: 1200px;
+  height: auto;
+  margin: 0 auto;
+}
+.back-vew-top{
+  width: 1200px;
+  height: 250px;
+  text-align: center;
+}
+
+.back-vew-top span{
+  font-size: 40px;
+  color:#fff;
+  line-height: 250px;
+}
+.back-vew-login{
+  width: 500px;
+  height: 530px;
+  margin: 0 auto;
+  /*background-color: #fff;*/
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 7px 2px #c6c6c6;
+}
+
+.login-bot{
+  width: 500px;
+  height: 480px;
+}
+.login-bot-auto{
+  width: 442px;
+  height: 460px;
+  margin: 0 auto;
+}
+.login-bot-auto ul{
+  padding-top: 5px;
+}
+.login-bot-auto ul li{
+ width: 440px;
+ height: 70px;
+ border: 1px solid #a7b9c2;
+ border-radius: 5px;
+ margin-top: 40px;
+ background-color: #fff;
+}
+.icon-img{
+  width: 68px;
+  height: 68px;
+  position: relative;
+  top: 0;
+  left: 0;
+  background-color: #0070c3;
+  border-radius: 5px 0 0 5px;
+}
+.icon-img img{
+  width: 34px;
+  height: 34px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.input-name{
+ width: 366px;
+ height: 68px;
+ padding: 0 20px;
+ font-size: 24px;
+ color:#333;
+ border: none;
+ outline: none;
+}
+.input-pass{
+ width: 366px;
+ height: 68px;
+ padding: 0 20px;
+ font-size: 24px;
+ color:#333;
+ border: none;
+ outline: none;
+}
+.input-num{
+ width: 200px;
+ height: 68px;
+ padding: 0 20px;
+ font-size: 24px;
+ color:#333;
+ border: none;
+ outline: none;
+}
+.erw-img{
+  width: 120px;
+  height: 68px;
+  vertical-align: top;
+  margin-right: 5px;
+}
+.erw-img img{
+  width: 120px;
+  height: 68px;
+}
+.incomplete{
+  width: 100%;
+  height: 40px;
+  background: rgba(238, 238, 238, 0.1);
+  font-size: 26px;
+  text-align: center;
+  line-height: 40px;
+  color: red;
+  margin-top: 10px;
+  display: none;
+}
+.denglu-btn{
+  width: 300px;
+  height: 70px;
+  background-color: #0071cf;
+  color:#fff;
+  text-align: center;
+  font-size: 27px;
+  line-height: 70px;
+  border-radius: 5px;
+  margin: 0 auto;
+  margin-top: 40px;
+}

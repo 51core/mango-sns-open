@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mango.Entity\Mango.Entity.csproj" />
+    <ProjectReference Include="..\Mango.Framework.Core\Mango.Framework.Core.csproj" />
+    <ProjectReference Include="..\Mango.Framework.Services\Mango.Framework.Services.csproj" />
+    <ProjectReference Include="..\Mango.Models\Mango.Models.csproj" />
+    <ProjectReference Include="..\Mango.Repository\Mango.Repository.csproj" />
+  </ItemGroup>
+
+</Project>

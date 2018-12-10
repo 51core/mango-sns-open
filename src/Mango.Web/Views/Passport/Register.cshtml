@@ -1,0 +1,248 @@
+﻿@{
+    ViewData["Title"] = "新用户注册";
+    Mango.Common.WebSite webSite = new Mango.Common.WebSite();
+    Mango.Models.WebSiteConfigModel configData = webSite.GetWebSiteConfigByCache();
+    string appId = Mango.Framework.Core.Configuration.GetItem("Tencent_VerificationAppId");
+}
+<div class="container-fixed">
+    @if (configData.IsRegister)
+    {
+    <form class="form-horizontal" method="post" id="RegisterForm">
+        <div class="form-group">
+            <label for="exampleInputAccount9" class="col-sm-2 required">账号</label>
+            <div class="col-md-3 col-sm-5">
+                <input type="tel" class="form-control" style="width:280px;" id="UserName" maxlength="11" name="UserName" placeholder="请输入你的手机号">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputAccount9" class="col-sm-2 required">注册验证码</label>
+            <div class="col-md-3 col-sm-5">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="ValidateCode" name="ValidateCode" maxlength="6" placeholder="短信验证码"  style="width:165px;">
+                    <span class="input-group-btn">
+                        <button class="btn" id="btn_SendPhoneSMS" type="button">获取注册验证码</button>
+                    </span>
+                </div>
+                <button class="btn" id="TencentCaptcha" data-appid="@appId" data-cbfn="callback" type="button" style="display:none;">获取注册验证码</button>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label for="exampleInputAccount9" class="col-sm-2 required">昵称</label>
+            <div class="col-md-3 col-sm-5">
+                <input type="text" class="form-control" style="width:280px;" id="NickName" name="NickName" placeholder="昵称">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword4" class="col-sm-2 required">密码</label>
+            <div class="col-md-3 col-sm-5">
+                <input type="text" class="form-control" style="width:280px;" id="Password" name="Password" placeholder="密码">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" checked="checked" disabled="disabled">注册即认为您同意以下注册协议
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-default" id="btn_Post">马上注册</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-6 text">
+                当您申请用户时，表示您已经同意遵守本规章。
+                <br />
+                欢迎您加入本站点参加交流和讨论，本站点为编程技术分享的网站，为维护网上公共秩序和社会稳定，请您自觉遵守以下条款：
+                <br />
+                一、不得利用本站危害国家安全、泄露国家秘密，不得侵犯国家社会集体的和公民的合法权益，不得利用本站制作、复制和传播下列信息：
+                <br />
+                （一）煽动抗拒、破坏宪法和法律、行政法规实施的；
+                <br />
+                （二）煽动颠覆国家政权，推翻社会主义制度的；
+                <br />
+                （三）煽动分裂国家、破坏国家统一的；
+                <br />
+                （四）煽动民族仇恨、民族歧视，破坏民族团结的；
+                <br />
+                （五）捏造或者歪曲事实，散布谣言，扰乱社会秩序的；
+                <br />
+                （六）宣扬封建迷信、淫秽、色情、赌博、暴力、凶杀、恐怖、教唆犯罪的；
+                <br />
+                （七）公然侮辱他人或者捏造事实诽谤他人的，或者进行其他恶意攻击的；
+                <br />
+                （八）损害国家机关信誉的；
+                <br />
+                （九）其他违反宪法和法律行政法规的；
+                <br />
+                （十）进行商业广告行为的。
+
+                <br />
+
+                二、互相尊重，对自己的言论和行为负责。
+                <br />
+                三、禁止在申请用户时使用相关本站的词汇，或是带有侮辱、毁谤、造谣类的或是有其含义的各种语言进行注册用户，否则我们会将其删除。
+                <br />
+                四、禁止以任何方式对本站进行各种破坏行为。
+                <br />
+                五、如果您有违反国家相关法律法规的行为，本站概不负责，您的登录信息均被记录无疑，必要时，我们会向相关的国家管理部门提供此类信息。
+            </div>
+        </div>
+    </form>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-2">
+
+            </div>
+            <div class="col-lg-8">
+                <p class="text-center" style="font-size:15px;">
+                    因为系统调整暂时关闭用户注册功能,非常抱歉.
+                </p>
+            </div>
+        </div>
+    }
+</div>
+@section Scripts{
+    <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+
+    <script src="~/lib/jquery/jquery.validator.min.js"></script>
+    <script src="~/lib/jquery/jquery.form.js"></script>
+    <script type="text/javascript">
+        var smsTime = 60;
+        //验证码处理
+        $("#btn_SendPhoneSMS").click(function () {
+            //加载验证
+            var config = new Array();
+            config.push({
+                id: $("#UserName"),
+                required: {tip:'请输入手机号'},
+                length: { min: 1, max: 11 ,tip:'请输入11位数的手机号'},
+                phone: {}
+            });
+            var v = $.Validator({
+                items: config
+            });
+            if (v.Create()) {
+                $("#TencentCaptcha").trigger("click");
+                var smsInterval = setInterval(function () {
+                    if (smsTime == 60) {
+                        $("#btn_SendPhoneSMS").attr("disabled", "disabled");
+                    }
+                    smsTime--;
+                    if (smsTime == 0) {
+                        $("#btn_SendPhoneSMS").text("获取注册验证码");
+                        smsTime = 60;
+                        clearInterval(smsInterval);
+                        $("#btn_SendPhoneSMS").removeAttr("disabled");
+                    }
+                    else {
+                        $("#btn_SendPhoneSMS").text("获取注册验证码(" + smsTime + ")");
+                    }
+                }, 1000);
+            }
+            else {
+                return false;
+            }
+            
+        });
+        
+        window.callback = function (res) {
+            console.log(res)
+            // res（未通过验证）= {ret: 1, ticket: null}
+            // res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
+            if (res.ret === 0) {
+                
+                var phone = $("#UserName").val().trim();
+                $.ajax({
+                    type: 'post',
+                    url: '/Authorization/SendPhoneValidateCode',
+                    data: 'phone=' + phone + '&ticket=' + res.ticket + '&randstr=' + res.randstr,
+                    success: function (result) {
+                        var tip = new $.zui.Messager(result, {
+                            icon: 'ok-sign',
+                            type: 'success',
+                            placement: 'center', // 定义显示位置
+                            time: 0
+                        }).show();
+                        setTimeout(function () {
+                            tip.hide();
+                        }, 3000);
+                    }
+                });
+                //alert(res.ticket)   // 票据
+            }
+        }
+        //数据提交
+        $("#btn_Post").click(function () {
+            //加载验证
+            var config = new Array();
+            config.push({
+                id: $("#UserName"),
+                required: {tip:'请输入手机号'},
+                length: { min: 1, max: 11 ,tip:'请输入11位数的手机号'},
+                phone: {}
+            });
+            config.push({
+                id: $("#Password"),
+                required: { tip: '请输入密码'},
+                length: { min: 8, max: 20, tip: '密码长度请在8-20位范围内'}
+            });
+            config.push({
+                id: $("#NickName"),
+                required: { tip: '请输入昵称'},
+                length: { min: 1, max: 20 }
+            });
+            config.push({
+                id: $("#ValidateCode"),
+                required: {tip:'请输入短信验证码'}
+            });
+            var v = $.Validator({
+                items: config
+            });
+            if (v.Create()) {
+                var tipIndex = layer.load(2);
+                $("#btn_Post").attr("disabled", "disabled");
+                $("#RegisterForm").ajaxSubmit({
+                    success: function (result) {
+                        layer.close(tipIndex);
+                        if (result == "ok") {
+                            if (result) {
+                                var tip = new $.zui.Messager('您已经注册成功,感谢您的使用,系统将为你跳转到登录页面!', {
+                                    icon: 'ok-sign',
+                                    type: 'success',
+                                    placement: 'center', // 定义显示位置
+                                    time: 0
+                                }).show();
+                                setTimeout(function () {
+                                    tip.hide(function () {
+                                        $("#btn_Post").removeAttr("disabled");
+                                        window.location.href = '/passport/login';
+                                    });
+                                }, 1500);
+                            }
+                        }
+                        else {
+                            $("#btn_Post").removeAttr("disabled");
+                            var tip = new $.zui.Messager(result, {
+                                icon: 'ok-sign',
+                                type: 'success',
+                                placement: 'center', // 定义显示位置
+                                time: 1500
+                            }).show();
+                        }
+                    }
+                });
+            }
+            else {
+                return false;
+            }
+        });
+    </script>
+}

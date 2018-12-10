@@ -1,0 +1,81 @@
+﻿@{
+}
+@model Mango.Manager.ViewModels.ManagerPageViewModel
+
+<table class="table">
+    <tbody>
+        <tr>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+</table>
+<table class="table  table-sm table-hover table-list table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>用户名</th>
+            <th>用户昵称</th>
+            <th>注册时间</th>
+            <th>最后登录时间</th>
+            <th>用户级别</th>
+            <th>城市</th>
+            <th>生日</th>
+            <th>工作</th>
+            <th>性别</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model.ListData)
+        {
+            <tr>
+                <td>
+                    @row["UserId"]
+                </td>
+                <td>
+                    @row["UserName"]
+                </td>
+                <td>
+                    @row["NickName"]
+                </td>
+                <td>
+                    @row["RegisterDate"]
+                </td>
+                <td>
+                    @row["LastLoginDate"]
+                </td>
+                <td>
+                    @row["GroupName"]
+                </td>
+                <td>
+                    @row["Address"]
+                </td>
+                <td>
+                    @row["Birthday"]
+                </td>
+                <td>
+                    @row["Jobs"]
+                </td>
+                <td>
+                    @row["Sex"]
+                </td>
+                <td>
+                    @(row["IsStatus"].ToString().ToLower() == "true" ? "正常" : "禁用")
+                </td>
+                <td>
+                    <a href="javascript:;" class="del" data-id="@row["UserId"]">禁止</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="row">
+    <div class="col-12">
+        <ul class="pagination  justify-content-center">
+            @Html.MPager(ViewContext.HttpContext.Request, Model.TotalCount)
+        </ul>
+    </div>
+</div>
