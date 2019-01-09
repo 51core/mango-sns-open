@@ -4,167 +4,193 @@
     ViewData["Title"] = Model.PostsData.Title;
 }
 @section Style{
-    <link href="~/lib/umeditor/themes/default/css/umeditor.min.css" rel="stylesheet" />
+    <link href="~/lib/code/prism.css" rel="stylesheet" />
+    <style>
+        pre .comment:before,
+        pre .comment:after {
+            /* 1 */
+            display: table;
+            content: " ";
+            display: none;
+            /* 2 */
+        }
+
+        pre .comment:after {
+            clear: both;
+        }
+
+        pre .comment:before,
+        pre .comment:after {
+            /* 1 */
+            display: table;
+            content: " ";
+            display: none;
+            /* 2 */
+        }
+        pre .comment {
+            border: 0;
+        }
+    </style>
 }
 
-    <div class="container-fixed">
-        <input type="hidden" data-id="@Model.PostsData.PostsId" data-title="@Model.PostsData.Title" id="msg_posts_data" />
-        <div class="row">
-            @Html.PartialAsync("~/Views/Posts/TopNavgation.cshtml", Model.PostsChannelData).Result
-        </div>
-        <div class="row">
-            <div class="col-lg-9">
+<div class="container-fixed">
+    <input type="hidden" data-id="@Model.PostsData.PostsId" data-title="@Model.PostsData.Title" id="msg_posts_data" />
+    <div class="row">
+        @Html.PartialAsync("~/Views/Posts/TopNavgation.cshtml", Model.PostsChannelData).Result
+    </div>
+    <div class="row">
+        <div class="col-lg-9">
 
-                <article class="article" style="padding-top:0px;">
-                    <header>
-                        <h1 class="text" style="margin-top:0px;">@Model.PostsData.Title</h1>
-                        <div class="col-lg-12" style="padding:2px;margin:0px;margin-bottom:20px;">
-                            <div class="col-lg-2" style="width:55px;padding:2px;">
-                                <img src="@Model.PostsData.HeadUrl" style="width:40px;height:40px;" class="img-circle" />
+            <article class="article" style="padding-top:0px;">
+                <header>
+                    <h1 class="text" style="margin-top:0px;">@Model.PostsData.Title</h1>
+                    <div class="col-lg-12" style="padding:2px;margin:0px;margin-bottom:20px;">
+                        <div class="col-lg-2" style="width:55px;padding:2px;">
+                            <img src="@Model.PostsData.HeadUrl" style="width:40px;height:40px;" class="img-circle" />
+                        </div>
+                        <div class="col-lg-10">
+                            <div class="row">
+                                @Model.PostsData.NickName
                             </div>
-                            <div class="col-lg-10">
-                                <div class="row">
-                                    @Model.PostsData.NickName
-                                </div>
-                                <div class="row" style="margin-top:4px;">
-                                    <span><i class="icon icon-time" title="发布时间"></i>:</span>
-                                    <span>@Model.PostsData.PostDate.ToString("yyyy-MM-dd HH:mm")</span>
-                                    <span style="margin-left:20px;"><i class="icon icon-eye-open" title="浏览"></i>:</span>
-                                    <span>@Model.PostsData.ReadCount</span>
-                                    <span style="margin-left:20px;"><i class="icon icon-chat-dot" title="回复"></i>:</span>
-                                    <span>@Model.PostsData.AnswerCount</span>
-                                </div>
+                            <div class="row" style="margin-top:4px;">
+                                <span><i class="icon icon-time" title="发布时间"></i>:</span>
+                                <span>@Model.PostsData.PostDate.ToString("yyyy-MM-dd HH:mm")</span>
+                                <span style="margin-left:20px;"><i class="icon icon-eye-open" title="浏览"></i>:</span>
+                                <span>@Model.PostsData.ReadCount</span>
+                                <span style="margin-left:20px;"><i class="icon icon-chat-dot" title="回复"></i>:</span>
+                                <span>@Model.PostsData.AnswerCount</span>
                             </div>
                         </div>
-                    </header>
+                    </div>
+                </header>
 
-                    <section class="content">
-                        @if (Model.PostsData.IsShow)
-                        {
-                            <div style="font-size:15px;font-family:黑体;">@Html.Raw(Model.PostsData.Contents)</div>
-                        }
-                        else
-                        {
-                            <div class="alert with-icon alert-info">
-                                <i class="icon-frown"></i>
-                                <div class="content">该内容已经失联,我们在火星发现了Ta的踪迹...</div>
-                            </div>
-                        }
-                    </section>
-                    <footer id="mfooter">
-                        <p class="center text" style="text-align:center">
-                            <button class="btn btn-success" style="font-size:20px;" onclick="AddPostsPlus()"><i class="icon icon-2x icon-thumbs-up" title="点赞"></i><span style="margin-left:2px;" id="msg_posts_pluscount"> @(Model.PostsData.PlusCount)</span></button>
-                        </p>
-                    </footer>
-                    @foreach (var item in Model.AnswerListData)
+                <section class="content">
+                    @if (Model.PostsData.IsShow)
                     {
-                        <div class="card" style="margin-bottom:5px;padding:10px;">
-                            <div class="col-lg-12" style="margin-top:10px;">
-                                <div class="col-lg-2" style="width:55px;padding:5px;">
-                                    <img src="@item.HeadUrl" style="width:40px;height:40px;" class="img-circle" />
-
-                                </div>
-                                <div class="col-lg-10">
-                                    <div class="row" style="margin-top:5px;">
-                                        @item.NickName
-
-                                    </div>
-                                    <div class="row">
-                                        @item.PostDate.ToString("yyyy-MM-dd HH:mm")
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-12" style="margin-top:10px;">
-                                <div class="col-lg-12">
-                                    @Html.Raw(item.Contents)
-                                </div>
-                            </div>
-                            <div class="col-lg-12" style="margin-top:10px;">
-                                <div class="col-lg-12">
-                                    <button onclick="javascript:AddAnswerPlus(@item.AnswerId)" class="btn btn-link" style="margin-left:10px;padding:1px;color:#808080;"><i class="icon icon-thumbs-up"></i><span id="answerPlus_@item.AnswerId">@item.Plus</span></button>
-                                    <button onclick="javascript:ShowAnswerList(@item.AnswerId)" style="margin-left:10px;padding:1px;color:#808080;" class="btn btn-link"><i class="icon icon-comments"></i><span style="padding-left:3px;">@item.CommentsCount</span></button>
-                                </div>
-
-                            </div>
-                            <div class="col-lg-12" style="margin-top:10px;">
-                                <div class="col-lg-12">
-                                    <div class="comment" style="border-bottom:0px;">
-                                        <div class="comments-list" id="showCommentsPageList_@item.AnswerId" style="display:none;">
-                                            @if (Html.ViewContext.HttpContext.Session.GetString("UserLogin") != null)
-                                            {
-                                                <div class="reply-form">
-                                                    <form class="form" id="commentCommentsForm_@item.AnswerId">
-                                                        <div class="form-group col-lg-10">
-                                                            <textarea class="form-control new-comment-text" rows="1" placeholder="撰写评论..." name="contents" id="AnswerCommentsContents_@item.AnswerId"></textarea>
-                                                            <input type="hidden" name="toUserId" value="0" />
-                                                            <input type="hidden" name="answerId" value="@item.AnswerId" />
-                                                            <input type="hidden" name="postsId" value="@Model.PostsData.PostsId" />
-                                                            <input type="hidden" name="title" value="@Model.PostsData.Title" />
-                                                        </div>
-                                                        <div class="form-group comment-user">
-                                                            <div class="row">
-                                                                <div class="col-md-2"><button type="button" class="btn btn-block btn-success" onclick="AddAnswerComment(@item.AnswerId)">评论</button></div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            }
-                                            <ul class="pager pager-loose pager-pills" id="showCommentsPage_@item.AnswerId"></ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
+                        <div style="font-size:15px;">@Html.Raw(Model.PostsData.Contents)</div>
+                    }
+                    else
+                    {
+                        <div class="alert with-icon alert-info">
+                            <i class="icon-frown"></i>
+                            <div class="content">该内容已经失联,我们在火星发现了Ta的踪迹...</div>
                         </div>
                     }
-                    <ul class="pager">
+                </section>
+                <footer id="mfooter">
+                    <p class="center text" style="text-align:center">
+                        <button class="btn btn-success" style="font-size:20px;" onclick="AddPostsPlus()"><i class="icon icon-2x icon-thumbs-up" title="点赞"></i><span style="margin-left:2px;" id="msg_posts_pluscount"> @(Model.PostsData.PlusCount)</span></button>
+                    </p>
+                </footer>
+                @foreach (var item in Model.AnswerListData)
+                {
+                    <div class="card" style="margin-bottom:5px;padding:10px;">
+                        <div class="col-lg-12" style="margin-top:10px;">
+                            <div class="col-lg-2" style="width:55px;padding:5px;">
+                                <img src="@item.HeadUrl" style="width:40px;height:40px;" class="img-circle" />
 
-                        @if (Model.TotalCount > 0)
-                        {
-                            if (Model.TotalCount > 10)
-                            {
-                                @Html.Pager(ViewContext.HttpContext.Request, 10, Model.TotalCount)
-                            }
-                        }
-                        else
-                        {
-                            <li>没有数据记录...</li>
-                        }
-                    </ul>
-                    <form class="form-horizontal" method="post" id="AnswerForm" action="/Posts/AddAnswer" style="margin-top:10px; @(Html.ViewContext.HttpContext.Session.GetString("UserLogin") != null?"":"display:none;")">
-                        <div class="form-group">
-                            <div class="col-lg-9">
-                                <input type="hidden" id="PostsId" name="PostsId" value="@Model.PostsData.PostsId" />
-                                <input type="hidden" name="title" value="@Model.PostsData.Title" />
-                                <textarea style="height:120px;width:820px;" id="contents" name="contents" placeholder="输入你要说的..."></textarea>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="row" style="margin-top:5px;">
+                                    @item.NickName
+
+                                </div>
+                                <div class="row">
+                                    @item.PostDate.ToString("yyyy-MM-dd HH:mm")
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group" style="margin-top:15px;">
-                            <div class="col-lg-9">
-                                <button type="button" class="btn btn-primary" id="btn_PostAnswer">提交回答</button>
+                        <div class="col-lg-12" style="margin-top:10px;">
+                            <div class="col-lg-12">
+                                @Html.Raw(item.Contents)
+                            </div>
+                        </div>
+                        <div class="col-lg-12" style="margin-top:10px;">
+                            <div class="col-lg-12">
+                                <button onclick="javascript:AddAnswerPlus(@item.AnswerId)" class="btn btn-link" style="margin-left:10px;padding:1px;color:#808080;"><i class="icon icon-thumbs-up"></i><span id="answerPlus_@item.AnswerId">@item.Plus</span></button>
+                                <button onclick="javascript:ShowAnswerList(@item.AnswerId)" style="margin-left:10px;padding:1px;color:#808080;" class="btn btn-link"><i class="icon icon-comments"></i><span style="padding-left:3px;">@item.CommentsCount</span></button>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-12" style="margin-top:10px;">
+                            <div class="col-lg-12">
+                                <div class="comment" style="border-bottom:0px;">
+                                    <div class="comments-list" id="showCommentsPageList_@item.AnswerId" style="display:none;">
+                                        @if (Html.ViewContext.HttpContext.Session.GetString("UserLogin") != null)
+                                        {
+                                            <div class="reply-form">
+                                                <form class="form" id="commentCommentsForm_@item.AnswerId">
+                                                    <div class="form-group col-lg-10">
+                                                        <textarea class="form-control new-comment-text" rows="1" placeholder="撰写评论..." name="contents" id="AnswerCommentsContents_@item.AnswerId"></textarea>
+                                                        <input type="hidden" name="toUserId" value="0" />
+                                                        <input type="hidden" name="answerId" value="@item.AnswerId" />
+                                                        <input type="hidden" name="postsId" value="@Model.PostsData.PostsId" />
+                                                        <input type="hidden" name="title" value="@Model.PostsData.Title" />
+                                                    </div>
+                                                    <div class="form-group comment-user">
+                                                        <div class="row">
+                                                            <div class="col-md-2"><button type="button" class="btn btn-block btn-success" onclick="AddAnswerComment(@item.AnswerId)">评论</button></div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        }
+                                        <ul class="pager pager-loose pager-pills" id="showCommentsPage_@item.AnswerId"></ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                    </form>
-                </article>
+                    </div>
+                }
+                <ul class="pager">
 
-            </div>
-            <!--右边部分-->
-            <div class="col-lg-3">
-                <div class="panel">
-                    <div class="panel-heading">
-                        一周点赞推荐
-                    </div>
-                    <div class="list-group">
-                        @foreach (var item in Model.HotListData)
+                    @if (Model.TotalCount > 0)
+                    {
+                        if (Model.TotalCount > 10)
                         {
-                            <a href="/posts/read/@item.PostsId" class="list-group-item" target="_blank">@item.Title</a>
+                            @Html.Pager(ViewContext.HttpContext.Request, 10, Model.TotalCount)
                         }
+                    }
+                    else
+                    {
+                        <li>没有数据记录...</li>
+                    }
+                </ul>
+                <form class="form-horizontal" method="post" id="AnswerForm" action="/Posts/AddAnswer" style="margin-top:10px; @(Html.ViewContext.HttpContext.Session.GetString("UserLogin") != null?"":"display:none;")">
+                    <div class="form-group">
+                        <div class="col-lg-9">
+                            <input type="hidden" id="PostsId" name="PostsId" value="@Model.PostsData.PostsId" />
+                            <input type="hidden" name="title" value="@Model.PostsData.Title" />
+                            <textarea style="height:120px;width:820px;" id="contents" name="contents" placeholder="输入你要说的..."></textarea>
+                        </div>
                     </div>
+                    <div class="form-group" style="margin-top:15px;">
+                        <div class="col-lg-9">
+                            <button type="button" class="btn btn-primary" id="btn_PostAnswer">提交回答</button>
+                        </div>
+                    </div>
+
+                </form>
+            </article>
+
+        </div>
+        <!--右边部分-->
+        <div class="col-lg-3">
+            <div class="panel">
+                <div class="panel-heading">
+                    一周点赞推荐
+                </div>
+                <div class="list-group">
+                    @foreach (var item in Model.HotListData)
+                    {
+                        <a href="/posts/read/@item.PostsId" class="list-group-item" target="_blank">@item.Title</a>
+                    }
                 </div>
             </div>
         </div>
     </div>
+</div>
 @section Scripts{
     <script type="text/javascript">
         var IsLogin =@(Html.ViewContext.HttpContext.Session.GetString("UserLogin") != null?"true":"false");
@@ -172,27 +198,47 @@
     <script src="~/lib/jquery/jquery.validator.min.js"></script>
     <script src="~/lib/jquery/jquery.form.js"></script>
 
-   
-    <script src="~/lib/umeditor/umeditor.config.js"></script>
-    <script src="~/lib/umeditor/umeditor.min.js"></script>
-    <script src="~/lib/umeditor/plugins/plugins.min.js"></script>
-    <script src="~/js/answer.min.js"></script>
-    <script src="~/style/lib/prettify/prettify.js"></script>
 
-    <script type="text/javascript">
-        var um = UM.getEditor('contents', {
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script src="~/lib/tinymce/themes/modern/theme.min.js"></script>
+    <script src="~/lib/tinymce/langs/zh_CN.js"></script>
+
+    <script src="~/lib/tinymce/plugins/codesample/plugin.min.js"></script>
+    <script src="~/lib/tinymce/plugins/link/plugin.min.js"></script>
+
+    <script src="~/lib/tinymce/plugins/image/plugin.min.js"></script>
+
+    <script src="~/lib/tinymce/plugins/imageupload/upyun.plugin.min.js"></script>
+
+    <script src="~/js/answer.min.js"></script>
+
+    <script src="~/lib/code/prism.js"></script>
+    
+
+
+    <script>
+        tinymce.init({
+            selector: '#contents',
+            language: "zh_CN",
+            themes: "modern",
+            menubar: false,
             toolbar: [
-                ' insertorderedlist |',
-                'link unlink | emotion pimage code',
-                 'formula'
-            ]
+                'removeformat | bold italic underline strikethrough | codesample link imageupload | alignleft aligncenter alignright',
+            ],
+            plugins: [
+                'codesample', 'link', 'image', 'imageupload'
+            ],
+            upload_image_url: 'https://v0.api.upyun.com/51core',
+            file_server_url: 'https://file.51core.net'
         });
-        registerPlugins();
+
+    </script>
+    <script type="text/javascript">
         var id =@Html.ViewContext.RouteData.Values["id"];
         $(window).ready(function () {
             //重新设置所有代码块的基础样式
-            $("body").find("pre").attr("class", "prettyprint linenums");
-            window.prettyPrint();
+            //$("body").find("pre").attr("class", "pre-scrollable prettyprint linenums");
+            //window.prettyPrint();
         });
 
     </script>

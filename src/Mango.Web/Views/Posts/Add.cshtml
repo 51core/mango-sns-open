@@ -1,12 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "发布手记";
+    ViewData["Title"] = "发布帖子";
 }
 @model List<Mango.Models.PostsChannelModel>
 @section Style{
-    <link href="~/lib/umeditor/themes/default/css/umeditor.min.css" rel="stylesheet" />
-    <link href="~/style/lib/chosen/chosen.min.css" rel="stylesheet">
 }
-<div class="container-fixed"   style="margin-top:20px;">
+<div class="container-fixed" style="margin-top:20px;">
     <form class="form-horizontal" method="post" id="formAddPosts">
         <div class="form-group">
             <div class="col-lg-2">
@@ -51,44 +49,54 @@
 
 </div>
 @section Scripts{
-    <script src="~/style/lib/chosen/chosen.min.js"></script>
+
     <script src="~/lib/jquery/jquery.validator.min.js"></script>
     <script src="~/lib/jquery/jquery.form.js"></script>
-    <script src="~/lib/umeditor/umeditor.config.js"></script>
-    <script src="~/lib/umeditor/umeditor.min.js"></script>
 
-    <script src="~/lib/umeditor/plugins/plugins.min.js"></script>
-    <script type="text/javascript">
-        $('select.chosen-select').chosen({
-            no_results_text: '没有找到',    // 当检索时没有找到匹配项时显示的提示文本
-            disable_search_threshold: 10, // 10 个以下的选择项则不显示检索框
-            search_contains: true         // 从任意位置开始检索
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script src="~/lib/tinymce/themes/modern/theme.min.js"></script>
+    <script src="~/lib/tinymce/langs/zh_CN.js"></script>
+
+    <script src="~/lib/tinymce/plugins/codesample/plugin.min.js"></script>
+    <script src="~/lib/tinymce/plugins/link/plugin.min.js"></script>
+
+    <script src="~/lib/tinymce/plugins/image/plugin.min.js"></script>
+
+    <script src="~/lib/tinymce/plugins/imageupload/upyun.plugin.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: '#Contents',
+            language: "zh_CN",
+            themes: "modern",
+            menubar: false,
+            toolbar: [
+                'removeformat | bold italic underline strikethrough | codesample link imageupload | alignleft aligncenter alignright',
+            ],
+            plugins: [
+                'codesample', 'link', 'image', 'imageupload'
+            ],
+            upload_image_url: 'https://v0.api.upyun.com/51core',
+            file_server_url: 'https://file.51core.net'
         });
+
     </script>
     <script type="text/javascript">
-        var um = UM.getEditor('Contents', {
-            toolbar: [
-                ' bold italic underline | insertorderedlist removeformat |',
-                'link unlink | emotion pimage attachment code',
-                '| fullscreen', 'formula'
-            ]
-        });
-        registerPlugins();
+        
         $("#btn_Post").click(function () {
-            $("#Contents").val(um.getContent());
+            $("#Contents").val(tinymce.get('Contents').getContent());
             //加载验证
             var config = new Array();
             config.push({
                 id: $("#Title"),
-                required: { tip: '请输入手记标题'},
+                required: { tip: '请输入帖子标题' },
                 length: { min: 1, max: 80 }
             });
             config.push({
                 id: $("#Contents"),
-                required: { tip: '请输入手记内容'},
+                required: { tip: '请输入帖子内容' },
                 length: { min: 10, max: 60000 }
             });
-            
+
             var v = $.Validator({
                 items: config
             });

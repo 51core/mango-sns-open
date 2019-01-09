@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.IO;
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkId=397860
 using Mango.Common.Upyun;
 using Mango.Framework.Core;
 namespace Mango.Web.Controllers
@@ -31,6 +31,47 @@ namespace Mango.Web.Controllers
                 return JsonConvert.SerializeObject(model);
             }
             return string.Empty;
+        }
+        /// <summary>
+        /// 文件上传
+        /// </summary>
+        /// <param name="env"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public string Upload([FromServices]IHostingEnvironment env, IFormFile file)
+        {
+            string result = string.Empty;
+            if (file.Length > 0)
+            {
+                string filename = Path.Combine("upload/", string.Format("{0}{1}", Guid.NewGuid().ToString(), Path.GetExtension(file.FileName)));
+                string filePath = Path.Combine(env.WebRootPath, filename);
+                using (var stream = new FileStream(filePath, FileMode.CreateNew))
+                {
+                    file.CopyTo(stream);
+                }
+                result = filename;
+            }
+            return string.Format("/{0}", result);
+        }
+        /// <summary>
+        /// 文件下载
+        /// </summary>
+        /// <param name="_hostingEnvironment"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public IActionResult Download([FromServices]IHostingEnvironment _hostingEnvironment, string file)
+        {
+            string DownLoadFilePath = Path.Combine(_hostingEnvironment.WebRootPath, file);
+            try
+            {
+                //文件读取
+                var stream = new FileStream(DownLoadFilePath, FileMode.Open);
+                return File(stream, "application/octet-stream", Path.GetFileName(file));
+            }
+            catch (Exception)
+            {
+                return Content("抱歉,您要下载的文件不存在!!!");
+            }
         }
     }
 }

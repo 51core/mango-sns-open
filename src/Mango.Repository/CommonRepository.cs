@@ -9,10 +9,10 @@ namespace Mango.Repository
 {
     public class CommonRepository
     {
-        private EFDbContext dbContext { get; set; }
+        private EFDbContext _dbContext = null;
         public CommonRepository()
         {
-            dbContext = new EFDbContext();
+            _dbContext = new EFDbContext();
         }
         /// <summary>
         /// 添加记录
@@ -22,8 +22,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool Add<TEntity>(TEntity entity) where TEntity:class
         {
-            dbContext.Add(entity);
-            return dbContext.SaveChanges() > 0;
+            _dbContext.Add(entity);
+            return _dbContext.SaveChanges() > 0;
         }
         /// <summary>
         /// 根据Id获取指定记录
@@ -33,7 +33,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public TEntity Find<TEntity>(int Id) where TEntity : class
         {
-            return dbContext.Find<TEntity>(Id);
+            return _dbContext.Find<TEntity>(Id);
         }
         /// <summary>
         /// 更新记录
@@ -44,9 +44,9 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool Update<TEntity>(TEntity entity, bool isFind) where TEntity : class
         {
-            dbContext.Update(entity);
+            _dbContext.Update(entity);
 
-            return dbContext.SaveChanges() > 0;
+            return _dbContext.SaveChanges() > 0;
         }
         /// <summary>
         /// 更新记录(修改指定的列)
@@ -57,7 +57,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool Update<TEntity>(TEntity entity) where TEntity : class
         {
-            dbContext.Entry(entity).State = EntityState.Unchanged;
+            _dbContext.Entry(entity).State = EntityState.Unchanged;
             //
             Type type= entity.GetType();
             //处理实体类属性
@@ -68,10 +68,10 @@ namespace Mango.Repository
                 var key = property.GetCustomAttribute<KeyAttribute>();
                 if (value != null&& key==null)
                 {
-                    dbContext.Entry(entity).Property(property.Name).IsModified = true;
+                    _dbContext.Entry(entity).Property(property.Name).IsModified = true;
                 }
             }
-            return dbContext.SaveChanges() > 0;
+            return _dbContext.SaveChanges() > 0;
         }
         /// <summary>
         /// 删除记录
@@ -81,8 +81,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool Delete<TEntity>(TEntity entity) where TEntity : class
         {
-            dbContext.Remove(entity);
-            return dbContext.SaveChanges() > 0;
+            _dbContext.Remove(entity);
+            return _dbContext.SaveChanges() > 0;
         }
     }
 }

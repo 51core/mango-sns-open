@@ -10,17 +10,32 @@ namespace Mango.Repository
 {
     public class PostsRepository
     {
+        private EFDbContext _dbContext = null;
+        public PostsRepository()
+        {
+            _dbContext = new EFDbContext();
+        }
+        /// <summary>
+        /// 根据帖子ID获取帖子数据
+        /// </summary>
+        /// <param name="postsId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+
+        public Entity.m_Posts GetPostsByEdit(int postsId,int userId)
+        {
+            return _dbContext.m_Posts.Where(m => m.PostsId == postsId && m.UserId == userId).FirstOrDefault();
+        }
         /// <summary>
         /// 获取热门帖子列表
         /// </summary>
         /// <returns></returns>
         public IQueryable<Models.PostsModel> GetPostsListByHot()
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from p in dbContext.m_Posts
-                        join u in dbContext.m_User
+            var query = from p in _dbContext.m_Posts
+                        join u in _dbContext.m_User
                         on p.UserId equals u.UserId
-                        join c in dbContext.m_PostsChannel
+                        join c in _dbContext.m_PostsChannel
                         on p.ChannelId equals c.ChannelId
                         select new Models.PostsModel()
                         {
@@ -50,9 +65,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<Models.PostsModel> GetPosts(int postsId)
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from p in dbContext.m_Posts
-                        join u in dbContext.m_User
+            var query = from p in _dbContext.m_Posts
+                        join u in _dbContext.m_User
                         on p.UserId equals u.UserId
                         select new Models.PostsModel()
                         {
@@ -74,9 +88,9 @@ namespace Mango.Repository
             List<Models.PostsModel> queryResult = query.Where(m => m.PostsId == postsId).ToList();
             if (queryResult.Count > 0)
             {
-                Entity.m_Posts model = dbContext.m_Posts.Find(postsId);
+                Entity.m_Posts model = _dbContext.m_Posts.Find(postsId);
                 model.ReadCount = model.ReadCount + 1;
-                dbContext.SaveChanges();
+                _dbContext.SaveChanges();
             }
             return queryResult;
         }
@@ -86,12 +100,10 @@ namespace Mango.Repository
         /// <returns></returns>
         public IQueryable<Models.PostsModel> GetPostsPageList()
         {
-            //string sql = GetPostsSql();
-            EFDbContext dbContext = new EFDbContext();
-            var query = from p in dbContext.m_Posts
-                        join u in dbContext.m_User
+            var query = from p in _dbContext.m_Posts
+                        join u in _dbContext.m_User
                         on p.UserId equals u.UserId
-                        join c in dbContext.m_PostsChannel
+                        join c in _dbContext.m_PostsChannel
                         on p.ChannelId equals c.ChannelId
                         orderby p.PostsId descending
                         select new Models.PostsModel()
@@ -117,19 +129,18 @@ namespace Mango.Repository
         #region 帖子回答
         public bool AddAnswer(Entity.m_PostsAnswer model, Entity.m_Message message)
         {
-            EFDbContext dbContext = new EFDbContext();
-            using (var tran = dbContext.Database.BeginTransaction())
+            using (var tran = _dbContext.Database.BeginTransaction())
             {
                 try
                 {
 
-                    dbContext.Add(model);
-                    dbContext.SaveChanges();
+                    _dbContext.Add(model);
+                    _dbContext.SaveChanges();
                     //添加通知信息
-                    dbContext.Add(message);
-                    dbContext.SaveChanges();
+                    _dbContext.Add(message);
+                    _dbContext.SaveChanges();
                     //更新回答数量
-                    dbContext.MangoUpdate<Entity.m_Posts>(m => m.AnswerCount == m.AnswerCount + 1, m => m.PostsId == model.PostsId);
+                    _dbContext.MangoUpdate<Entity.m_Posts>(m => m.AnswerCount == m.AnswerCount + 1, m => m.PostsId == model.PostsId);
                     tran.Commit();
                     return true;
                 }
@@ -146,9 +157,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public IQueryable<Models.PostsAnswerModel> GetAnswerPageList()
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from a in dbContext.m_PostsAnswer
-                        join u in dbContext.m_User
+            var query = from a in _dbContext.m_PostsAnswer
+                        join u in _dbContext.m_User
                         on a.UserId equals u.UserId
                         select new Models.PostsAnswerModel() {
                             AnswerId = a.AnswerId.Value,
@@ -171,18 +181,17 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool AddAnswerComments(Entity.m_PostsComments model,Entity.m_Message message)
         {
-            EFDbContext dbContext = new EFDbContext();
-            using (var tran = dbContext.Database.BeginTransaction())
+            using (var tran = _dbContext.Database.BeginTransaction())
             {
                 try
                 {
-                    dbContext.Add(model);
-                    dbContext.SaveChanges();
+                    _dbContext.Add(model);
+                    _dbContext.SaveChanges();
                     //
-                    dbContext.Add(message);
-                    dbContext.SaveChanges();
+                    _dbContext.Add(message);
+                    _dbContext.SaveChanges();
                     //
-                    dbContext.MangoUpdate<Entity.m_PostsAnswer>(m => m.CommentsCount == m.CommentsCount + 1, m => m.AnswerId == model.AnswerId);
+                    _dbContext.MangoUpdate<Entity.m_PostsAnswer>(m => m.CommentsCount == m.CommentsCount + 1, m => m.AnswerId == model.AnswerId);
                     tran.Commit();
                     return true;
                 }
@@ -199,11 +208,10 @@ namespace Mango.Repository
         /// <returns></returns>
         public IQueryable<Models.PostsAnswerCommentsModel> GetCommentsPageList()
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from cmt in dbContext.m_PostsComments
-                        join u in dbContext.m_User
+            var query = from cmt in _dbContext.m_PostsComments
+                        join u in _dbContext.m_User
                         on cmt.UserId equals u.UserId
-                        join tu in dbContext.m_User
+                        join tu in _dbContext.m_User
                         on cmt.ToUserId equals tu.UserId into tul
                         from tuleft in tul.DefaultIfEmpty()
                         select new Models.PostsAnswerCommentsModel() {
@@ -230,31 +238,30 @@ namespace Mango.Repository
         public int AddAnswerRecordsByPlus(Entity.m_PostsAnswerRecords model,Entity.m_Message message)
         {
             int result = 0;
-            EFDbContext dbContext = new EFDbContext();
             //加载是否已经存在点赞记录
-            int queryCount = dbContext.m_PostsAnswerRecords.Where(m => m.AnswerId == model.AnswerId && m.UserId == model.UserId).Count();
-            using (var tran = dbContext.Database.BeginTransaction())
+            int queryCount = _dbContext.m_PostsAnswerRecords.Where(m => m.AnswerId == model.AnswerId && m.UserId == model.UserId).Count();
+            using (var tran = _dbContext.Database.BeginTransaction())
             {
                 try
                 {
                     if (queryCount > 0)
                     {
                         //
-                        dbContext.MangoRemove<Entity.m_PostsAnswerRecords>(m => m.AnswerId == model.AnswerId && m.UserId == model.UserId);
+                        _dbContext.MangoRemove<Entity.m_PostsAnswerRecords>(m => m.AnswerId == model.AnswerId && m.UserId == model.UserId);
                         //
-                        dbContext.MangoUpdate<Entity.m_PostsAnswer>(m => m.Plus == m.Plus - 1, m => m.AnswerId == model.AnswerId);
+                        _dbContext.MangoUpdate<Entity.m_PostsAnswer>(m => m.Plus == m.Plus - 1, m => m.AnswerId == model.AnswerId);
                         tran.Commit();
                         result = -1;
                     }
                     else
                     {
-                        dbContext.Add(message);
-                        dbContext.SaveChanges();
+                        _dbContext.Add(message);
+                        _dbContext.SaveChanges();
                         //
-                        dbContext.Add(model);
-                        dbContext.SaveChanges();
+                        _dbContext.Add(model);
+                        _dbContext.SaveChanges();
                         //
-                        dbContext.MangoUpdate<Entity.m_PostsAnswer>(m => m.Plus == m.Plus + 1, m => m.AnswerId == model.AnswerId);
+                        _dbContext.MangoUpdate<Entity.m_PostsAnswer>(m => m.Plus == m.Plus + 1, m => m.AnswerId == model.AnswerId);
                         tran.Commit();
                         result = 1;
                     }
@@ -275,31 +282,30 @@ namespace Mango.Repository
         public int AddCommentsRecordsByPlus(Entity.m_PostsCommentsRecords model,Entity.m_Message message)
         {
             int result = 0;
-            EFDbContext dbContext = new EFDbContext();
             //加载是否已经存在点赞记录
-            int queryCount = dbContext.m_PostsCommentsRecords.Where(m => m.CommentId == model.CommentId && m.UserId == model.UserId).Count();
-            using (var tran = dbContext.Database.BeginTransaction())
+            int queryCount = _dbContext.m_PostsCommentsRecords.Where(m => m.CommentId == model.CommentId && m.UserId == model.UserId).Count();
+            using (var tran = _dbContext.Database.BeginTransaction())
             {
                 try
                 {
                     if (queryCount > 0)
                     {
-                        dbContext.MangoRemove<Entity.m_PostsCommentsRecords>(m => m.CommentId == model.CommentId && m.UserId == model.UserId);
+                        _dbContext.MangoRemove<Entity.m_PostsCommentsRecords>(m => m.CommentId == model.CommentId && m.UserId == model.UserId);
                         //
-                        dbContext.MangoUpdate<Entity.m_PostsComments>(m => m.Plus == m.Plus - 1, m => m.CommentId == model.CommentId);
+                        _dbContext.MangoUpdate<Entity.m_PostsComments>(m => m.Plus == m.Plus - 1, m => m.CommentId == model.CommentId);
                         tran.Commit();
                         result = -1;
                     }
                     else
                     {
                         //不存在则新增点赞记录
-                        dbContext.Add(message);
-                        dbContext.SaveChanges();
+                        _dbContext.Add(message);
+                        _dbContext.SaveChanges();
                         //
-                        dbContext.Add(model);
-                        dbContext.SaveChanges();
+                        _dbContext.Add(model);
+                        _dbContext.SaveChanges();
                         //
-                        dbContext.MangoUpdate<Entity.m_PostsComments>(m => m.Plus == m.Plus + 1, m => m.CommentId == model.CommentId);
+                        _dbContext.MangoUpdate<Entity.m_PostsComments>(m => m.Plus == m.Plus + 1, m => m.CommentId == model.CommentId);
                         tran.Commit();
                         result = 1;
                     }
@@ -321,32 +327,31 @@ namespace Mango.Repository
         public int AddPostsRecordsByPlus(Entity.m_PostsRecords model, Entity.m_Message message)
         {
             int result = 0;
-            EFDbContext dbContext = new EFDbContext();
             //加载是否已经存在点赞记录
-            var queryCount = dbContext.m_PostsRecords.Where(m => m.PostsId == model.PostsId && m.UserId == model.UserId).Count();
-            using (var tran = dbContext.Database.BeginTransaction())
+            var queryCount = _dbContext.m_PostsRecords.Where(m => m.PostsId == model.PostsId && m.UserId == model.UserId).Count();
+            using (var tran = _dbContext.Database.BeginTransaction())
             {
                 try
                 {
                     if (queryCount > 0)
                     {
                         //存在则撤回点赞记录
-                        dbContext.MangoRemove<Entity.m_PostsRecords>(m => m.PostsId == model.PostsId && m.UserId == model.UserId);
+                        _dbContext.MangoRemove<Entity.m_PostsRecords>(m => m.PostsId == model.PostsId && m.UserId == model.UserId);
                         //
-                        dbContext.MangoUpdate<Entity.m_Posts>(m => m.PlusCount == m.PlusCount - 1, m => m.PostsId == model.PostsId);
+                        _dbContext.MangoUpdate<Entity.m_Posts>(m => m.PlusCount == m.PlusCount - 1, m => m.PostsId == model.PostsId);
                         tran.Commit();
                         result = -1;
                     }
                     else
                     {
                         //不存在则新增点赞记录
-                        dbContext.Add(message);
-                        dbContext.SaveChanges();
+                        _dbContext.Add(message);
+                        _dbContext.SaveChanges();
                         //
-                        dbContext.Add(model);
-                        dbContext.SaveChanges();
+                        _dbContext.Add(model);
+                        _dbContext.SaveChanges();
                         //
-                        dbContext.MangoUpdate<Entity.m_Posts>(m => m.PlusCount == m.PlusCount + 1, m => m.PostsId == model.PostsId);
+                        _dbContext.MangoUpdate<Entity.m_Posts>(m => m.PlusCount == m.PlusCount + 1, m => m.PostsId == model.PostsId);
                         tran.Commit();
                         result = 1;
                     }
@@ -365,13 +370,11 @@ namespace Mango.Repository
         #region 获取帖子相关的发布人ID
         public int GetPostsByUserId(int postsId)
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.m_Posts.Where(m => m.PostsId == postsId).Select(m =>  m.UserId.Value).FirstOrDefault();
+            return _dbContext.m_Posts.Where(m => m.PostsId == postsId).Select(m =>  m.UserId.Value).FirstOrDefault();
         }
         public int GetPostsAnswerByUserId(int answerId)
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.m_PostsAnswer.Where(m => m.AnswerId == answerId).Select(m => m.UserId.Value).FirstOrDefault();
+            return _dbContext.m_PostsAnswer.Where(m => m.AnswerId == answerId).Select(m => m.UserId.Value).FirstOrDefault();
         }
         /// <summary>
         /// 
@@ -380,9 +383,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public int GetPostsCommentsByUserId(int commentId)
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from cmt in dbContext.m_PostsComments
-                        join a in dbContext.m_PostsAnswer
+            var query = from cmt in _dbContext.m_PostsComments
+                        join a in _dbContext.m_PostsAnswer
                         on cmt.AnswerId equals a.AnswerId
                         where cmt.CommentId==commentId
                         select a.UserId.Value;

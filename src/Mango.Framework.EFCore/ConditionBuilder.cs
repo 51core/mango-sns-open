@@ -31,20 +31,6 @@ namespace Mango.Framework.EFCore
             return e;
         }
 
-        //protected override Expression VisitUnary(UnaryExpression u)
-        //{
-        //    switch (u.NodeType)
-        //    {
-        //        case ExpressionType.Not:
-        //            strBuilder.Append(" NOT ");
-        //            this.Visit(u.Operand);
-        //            break;
-        //        default:
-        //            throw new NotSupportedException(string.Format("运算{0}不支持", u.NodeType));
-        //    }
-        //    return u;
-        //}
-
         protected override Expression VisitBinary(BinaryExpression b)
         {
             strBuilder.Append("(");

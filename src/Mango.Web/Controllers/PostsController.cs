@@ -78,6 +78,47 @@ namespace Mango.Web.Controllers
             return View(model);
         }
         /// <summary>
+        /// 帖子编辑
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Edit(string id)
+        {
+            ViewModels.PostsEditViewModel model = new ViewModels.PostsEditViewModel();
+            int postsId = Framework.Core.Transform.GetInt(id, 0);
+            int userId = Framework.Core.Transform.GetInt(HttpContext.Session.GetString("UserId"), 0);
+            //加载帖子数据
+            PostsRepository repository = new PostsRepository();
+            model.PostsData = repository.GetPostsByEdit(postsId, userId);
+            if (model.PostsData != null)
+            {
+                //加载帖子频道数据
+                Common.PostsChannel postsProperty = new Common.PostsChannel();
+                model.PostsChannels = postsProperty.GetListByCache();
+
+                return View(model);
+            }
+            return new ContentResult()
+            {
+                Content = "您的请求未得到授权!",
+                StatusCode = 401
+            };
+        }
+        [HttpPost]
+        public bool Edit(ViewModels.EditPostsRequestModel model)
+        {
+            //
+            Entity.m_Posts m = new Entity.m_Posts();
+            m.PostsId = model.PostsId;
+            m.Contents = model.Contents;//Framework.Core.HtmlFilter.SanitizeHtml(model.Contents);
+            m.LastDate = DateTime.Now;
+            m.Title = Framework.Core.HtmlFilter.StripHtml(model.Title);
+            m.ChannelId = model.ChannelId;
+            CommonRepository repository = new CommonRepository();
+            return repository.Update(m);
+        }
+        /// <summary>
         /// 发布帖子
         /// </summary>
         /// <returns></returns>
@@ -108,10 +149,7 @@ namespace Mango.Web.Controllers
             CommonRepository repository = new CommonRepository();
             return repository.Add(m);
         }
-        public IActionResult Error()
-        {
-            return View();
-        }
+
         /// <summary>
         /// 帖子点赞
         /// </summary>

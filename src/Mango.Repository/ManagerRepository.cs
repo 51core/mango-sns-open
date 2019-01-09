@@ -8,6 +8,11 @@ namespace Mango.Repository
 {
     public class ManagerRepository
     {
+        private EFDbContext _dbContext = null;
+        public ManagerRepository()
+        {
+            _dbContext = new EFDbContext();
+        }
         // GET: /<controller>/
         /// <summary>
         /// 设置帖子属性标签
@@ -16,9 +21,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool SetProperty(Entity.m_Posts model)
         {
-            EFDbContext dbContext = new EFDbContext();
-            dbContext.Add(model);
-            return dbContext.SaveChanges() > 0;
+            _dbContext.Add(model);
+            return _dbContext.SaveChanges() > 0;
         }
     }
 }

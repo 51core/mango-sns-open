@@ -10,14 +10,18 @@ namespace Mango.Repository
 {
     public class PostsChannelRepository
     {
+        private EFDbContext _dbContext = null;
+        public PostsChannelRepository()
+        {
+            _dbContext = new EFDbContext();
+        }
         /// <summary>
         /// 获取帖子频道信息
         /// </summary>
         /// <returns></returns>
         public IQueryable<Models.PostsChannelModel> GetPostsChannels()
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from c in dbContext.m_PostsChannel
+            var query = from c in _dbContext.m_PostsChannel
                         orderby c.SortCount ascending
                         select new Models.PostsChannelModel() {
                             AppendTime=c.AppendTime.Value,

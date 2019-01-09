@@ -10,6 +10,11 @@ namespace Mango.Repository
 {
     public class MessageRepository
     {
+        private EFDbContext _dbContext = null;
+        public MessageRepository()
+        {
+            _dbContext = new EFDbContext();
+        }
         /// <summary>
         /// 更新消息阅读状态
         /// </summary>
@@ -17,8 +22,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool UpdateMessageReadState(int userId)
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.MangoUpdate<Entity.m_Message>(m => m.IsRead == true, m => m.UserId == userId && m.IsRead == false);
+            return _dbContext.MangoUpdate<Entity.m_Message>(m => m.IsRead == true, m => m.UserId == userId && m.IsRead == false);
         }
         /// <summary>
         /// 根据用户ID获取该用户未读消息数
@@ -27,8 +31,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public int GetUserMessageByCount(int userId)
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.m_Message.Where(m => m.UserId == userId&&m.IsRead==false).Select(m => m.MessageId).Count();
+            return _dbContext.m_Message.Where(m => m.UserId == userId&&m.IsRead==false).Select(m => m.MessageId).Count();
         }
         /// <summary>
         /// 分页查询消息数据
@@ -39,9 +42,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public IQueryable<Models.MessageModel>  GetMessageList()
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from msg in dbContext.m_Message
-                        join u in dbContext.m_User
+            var query = from msg in _dbContext.m_Message
+                        join u in _dbContext.m_User
                         on msg.UserId equals u.UserId
                         orderby msg.MessageId descending
                         select new Models.MessageModel(){

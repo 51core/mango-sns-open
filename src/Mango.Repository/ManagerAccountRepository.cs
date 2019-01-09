@@ -10,6 +10,11 @@ namespace Mango.Repository
 {
     public class ManagerAccountRepository
     {
+        private EFDbContext _dbContext = null;
+        public ManagerAccountRepository()
+        {
+            _dbContext = new EFDbContext();
+        }
         /// <summary>
         /// 更新角色权限
         /// </summary>
@@ -18,22 +23,21 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool UpdateRolePower(int roleId, List<int> powerData)
         {
-            EFDbContext dbContext = new EFDbContext();
-            using (var tran = dbContext.Database.BeginTransaction())
+            using (var tran = _dbContext.Database.BeginTransaction())
             {
                 try
                 {
                     //移除以前的权限
-                    dbContext.MangoRemove<Entity.m_ManagerPower>(m => m.RoleId == roleId);
+                    _dbContext.MangoRemove<Entity.m_ManagerPower>(m => m.RoleId == roleId);
                     //添加新权限
                     foreach (int Id in powerData)
                     {
                         Entity.m_ManagerPower model = new Entity.m_ManagerPower();
                         model.MenuId = Id;
                         model.RoleId = roleId;
-                        dbContext.Add(model);
+                        _dbContext.Add(model);
                     }
-                    dbContext.SaveChanges();
+                    _dbContext.SaveChanges();
                     tran.Commit();
                     return true;
                 }
@@ -50,13 +54,11 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<MangoData> GetMenuList()
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.m_ManagerMenu.ToMangoDataList();
+            return _dbContext.m_ManagerMenu.ToMangoDataList();
         }
         public List<MangoData> GetMenuListByParent()
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.m_ManagerMenu.Where(m=>m.ParentId==0).ToMangoDataList();
+            return _dbContext.m_ManagerMenu.Where(m=>m.ParentId==0).ToMangoDataList();
         }
         /// <summary>
         /// 获取管理角色列表
@@ -64,8 +66,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<MangoData> GetRoleList()
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.m_ManagerRole.ToMangoDataList();
+            return _dbContext.m_ManagerRole.ToMangoDataList();
         }
         /// <summary>
         /// 获取管理角色列表
@@ -73,8 +74,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<Entity.m_ManagerRole> GetRoleInfo()
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.m_ManagerRole.ToList();
+            return _dbContext.m_ManagerRole.ToList();
         }
         /// <summary>
         /// 获取管理账号列表
@@ -82,9 +82,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<MangoData> GetAccountList()
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from a in dbContext.m_ManagerAccount
-                        join r in dbContext.m_ManagerRole
+            var query = from a in _dbContext.m_ManagerAccount
+                        join r in _dbContext.m_ManagerRole
                         on a.RoleId equals r.RoleId
                         select new {
                             a.AdminId,
@@ -103,9 +102,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<MangoData> GetCompetence(int roleId)
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from p in dbContext.m_ManagerPower
-                        join m in dbContext.m_ManagerMenu
+            var query = from p in _dbContext.m_ManagerPower
+                        join m in _dbContext.m_ManagerMenu
                         on p.MenuId equals m.MenuId
                         select new {
                             p.PowerId,
@@ -128,9 +126,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<MangoData> Login(string adminName, string password)
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from a in dbContext.m_ManagerAccount
-                        join r in dbContext.m_ManagerRole
+            var query = from a in _dbContext.m_ManagerAccount
+                        join r in _dbContext.m_ManagerRole
                         on a.RoleId equals r.RoleId
                         select new
                         {

@@ -10,16 +10,19 @@ namespace Mango.Repository
 {
     public class UserRepository
     {
-
+        private EFDbContext _dbContext = null;
+        public UserRepository()
+        {
+            _dbContext = new EFDbContext();
+        }
         /// <summary>
         /// 获取用户信息列表
         /// </summary>
         /// <returns></returns>
         public IQueryable<object> GetUserPageList()
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from u in dbContext.m_User
-                        join ug in dbContext.m_UserGroup
+            var query = from u in _dbContext.m_User
+                        join ug in _dbContext.m_UserGroup
                         on u.GroupId equals ug.GroupId
                         select new {
                             u.HeadUrl,u.Email,u.GroupId,u.IsStatus,u.LastLoginDate,u.LastLoginIP,u.NickName,u.OpenId,u.Password,u.Phone,u.RegisterDate,u.RegisterIP,u.UserId,u.UserName
@@ -34,8 +37,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public Models.UserInfoModel GetUserInfo(int userId)
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from u in dbContext.m_User
+            var query = from u in _dbContext.m_User
                         select new Models.UserInfoModel()
                         {
                             UserId = u.UserId.Value,
@@ -63,8 +65,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public Models.UserInfoModel UserLogin(string userName,string password)
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from u in dbContext.m_User
+            var query = from u in _dbContext.m_User
                         select new Models.UserInfoModel()
                         {
                             UserId=u.UserId.Value,
@@ -89,13 +90,12 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool AddUser(Entity.m_User userModel)
         {
-            EFDbContext dbContext = new EFDbContext();
-            using (var tran = dbContext.Database.BeginTransaction())
+            using (var tran = _dbContext.Database.BeginTransaction())
             {
                 try
                 {
-                    dbContext.Add(userModel);
-                    dbContext.SaveChanges();
+                    _dbContext.Add(userModel);
+                    _dbContext.SaveChanges();
                     tran.Commit();
                     return true;
                 }
@@ -113,16 +113,8 @@ namespace Mango.Repository
         /// <returns>true 表示已经注册过,false 表示未注册过</returns>
         public bool IsExistUser(string phone)
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = dbContext.m_User.Where(m => m.UserName == phone);
-            if (query.Count() > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            var query = _dbContext.m_User.Where(m => m.UserName == phone);
+            return query.Count() > 0 ? true : false;
         }
         /// <summary>
         /// 更新角色权限
@@ -132,23 +124,22 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool UpdateGroupPower(int groupId, List<int> powerData)
         {
-            EFDbContext dbContext = new EFDbContext();
-            using (var tran = dbContext.Database.BeginTransaction())
+            using (var tran = _dbContext.Database.BeginTransaction())
             {
                 try
                 {
 
                     //移除以前的权限
-                    dbContext.MangoRemove<Entity.m_UserGroupPower>(m => m.GroupId == groupId);
+                    _dbContext.MangoRemove<Entity.m_UserGroupPower>(m => m.GroupId == groupId);
                     //添加新权限
                     foreach (int Id in powerData)
                     {
                         Entity.m_UserGroupPower model = new Entity.m_UserGroupPower();
                         model.MId = Id;
                         model.GroupId = groupId;
-                        dbContext.Add(model);
+                        _dbContext.Add(model);
                     }
-                    dbContext.SaveChanges();
+                    _dbContext.SaveChanges();
                     tran.Commit();
                     return true;
                 }
@@ -167,14 +158,13 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool GetSendSmsState(string phone, string userIP)
         {
-            EFDbContext dbContext = new EFDbContext();
             //先处理同一个IP下同一天时间只能获取5条短信验证码
-            if (dbContext.m_Sms.Where(m => m.SendTime.Value.ToString("yyyyMMdd") == DateTime.Now.ToString("yyyMMdd") && m.SendIP == userIP).Select(m => m.SmsID.Value).Count() >= 5)
+            if (_dbContext.m_Sms.Where(m => m.SendTime.Value.ToString("yyyyMMdd") == DateTime.Now.ToString("yyyMMdd") && m.SendIP == userIP).Select(m => m.SmsID.Value).Count() >= 5)
             {
                 return false;
             }
             //同一天同一个时间下同一个手机号只能获取3次短信验证码
-            if (dbContext.m_Sms.Where(m => m.SendTime.Value.ToString("yyyyMMdd") == DateTime.Now.ToString("yyyMMdd") && m.Phone == phone).Select(m => m.SmsID.Value).Count() >= 3)
+            if (_dbContext.m_Sms.Where(m => m.SendTime.Value.ToString("yyyyMMdd") == DateTime.Now.ToString("yyyMMdd") && m.Phone == phone).Select(m => m.SmsID.Value).Count() >= 3)
             {
                 return false;
             }

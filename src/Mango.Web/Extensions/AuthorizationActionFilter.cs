@@ -20,6 +20,8 @@ namespace Mango.Web.Extensions
                 _filterList.Add(new string[] { "", "authorization", "sendphonevalidatecode" });
                 _filterList.Add(new string[] { "", "navigation", "updateclickcount" });
                 _filterList.Add(new string[] { "", "home", "message" });
+                _filterList.Add(new string[] { "", "home", "error" });
+                _filterList.Add(new string[] { "", "home", "test" });
             }
         }
         public void OnActionExecuting(ActionExecutingContext context)

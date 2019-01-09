@@ -208,7 +208,7 @@ function CreateCommentsHtml(d) {
 }
 //提交回答
 $("#btn_PostAnswer").click(function () {
-    $("#contents").val(um.getContent());
+    $("#contents").val(tinymce.get('contents').getContent());
     //加载验证
     var config = new Array();
     config.push({

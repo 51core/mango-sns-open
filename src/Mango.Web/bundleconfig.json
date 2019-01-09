@@ -16,5 +16,41 @@
     "inputFiles": [
       "wwwroot/js/message.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/tinymce/plugins/imageupload/upyun.plugin.min.js",
+    "inputFiles": [
+      "wwwroot/lib/tinymce/plugins/imageupload/upyun.plugin.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/tinymce/plugins/imageupload/plugin.min.js",
+    "inputFiles": [
+      "wwwroot/lib/tinymce/plugins/imageupload/plugin.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/mango/file/jquery-upload.min.js",
+    "inputFiles": [
+      "wwwroot/lib/mango/file/jquery-upload.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/style/css/zui.min.css",
+    "inputFiles": [
+      "wwwroot/style/css/zui.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/style/css/zui-theme.min.css",
+    "inputFiles": [
+      "wwwroot/style/css/zui-theme.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/style/css/zui.lite.min.css",
+    "inputFiles": [
+      "wwwroot/style/css/zui.lite.css"
+    ]
   }
 ]

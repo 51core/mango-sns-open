@@ -86,63 +86,6 @@ namespace Mango.Framework.EFCore
         }
         #endregion
         #region 查询返回Model的扩展
-            /// <summary>
-            /// 分页查询并且返回DataTable
-            /// </summary>
-            /// <param name="context"></param>
-            /// <param name="tablename">表名</param>
-            /// <param name="colname">排序字段名</param>
-            /// <param name="pagesize">每页显示数</param>
-            /// <param name="pageindex">当前页码</param>
-            /// <param name="where">查询条件</param>
-            /// <param name="order">排序 0:升序 1:降序</param>
-            /// <param name="IsCount">是否返回总记录条数 0:查询数据 1:返回数据总条数</param>
-            /// <returns></returns>
-        public static List<T> QueryPageModel<T>(this DbContext context, string tableName, string columnName, int pageSize, int pageIndex, string strWhere, int order, int isCount) where T : new()
-        {
-            DbConnection connection = null;
-            DbCommand command = null;
-            try
-            {
-                connection = context.Database.GetDbConnection();
-                if (connection.State == ConnectionState.Closed)
-                {
-                    connection.Open();
-                }
-                command = connection.CreateCommand();
-
-                SqlParameter[] SqlParameters = new SqlParameter[7];
-                SqlParameters[0] = new SqlParameter("tblName", tableName);
-                SqlParameters[1] = new SqlParameter("fldName", columnName);
-                SqlParameters[2] = new SqlParameter("PageSize", pageSize);
-                SqlParameters[3] = new SqlParameter("PageIndex", pageIndex);
-                SqlParameters[4] = new SqlParameter("OrderType", order);
-                SqlParameters[5] = new SqlParameter("IsCount", isCount);
-                SqlParameters[6] = new SqlParameter("strWhere", strWhere);
-                string sql = "exec GetRecordFromPage @tblName,@fldName,@PageSize,@PageIndex,@OrderType,@IsCount,@strWhere";
-                command.CommandText = sql;
-                command.Parameters.AddRange(SqlParameters);
-                DbDataReader reader = command.ExecuteReader();
-                var result = FillModel<T>(reader);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                //释放连接资源
-                if (command != null)
-                {
-                    command.Dispose();
-                }
-                if (connection != null)
-                {
-                    connection.Close();
-                }
-            }
-        }
         /// <summary>
         /// SQL语句查询并且返回指定的实体对象
         /// </summary>
@@ -192,7 +135,7 @@ namespace Mango.Framework.EFCore
             }
         }
         /// <summary>
-        /// 将SqlDataReader数据集转换成对应的实体集合
+        /// 将DbDataReader数据集转换成对应的实体集合
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="_SqlDataReader"></param>
@@ -245,68 +188,6 @@ namespace Mango.Framework.EFCore
                 command.CommandText = sql;
                 command.Parameters.AddRange(parameters);
                 DbDataReader reader = command.ExecuteReader();
-                var result= FillDataTable(reader);
-                //释放连接资源
-                command.Dispose();
-                connection.Close();
-                //
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                //释放连接资源
-                if (command != null)
-                {
-                    command.Dispose();
-                }
-                if (connection != null)
-                {
-                    connection.Close();
-                }
-            }
-        }
-        /// <summary>
-        /// 分页查询并且返回DataTable
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="tablename">表名</param>
-        /// <param name="colname">排序字段名</param>
-        /// <param name="pagesize">每页显示数</param>
-        /// <param name="pageindex">当前页码</param>
-        /// <param name="where">查询条件</param>
-        /// <param name="order">排序 0:升序 1:降序</param>
-        /// <param name="IsCount">是否返回总记录条数 0:查询数据 1:返回数据总条数</param>
-        /// <returns></returns>
-        public static DataTable QueryPageDataTable(this DbContext context, string tableName, string columnName, int pageSize, int pageIndex, string strWhere, int order,int isCount)
-        {
-            DbConnection connection = null;
-            DbCommand command = null;
-            try
-            {
-                connection = context.Database.GetDbConnection();
-                if (connection.State == ConnectionState.Closed)
-                {
-                    connection.Open();
-                }
-                command = connection.CreateCommand();
-
-                SqlParameter[] SqlParameters = new SqlParameter[7];
-                SqlParameters[0] = new SqlParameter("tblName", tableName);
-                SqlParameters[1] = new SqlParameter("fldName", columnName);
-                SqlParameters[2] = new SqlParameter("PageSize", pageSize);
-                SqlParameters[3] = new SqlParameter("PageIndex", pageIndex);
-                SqlParameters[4] = new SqlParameter("OrderType", order);
-                SqlParameters[5] = new SqlParameter("IsCount", isCount);
-                SqlParameters[6] = new SqlParameter("strWhere", strWhere);
-                string sql = "exec GetRecordFromPage @tblName,@fldName,@PageSize,@PageIndex,@OrderType,@IsCount,@strWhere";
-                command.CommandText = sql;
-                command.Parameters.AddRange(SqlParameters);
-                DbDataReader reader = command.ExecuteReader();
-
                 var result= FillDataTable(reader);
                 //释放连接资源
                 command.Dispose();

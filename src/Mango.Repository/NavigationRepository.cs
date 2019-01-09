@@ -10,6 +10,11 @@ namespace Mango.Repository
 {
     public class NavigationRepository
     {
+        private EFDbContext _dbContext = null;
+        public NavigationRepository()
+        {
+            _dbContext = new EFDbContext();
+        }
         /// <summary>
         /// 更新导航点击次数
         /// </summary>
@@ -17,8 +22,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public bool UpdateClickCount(int navigationId)
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.MangoUpdate<Entity.m_Navigation>(m => m.ClickCount == m.ClickCount + 1, m => m.NavigationId == navigationId);
+            return _dbContext.MangoUpdate<Entity.m_Navigation>(m => m.ClickCount == m.ClickCount + 1, m => m.NavigationId == navigationId);
         }
         /// <summary>
         /// 分页查询导航数据
@@ -29,9 +33,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public IQueryable<object> GetNavigationPageList()
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from nav in dbContext.m_Navigation
-                        join nc in dbContext.m_NavigationClassify
+            var query = from nav in _dbContext.m_Navigation
+                        join nc in _dbContext.m_NavigationClassify
                         on nav.CId equals nc.CId
 
                         select new
@@ -53,8 +56,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<Models.NavigationModel> GetNavigationList()
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.m_Navigation.Select(m=>new Models.NavigationModel()
+            return _dbContext.m_Navigation.Select(m=>new Models.NavigationModel()
             {
                 CId=m.CId.Value,
                 ClickCount=m.ClickCount.Value,
@@ -71,8 +73,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<Models.NavigationClassifyModel> GetClassifyList()
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.m_NavigationClassify.OrderBy(m=>m.SortCount).Select(m=>new Models.NavigationClassifyModel()
+            return _dbContext.m_NavigationClassify.OrderBy(m=>m.SortCount).Select(m=>new Models.NavigationClassifyModel()
             {
                 CId=m.CId.Value,
                 ClassifyName=m.ClassifyName,
@@ -86,8 +87,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<MangoData> GetClassifyListByManager()
         {
-            EFDbContext dbContext = new EFDbContext();
-            return dbContext.m_NavigationClassify.ToMangoDataList();
+            return _dbContext.m_NavigationClassify.ToMangoDataList();
         }
     }
 }

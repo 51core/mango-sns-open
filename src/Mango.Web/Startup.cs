@@ -64,7 +64,7 @@ namespace Mango.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/home/error");
             }
 
             app.UseStaticFiles();
@@ -77,7 +77,6 @@ namespace Mango.Web
             {
                 routes.MapHub<Extensions.MessageHub>("/MessageHub");
             });
-            //Extensions.SignalRCore.GlobalHub = Framework.Services.ServiceContext.GetService<Extensions.SignalRGlobalHub<Extensions.MessageHub>>();
             //
             app.UseMvc(routes =>
             {

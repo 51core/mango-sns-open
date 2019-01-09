@@ -11,14 +11,18 @@ namespace Mango.Repository
 {
     public class PostsTagsRepository
     {
+        private EFDbContext _dbContext = null;
+        public PostsTagsRepository()
+        {
+            _dbContext = new EFDbContext();
+        }
         /// <summary>
         /// 获取分类频道数据
         /// </summary>
         /// <returns></returns>
         public List<Models.PostsTagsModel> GetList()
         {
-            EFDbContext dbContext = new EFDbContext();
-            var queryResult = dbContext.m_PostsTags
+            var queryResult = _dbContext.m_PostsTags
                 .Select(m => new Models.PostsTagsModel()
                 {
                     TagsId = m.TagsId.Value,

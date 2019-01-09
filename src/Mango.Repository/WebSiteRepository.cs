@@ -10,14 +10,18 @@ namespace Mango.Repository
 {
     public class WebSiteRepository
     {
+        private EFDbContext _dbContext = null;
+        public WebSiteRepository()
+        {
+            _dbContext = new EFDbContext();
+        }
         /// <summary>
         /// 获取网站系统配置信息
         /// </summary>
         /// <returns></returns>
         public Models.WebSiteConfigModel GetWebSiteConfig()
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from cfg in dbContext.m_WebSiteConfig
+            var query = from cfg in _dbContext.m_WebSiteConfig
                         orderby cfg.ConfigId ascending
                         select new Models.WebSiteConfigModel()
                         {
@@ -40,8 +44,7 @@ namespace Mango.Repository
         /// <returns></returns>
         public IQueryable<Models.WebSiteNavigationModel> GetWebSiteNavigations()
         {
-            EFDbContext dbContext = new EFDbContext();
-            var query = from nav in dbContext.m_WebSiteNavigation
+            var query = from nav in _dbContext.m_WebSiteNavigation
                         orderby nav.SortCount ascending
                         select new Models.WebSiteNavigationModel() {
                             AppendTime=nav.AppendTime.Value,

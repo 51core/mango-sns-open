@@ -9,6 +9,11 @@ namespace Mango.Repository
 {
     public class AuthorizationRepository
     {
+        private EFDbContext _dbContext = null;
+        public AuthorizationRepository()
+        {
+            _dbContext = new EFDbContext();
+        }
         /// <summary>
         /// 根据用户组获取权限
         /// </summary>
@@ -16,10 +21,8 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<Models.UserGroupPowerModel> GetPowerData(int groupId)
         {
-            EFDbContext dbContext = new EFDbContext();
-
-            var query = from ugp in dbContext.m_UserGroupPower
-                        join ugm in dbContext.m_UserGroupMenu
+            var query = from ugp in _dbContext.m_UserGroupPower
+                        join ugm in _dbContext.m_UserGroupMenu
                         on ugp.MId equals ugm.MId
                         where ugp.GroupId == groupId
                         select new Models.UserGroupPowerModel()
