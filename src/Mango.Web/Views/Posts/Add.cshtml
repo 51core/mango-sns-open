@@ -27,7 +27,6 @@
                     <span class="input-group-addon">标题:</span>
                     <input type="text" class="form-control" id="Title" name="Title" placeholder="你可以取一个简洁的标题...">
                 </div>
-
             </div>
         </div>
         <div class="form-group">
@@ -46,7 +45,6 @@
             <span class="text">温馨提示:请勿发布人身攻击以及一切违法的图片以及文字.</span>
         </div>
     </form>
-
 </div>
 @section Scripts{
 
@@ -54,7 +52,6 @@
     <script src="~/lib/jquery/jquery.form.js"></script>
 
     <script src="~/lib/tinymce/tinymce.min.js"></script>
-    <script src="~/lib/tinymce/themes/modern/theme.min.js"></script>
     <script src="~/lib/tinymce/langs/zh_CN.js"></script>
 
     <script src="~/lib/tinymce/plugins/codesample/plugin.min.js"></script>
@@ -81,7 +78,7 @@
 
     </script>
     <script type="text/javascript">
-        
+
         $("#btn_Post").click(function () {
             $("#Contents").val(tinymce.get('Contents').getContent());
             //加载验证

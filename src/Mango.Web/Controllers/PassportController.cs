@@ -75,7 +75,7 @@ namespace Mango.Web.Controllers
             }
             //×¢²áÐÂÓÃ»§
             Entity.m_User userModel = new Entity.m_User();
-            userModel.HeadUrl = "/images/avatar.jpg";
+            userModel.HeadUrl = "/images/avatar.png";
             userModel.GroupId = 1;
             userModel.IsStatus = true;
             userModel.LastLoginDate = DateTime.Now;
