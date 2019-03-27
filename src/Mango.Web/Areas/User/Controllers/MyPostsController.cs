@@ -29,5 +29,77 @@ namespace Mango.Web.Areas.User.Controllers
             }
             return View(model);
         }
+        /// <summary>
+        /// 帖子编辑
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            ViewModels.PostsEditViewModel model = new ViewModels.PostsEditViewModel();
+            int postsId = id;
+            int userId = Framework.Core.Transform.GetInt(HttpContext.Session.GetString("UserId"), 0);
+            //加载帖子数据
+            PostsRepository repository = new PostsRepository();
+            model.PostsData = repository.GetPostsByEdit(postsId, userId);
+            if (model.PostsData != null)
+            {
+                //加载帖子频道数据
+                Common.PostsChannel postsProperty = new Common.PostsChannel();
+                model.PostsChannels = postsProperty.GetListByCache();
+
+                return View(model);
+            }
+            return new ContentResult()
+            {
+                Content = "您的请求未得到授权!",
+                StatusCode = 401
+            };
+        }
+        [HttpPost]
+        public bool Edit(ViewModels.EditPostsRequestModel model)
+        {
+            //
+            Entity.m_Posts m = new Entity.m_Posts();
+            m.PostsId = model.PostsId;
+            m.Contents = model.Contents;//Framework.Core.HtmlFilter.SanitizeHtml(model.Contents);
+            m.LastDate = DateTime.Now;
+            m.Title = Framework.Core.HtmlFilter.StripHtml(model.Title);
+            m.ChannelId = model.ChannelId;
+            CommonRepository repository = new CommonRepository();
+            return repository.Update(m);
+        }
+        /// <summary>
+        /// 发布帖子
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult Add()
+        {
+            Common.PostsChannel postsProperty = new Common.PostsChannel();
+            var model = postsProperty.GetListByCache();
+            return View(model);
+        }
+        [HttpPost]
+        public bool Add(ViewModels.AddPostsViewModel model)
+        {
+            //
+            Entity.m_Posts m = new Entity.m_Posts();
+            m.Contents = model.Contents;//Framework.Core.HtmlFilter.SanitizeHtml(model.Contents);
+            m.ImgUrl = string.Empty;
+            m.IsReply = true;
+            m.IsShow = true;
+            m.LastDate = DateTime.Now;
+            m.PlusCount = 0;
+            m.PostDate = DateTime.Now;
+            m.Tags = "";
+            m.ReadCount = 0;
+            m.Title = Framework.Core.HtmlFilter.StripHtml(model.Title);
+            m.UserId = Framework.Core.Transform.GetInt(HttpContext.Session.GetString("UserId"), 0);
+            m.AnswerCount = 0;
+            m.ChannelId = model.ChannelId;
+            CommonRepository repository = new CommonRepository();
+            return repository.Add(m);
+        }
     }
 }

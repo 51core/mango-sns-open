@@ -1,18 +1,17 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using Mango.Framework.Services.Cache;
 using Microsoft.Extensions.Caching.Redis;
-using Microsoft.AspNetCore.SignalR;
 namespace Mango.Web
 {
     public class Startup
@@ -29,34 +28,34 @@ namespace Mango.Web
         {
             //services.Configure<CookiePolicyOptions>(options =>
             //{
+            //    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
             //    options.CheckConsentNeeded = context => true;
             //    options.MinimumSameSitePolicy = SameSiteMode.None;
             //});
-            //æ·»åŠ SignalR
+            //Ìí¼ÓSignalR
             services.AddSignalR();
 
             services.AddMvc(options => {
                 options.Filters.Add(new Extensions.AuthorizationActionFilter());
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }).AddNewtonsoftJson();
+
             services.AddSession();
             services.AddMemoryCache();
             //
             services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            //æ·»åŠ Sessionè®¿é—®å®¹å™¨
+            //Ìí¼ÓSession·ÃÎÊÈİÆ÷
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            //æ³¨å†Œè‡ªå®šä¹‰æœåŠ¡
+            //×¢²á×Ô¶¨Òå·şÎñ
             services.AddSingleton(typeof(ICacheService), new RedisCacheService(new RedisCacheOptions()
             {
                 Configuration = Configuration.GetSection("Cache:ConnectionString").Value,
                 InstanceName = Configuration.GetSection("Cache:InstanceName").Value
             }));
-            Framework.Services.ServiceContext.RegisterServices(services);
+            Framework.Services.ServiceContext.RegisterServices(services.BuildServiceProvider());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -64,41 +63,44 @@ namespace Mango.Web
             }
             else
             {
-                app.UseExceptionHandler("/home/error");
+                app.UseExceptionHandler("/Home/Error");
             }
 
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
-            //å¯ç”¨ä¼šè¯å­˜å‚¨(Session)
+            //ÆôÓÃ»á»°´æ´¢(Session)
             app.UseSession();
-            //å¯ç”¨Signalr
+            //ÆôÓÃSignalr
             app.UseSignalR(routes =>
             {
                 routes.MapHub<Extensions.MessageHub>("/MessageHub");
             });
-            //
-            app.UseMvc(routes =>
+            app.UseRouting(routes =>
             {
-                routes.MapRoute(
-                    name: "area",
-                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-                routes.MapRoute(
+                routes.MapAreaControllerRoute(
+                   name: "area",
+                   areaName:"User",
+                   template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                routes.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Posts}/{action=Index}/{id?}");
+                   template: "{controller=Posts}/{action=Index}/{id?}");
+                routes.MapRazorPages();
             });
 
-            //æ•°æ®åº“è¿æ¥å­—ç¬¦ä¸²
+            app.UseCookiePolicy();
+
+            app.UseAuthorization();
+            //Êı¾İ¿âÁ¬½Ó×Ö·û´®
             Framework.Core.Configuration.AddItem("ConnectionStrings", Configuration.GetSection("ConnectionStrings").Value);
-            //åˆæ‹äº‘é…ç½®é¡¹
+            //ÓÖÅÄÔÆÅäÖÃÏî
             Framework.Core.Configuration.AddItem("Upyun_BucketName", Configuration.GetSection("Upyun:BucketName").Value);
             Framework.Core.Configuration.AddItem("Upyun_BucketPassword", Configuration.GetSection("Upyun:BucketPassword").Value);
-            //é˜¿é‡Œäº‘çŸ­ä¿¡é…ç½®
+            //°¢ÀïÔÆ¶ÌĞÅÅäÖÃ
             Framework.Core.Configuration.AddItem("Aliyun_AccessKeyId", Configuration.GetSection("Aliyun:AccessKeyId").Value);
             Framework.Core.Configuration.AddItem("Aliyun_AccessKeySecret", Configuration.GetSection("Aliyun:AccessKeySecret").Value);
-            Framework.Core.Configuration.AddItem("Aliyun_SmsSignature",Configuration.GetSection("Aliyun:SmsSignature").Value);
+            Framework.Core.Configuration.AddItem("Aliyun_SmsSignature", Configuration.GetSection("Aliyun:SmsSignature").Value);
             Framework.Core.Configuration.AddItem("Aliyun_SmsTempletKey", Configuration.GetSection("Aliyun:SmsTempletKey").Value);
-            //è…¾è®¯é…ç½®é¡¹
+            //ÌÚÑ¶ÅäÖÃÏî
             Framework.Core.Configuration.AddItem("Tencent_VerificationAppId", Configuration.GetSection("Tencent:VerificationAppId").Value);
             Framework.Core.Configuration.AddItem("Tencent_VerificationAppSecretKey", Configuration.GetSection("Tencent:VerificationAppSecretKey").Value);
         }

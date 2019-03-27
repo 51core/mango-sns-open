@@ -52,9 +52,9 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
                 }
                 //处理分页样式
                 //ResultBuilder.Append("<ul>");
-                ResultBuilder.AppendFormat("<li><a href=\"{0}\">首页</a></li>", url);
+                ResultBuilder.AppendFormat("<li class=\"page-item\"><a class=\"page-link\" href=\"{0}\">首页</a></li>", url);
 
-                ResultBuilder.AppendFormat("<li><a href=\"{0}&p={1}\">上一页</a></li>", url, PageIndex == 1 ? 1 : PageIndex - 1);
+                ResultBuilder.AppendFormat("<li class=\"page-item\"><a class=\"page-link\" href=\"{0}&p={1}\">上一页</a></li>", url, PageIndex == 1 ? 1 : PageIndex - 1);
 
                 //中间页码计算
                 int BeginCount = 1;//开始页码
@@ -72,16 +72,16 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
                 {
                     if (PageIndex == i)
                     {
-                        ResultBuilder.Append(string.Format("<li><span style=\"font-weight:Bold;color:red;\">{0}</span></li>", i));
+                        ResultBuilder.Append(string.Format("<li class=\"page-item active\"><span class=\"page-link\">{0}</span></li>", i));
                     }
                     else
                     {
-                        ResultBuilder.Append(string.Format("<li><a href=\"{0}&p={1}\">{2}</a></li>", url, i, i));
+                        ResultBuilder.Append(string.Format("<li class=\"page-item\"><a class=\"page-link\" href=\"{0}&p={1}\">{2}</a></li>", url, i, i));
                     }
                 }
                 //
-                ResultBuilder.AppendFormat("<li><a href=\"{0}&p={1}\">下一页</a></li>", url, PageIndex == PageCount ? PageCount : PageIndex + 1);
-                ResultBuilder.AppendFormat("<li><a href=\"{0}&p={1}\">尾页</a></li>", url, PageCount);
+                ResultBuilder.AppendFormat("<li class=\"page-item\"><a class=\"page-link\" href=\"{0}&p={1}\">下一页</a></li>", url, PageIndex == PageCount ? PageCount : PageIndex + 1);
+                ResultBuilder.AppendFormat("<li class=\"page-item\"><a class=\"page-link\" href=\"{0}&p={1}\">尾页</a></li>", url, PageCount);
                 //ResultBuilder.Append("</ul>");
             }
             catch

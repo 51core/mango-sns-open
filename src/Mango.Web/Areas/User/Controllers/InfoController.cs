@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Mango.Repository;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkId=397860
-
+using Mango.Models;
 namespace Mango.Web.Areas.User.Controllers
 {
     [Area("User")]
@@ -18,7 +18,7 @@ namespace Mango.Web.Areas.User.Controllers
         {
             int UserId = Framework.Core.Transform.GetInt(HttpContext.Session.GetString("UserId"), 0);
             UserRepository repository = new UserRepository();
-            Models.UserInfoModel model = repository.GetUserInfo(UserId);
+            UserInfoModel model = repository.GetUserInfo(UserId);
             return View(model);
         }
         /// <summary>

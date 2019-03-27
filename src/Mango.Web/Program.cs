@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 namespace Mango.Web
@@ -15,17 +16,19 @@ namespace Mango.Web
         public static void Main(string[] args)
         {
             NLogBuilder.ConfigureNLog("nlog.config");
-            CreateWebHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
                 .ConfigureLogging(logging =>
                 {
-                    logging.ClearProviders(); //ç§»é™¤å·²ç»æ³¨å†Œçš„å…¶ä»–æ—¥å¿—å¤„ç†ç¨‹åº
-                    logging.SetMinimumLevel(LogLevel.Trace); //è®¾ç½®æœ€å°çš„æ—¥å¿—çº§åˆ«
+                    logging.ClearProviders(); //ÒÆ³ıÒÑ¾­×¢²áµÄÆäËûÈÕÖ¾´¦Àí³ÌĞò
+                    logging.SetMinimumLevel(LogLevel.Trace); //ÉèÖÃ×îĞ¡µÄÈÕÖ¾¼¶±ğ
                 })
-                .UseStartup<Startup>()
-                .UseNLog();
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>().UseNLog();
+                });
     }
 }

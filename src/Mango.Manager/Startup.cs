@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Mango.Framework.Services.Cache;
 using Microsoft.Extensions.Caching.Redis;
 namespace Mango.Manager
@@ -31,23 +32,23 @@ namespace Mango.Manager
             //    options.MinimumSameSitePolicy = SameSiteMode.None;
             //});
 
-
             services.AddMvc(options => {
                 options.Filters.Add(new Extensions.AuthorizationFilter());
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }).AddNewtonsoftJson();
+
             services.AddSession();
-            //æ³¨å†Œè‡ªå®šä¹‰æœåŠ¡
+            //×¢²á×Ô¶¨Òå·şÎñ
             services.AddSingleton(typeof(ICacheService), new RedisCacheService(new RedisCacheOptions()
             {
                 Configuration = Configuration.GetSection("Cache:ConnectionString").Value,
                 InstanceName = Configuration.GetSection("Cache:InstanceName").Value
             }));
-            //æ³¨å†Œè‡ªå®šä¹‰æœåŠ¡
-            Framework.Services.ServiceContext.RegisterServices(services);
+            //×¢²á×Ô¶¨Òå·şÎñ
+            Framework.Services.ServiceContext.RegisterServices(services.BuildServiceProvider());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -59,17 +60,19 @@ namespace Mango.Manager
             }
 
             app.UseStaticFiles();
-            app.UseCookiePolicy();
-
-            //å¯ç”¨ä¼šè¯å­˜å‚¨(Session)
             app.UseSession();
-            app.UseMvc(routes =>
+            app.UseRouting(routes =>
             {
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRazorPages();
             });
-            //æ•°æ®åº“è¿æ¥å­—ç¬¦ä¸²
+
+            app.UseCookiePolicy();
+
+            app.UseAuthorization();
+            //Êı¾İ¿âÁ¬½Ó×Ö·û´®
             Framework.Core.Configuration.AddItem("ConnectionStrings", Configuration.GetSection("ConnectionStrings").Value);
         }
     }

@@ -47,16 +47,16 @@ tinymce.PluginManager.add('imageupload', function (editor) {
 
     editor.addCommand("mceUploadImageEditor", selectLocalImages);
 
-    editor.addButton('imageupload', {
+    editor.ui.registry.addButton('imageupload', {
         icon: 'image',
         tooltip: '图片上传',
-        onclick: selectLocalImages
+        onAction: selectLocalImages
     });
 
-    editor.addMenuItem('imageupload', {
+    editor.ui.registry.addMenuItem('imageupload', {
         icon: 'image',
         text: '图片上传',
         context: 'tools',
-        onclick: selectLocalImages
+        onAction: selectLocalImages
     });
 });

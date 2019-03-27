@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Mango.Models;
 namespace Mango.Web.ViewModels
 {
     public class NavigationViewModel
@@ -9,6 +9,6 @@ namespace Mango.Web.ViewModels
         /// <summary>
         /// 导航分类数据
         /// </summary>
-        public List<Models.NavigationClassifyModel> ClassifyListData { get; set; }
+        public List<NavigationClassifyModel> ClassifyListData { get; set; }
     }
 }

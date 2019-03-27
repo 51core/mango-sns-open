@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Mango.Models;
 namespace Mango.Manager.ViewModels
 {
     public class PostsViewModel
@@ -13,10 +13,10 @@ namespace Mango.Manager.ViewModels
         /// <summary>
         /// 分页数据返回集合
         /// </summary>
-        public List<Models.PostsModel> ListData { get; set; }
+        public List<PostsModel> ListData { get; set; }
         /// <summary>
         /// 帖子属性标签
         /// </summary>
-        public List<Models.PostsTagsModel> TagsListData { get; set; }
+        public List<PostsTagsModel> TagsListData { get; set; }
     }
 }

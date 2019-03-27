@@ -13,80 +13,71 @@
     <title>@ViewData["Title"]-@(model.WebSiteConfigData.WebSiteName)[@(model.WebSiteConfigData.WebSiteTitle)]</title>
     <meta name="keywords" content="@(model.WebSiteConfigData.WebSiteKeyWord)" />
     <meta name="description" content="@(model.WebSiteConfigData.WebSiteDescription)" />
-    <link href="~/style/css/zui.min.css" rel="stylesheet" />
-    <link href="~/style/css/zui-theme.min.css" rel="stylesheet" />
-    @*<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/lib/bootstrap/dist/js/bootstrap.min.js" rel="stylesheet" />*@
+    <link href="~/style/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+    <link href="~/style/bootstrap/dist/css/offcanvas.css" rel="stylesheet" />
     @RenderSection("Style", required: false)
 </head>
-<body>
+<body class="bg-light">
     @{
         string fromUrl = Html.ViewContext.HttpContext.Request.GetAbsoluteUri();
         fromUrl = fromUrl.Contains("register") ? "/posts" : fromUrl;
     }
-    <nav class="navbar  navbar-default" role="navigation" id="tag_global_nav">
-        <div class="container-fixed">
-            <!-- 导航头部 -->
-            <div class="navbar-header">
-                @Html.PartialAsync("~/Views/WebSite/Navigation.cshtml", model).Result
-            </div>
-            <!-- 导航项目 -->
-            <div class="collapse navbar-collapse navbar-collapse-example">
-                <form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="暂不开放搜索功能">
-                    </div>
-                    <button type="button" class="btn btn-default" onclick="javascript:void(0)">搜索</button>
-                   
-                </form>
-                <!-- 右侧的导航项目 -->
-                <ul class="nav navbar-nav navbar-right">
-
-                    @if (Html.ViewContext.HttpContext.Session.GetString("UserId") == null)
-                    {
-                        if (model.WebSiteConfigData.IsLogin)
-                        {
-                        <li class="@(Html.ViewContext.RouteData.Values["action"].ToString().ToLower() == "login" ? "active" : "")"><a href="/passport/login?fromurl=@(fromUrl)">登录</a></li>
-                        }
-                        if (model.WebSiteConfigData.IsRegister)
-                        {
-                        <li class=" @(Html.ViewContext.RouteData.Values["action"].ToString().ToLower() == "register" ? "active" : "")"><a href="/passport/register">注册账号</a></li>
-                        }
-                    }
-                    else
-                    {
-                        <li>
-                            <a style="height:28px;padding-right:0px;" href="javascript:void(0)"  id="msg_push_showlist">
-                                <i class="icon icon-bell icon-2x" style="font-size:22px;"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <span class="label label-info  label-badge" style="padding-left:5px;padding-right:5px;" id="msg_push_count">0</span>
-                        </li>
-
-                        <li class="dropdown" style="margin-left:15px;">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding:2px;">
-                                <img src="@Html.ViewContext.HttpContext.Session.GetString("HeadUrl")" style="width:35px;height:35px;" class="img-circle" title=" @Html.ViewContext.HttpContext.Session.GetString("NickName")">
-
-                                @*<b class="caret"></b>*@
-                            </a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="/user/info">个人中心</a></li>
-                                <li><a href="/passport/outlogin">退出登录</a></li>
-                            </ul>
-                        </li>
-
-                    }
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">51Core.Net</a>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto" id="topNavgationTag">
+                    @Html.PartialAsync("~/Views/WebSite/Navigation.cshtml", model).Result
                 </ul>
             </div>
-            <!-- END .navbar-collapse -->
+            <div class="navbar-right" id="navbarCollapse" style="float:right;display:block;">
+
+                @if (Html.ViewContext.HttpContext.Session.GetString("UserId") == null)
+                {
+                    <ul class="navbar-nav mr-auto">
+                        @if (model.WebSiteConfigData.IsLogin)
+                        {
+                            <li class="nav-item  @(Html.ViewContext.RouteData.Values["action"].ToString().ToLower() == "login" ? "active" : "")"><a class="nav-link" href="/passport/login?fromurl=@(fromUrl)">登录</a></li>
+                        }
+                        @if (model.WebSiteConfigData.IsRegister)
+                        {
+                            <li class="nav-item  @(Html.ViewContext.RouteData.Values["action"].ToString().ToLower() == "register" ? "active" : "")"><a class="nav-link" href="/passport/register">注册账号</a></li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="navbar-nav mr-auto">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-secondary" id="msg_push_showlist">
+                                @Html.ViewContext.HttpContext.Session.GetString("NickName")
+                                <span class="badge badge-light" id="msg_push_count">0</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="/user/myposts/add">发布新帖</a>
+                                <a class="dropdown-item" href="/user/mydocs/addtheme">发布文档主题</a>
+                                <a class="dropdown-item" href="/user/info">个人中心</a>
+                                <a class="dropdown-item" href="/passport/outlogin">退出登录</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
         </div>
 
     </nav>
+    <main role="main" class="container">
+        @RenderBody()
+    </main>
 
-    @RenderBody()
 
-    <div class="container-fixed">
+
+    <div class="container">
         <hr />
         <div class="row text text-center">
             <div class="col-lg-12">
@@ -97,47 +88,46 @@
             </div>
         </div>
     </div>
-    
+
     <script src="~/js/appconfig.js"></script>
-
-
-    <script src="~/lib/jquery/jquery-3.2.0.min.js"></script>
-    <script src="~/style/js/zui.lite.min.js"></script>
-    <script src="~/style/js/zui.min.js"></script>
-    <script src="~/style/js/zui.lite.min.js"></script>
+    <script src="~/lib/jquery/jquery-3.3.1.min.js"></script>
+    <script src="~/style/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <script src="~/lib/layer/layer.min.js"></script>
     <script src="~/lib/artdialog/dialog.js"></script>
 
+    <script src="~/js/main.min.js"></script>
     @if (Html.ViewContext.HttpContext.Session.GetString("UserId") != null)
     {
         <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
         <script src="~/js/message.js"></script>
         <script type="text/javascript">
+            //设置用户登录状态
+            isUserLogin = true;
+            //
             $("#msg_push_showlist").click(function () {
-                
+
                 //加载数据
                 $.ajax({
                     type: 'get',
                     url: '/message/GetMessageList',
                     success: function (res) {
-                        var html='';
-                        html += '<div class="list"  style="overflow-y:auto;" id="msg_push_list_data">';
-                        html += '<div class="items items-hover">';
-                        
+                        var html = '';
+                        html += '<table class="table table-sm" style="overflow-y:auto;" id="msg_push_list_data">';
+                        html += '<tbody>';
+
                         $.each(res, function (i, item) {
                             console.log(item);
-                            //html += '<li class="list-group-item">' + item.contents + '</li>';
-                            html += '<div class="item"><div class="item-heading"><h4>' + item.contents + '</h4></div></div>';
+                            html += '<tr><td>' + item.contents + '</td></tr>';
                         });
-                        html += '</div>'
-                        html += '</div>';
+                        html += '</tbody>'
+                        html += '</table>';
                         var d = dialog({
                             title: '新消息通知',
                             content: html,
                             height: 300,
                             width: 500,
-                            id:'msg_push_list_dialog'
+                            id: 'msg_push_list_dialog'
                         });
                         d.show(document.getElementById("msg_push_showlist"));
                         $("#msg_push_list_data").parent().attr("style", $("#msg_push_list_data").parent().attr("style") + "overflow-y:scroll;");
@@ -158,10 +148,10 @@
     <script type="text/javascript">
         var controllerName = "@Html.ViewContext.RouteData.Values["controller"].ToString().ToLower()";
         $("#topNavgationTag").find("li").each(function (i) {
-            if ($(this).attr('data-id').indexOf(controllerName)>-1) {
-                    $(this).addClass("active");
-                }
-            });
+            if ($(this).attr('data-id').indexOf(controllerName) > -1) {
+                $(this).addClass("active");
+            }
+        });
     </script>
     @RenderSection("Scripts", required: false)
 

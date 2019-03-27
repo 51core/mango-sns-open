@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Mango.Models;
 namespace Mango.Web.ViewModels
 {
     public class MessageViewModel
@@ -13,6 +13,6 @@ namespace Mango.Web.ViewModels
         /// <summary>
         /// 分页数据返回集合
         /// </summary>
-        public List<Models.MessageModel> ListData { get; set; }
+        public List<MessageModel> ListData { get; set; }
     }
 }

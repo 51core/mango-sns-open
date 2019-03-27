@@ -16,6 +16,87 @@ namespace Mango.Repository
             _dbContext = new EFDbContext();
         }
         /// <summary>
+        /// 添加用户点赞消息
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public int AddUserPlusRecords(Entity.m_UserPlusRecords model, Entity.m_Message message)
+        {
+            //记录类型 1 帖子点赞 2 帖子回答点赞 3 帖子评论点赞 4 文档主题点赞 5 文档点赞
+            int result = 0;
+            //加载是否已经存在点赞记录
+            var queryCount = _dbContext.m_UserPlusRecords.Where(m => m.ObjectId == model.ObjectId && m.UserId == model.UserId && m.RecordsType == model.RecordsType).Count();
+            using (var tran = _dbContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    if (queryCount > 0)
+                    {
+                        //存在则撤回点赞记录
+                        _dbContext.MangoRemove<Entity.m_UserPlusRecords>(m => m.ObjectId == model.ObjectId && m.UserId == model.UserId && m.RecordsType == model.RecordsType);
+                        //
+                        switch (model.RecordsType.Value)
+                        {
+                            case 1:
+                                _dbContext.MangoUpdate<Entity.m_Posts>(m => m.PlusCount == m.PlusCount - 1, m => m.PostsId == model.ObjectId);
+                                break;
+                            case 2:
+                                _dbContext.MangoUpdate<Entity.m_PostsAnswer>(m => m.Plus == m.Plus - 1, m => m.AnswerId == model.ObjectId);
+                                break;
+                            case 3:
+                                _dbContext.MangoUpdate<Entity.m_PostsComments>(m => m.Plus == m.Plus - 1, m => m.CommentId == model.ObjectId);
+                                break;
+                            case 4:
+                                _dbContext.MangoUpdate<Entity.m_DocsTheme>(m => m.PlusCount == m.PlusCount - 1, m => m.ThemeId == model.ObjectId);
+                                break;
+                            case 5:
+                                _dbContext.MangoUpdate<Entity.m_Docs>(m => m.PlusCount == m.PlusCount - 1, m => m.DocsId == model.ObjectId);
+                                break;
+                        }
+                        tran.Commit();
+                        result = -1;
+                    }
+                    else
+                    {
+                        //不存在则新增点赞记录
+                        _dbContext.Add(message);
+                        _dbContext.SaveChanges();
+                        //
+                        _dbContext.Add(model);
+                        _dbContext.SaveChanges();
+                        //
+                        switch (model.RecordsType.Value)
+                        {
+                            case 1:
+                                _dbContext.MangoUpdate<Entity.m_Posts>(m => m.PlusCount == m.PlusCount + 1, m => m.PostsId == model.ObjectId);
+                                break;
+                            case 2:
+                                _dbContext.MangoUpdate<Entity.m_PostsAnswer>(m => m.Plus == m.Plus + 1, m => m.AnswerId == model.ObjectId);
+                                break;
+                            case 3:
+                                _dbContext.MangoUpdate<Entity.m_PostsComments>(m => m.Plus == m.Plus + 1, m => m.CommentId == model.ObjectId);
+                                break;
+                            case 4:
+                                _dbContext.MangoUpdate<Entity.m_DocsTheme>(m => m.PlusCount == m.PlusCount + 1, m => m.ThemeId == model.ObjectId);
+                                break;
+                            case 5:
+                                _dbContext.MangoUpdate<Entity.m_Docs>(m => m.PlusCount == m.PlusCount + 1, m => m.DocsId == model.ObjectId);
+                                break;
+                        }
+                        tran.Commit();
+                        result = 1;
+                    }
+                }
+                catch
+                {
+                    tran.Rollback();
+                    result = 0;
+                }
+            }
+            return result;
+        }
+        /// <summary>
         /// 获取用户信息列表
         /// </summary>
         /// <returns></returns>

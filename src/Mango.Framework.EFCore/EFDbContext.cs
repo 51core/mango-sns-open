@@ -24,8 +24,11 @@ namespace Mango.Framework.EFCore
             }
         }
         #region Entity DbSet<>
+        public virtual DbSet<m_UserPlusRecords> m_UserPlusRecords { get; set; }
+        public virtual DbSet<m_DocsTheme> m_DocsTheme { get; set; }
+        public virtual DbSet<m_Docs> m_Docs { get; set; }
+
         public virtual DbSet<m_WebSiteConfig> m_WebSiteConfig { get; set; }
-        public virtual DbSet<m_PostsRecords> m_PostsRecords { get; set; }
         public virtual DbSet<m_WebSiteNavigation> m_WebSiteNavigation { get; set; }
 
         public virtual DbSet<m_Sms> m_Sms { get; set; }
@@ -40,10 +43,8 @@ namespace Mango.Framework.EFCore
         public virtual DbSet<m_Posts> m_Posts { get; set; }
         public virtual DbSet<m_PostsChannel> m_PostsChannel { get; set; }
         public virtual DbSet<m_PostsAnswer> m_PostsAnswer { get; set; }
-        public virtual DbSet<m_PostsAnswerRecords> m_PostsAnswerRecords { get; set; }
         public virtual DbSet<m_PostsAttention> m_PostsAttention { get; set; }
         public virtual DbSet<m_PostsComments> m_PostsComments { get; set; }
-        public virtual DbSet<m_PostsCommentsRecords> m_PostsCommentsRecords { get; set; }
         public virtual DbSet<m_PostsTags> m_PostsTags { get; set; }
         public virtual DbSet<m_User> m_User { get; set; }
         public virtual DbSet<m_UserGroup> m_UserGroup { get; set; }

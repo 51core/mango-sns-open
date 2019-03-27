@@ -4,16 +4,16 @@
 }
 @model Mango.Models.UserInfoModel
 
-<div class="container-fixed">
-    <div class="row">
-        <div class="col-lg-2 ">
-             @Html.PartialAsync("~/Areas/User/Views/Menu.cshtml").Result
-        </div>
-
-        <div class="col-lg-10">
-
+<div class="row">
+    <!--左边菜单部分-->
+    <div class="col-lg-3">
+        @Html.PartialAsync("~/Areas/User/Views/Menu.cshtml").Result
+    </div>
+    <div class="col-lg-9">
+        <div class="my-3 p-3 bg-white rounded box-shadow">
+            @*<h5 class="border-bottom border-gray pb-2 mb-0">我的个人信息</h5>*@
             <table class="table">
-               
+
                 <tbody>
                     <tr>
                         <td style="width:100px;">用户名:</td>
@@ -21,17 +21,17 @@
                             <span>@Model.UserName</span>
                         </td>
                         <td>
-                            <input type="button" class="btn" value="修改密码" id="btn_EditPassword" />
+                            <input type="button" class="btn btn-success btn-sm" value="修改密码" id="btn_EditPassword" />
                         </td>
                     </tr>
                     <tr>
                         <td>头像:</td>
                         <td>
-                            <img src="@Model.HeadUrl"  style="width:120px;height:120px;" id="avatar"  class="avatar" />
+                            <img src="@Model.HeadUrl" style="width:60px;height:60px;" id="avatar" class="avatar" />
                         </td>
                         <td>
                             <input type="file" id="showInputImageFile" style="FILTER: alpha(opacity=0); moz-opacity: 0; opacity: 0;" />
-                            <input type="button" class="btn" value="更换头像" id="showImageFileUploadBtn" />
+                            <input type="button" class="btn btn-success btn-sm" value="更换头像" id="showImageFileUploadBtn" />
                         </td>
                     </tr>
                     <tr>
@@ -40,7 +40,7 @@
                             <span id="showNickName">@Model.NickName</span>
                         </td>
                         <td>
-                            <input type="button" class="btn" value="编辑" id="btn_EditNickName" />
+                            <input type="button" class="btn btn-success btn-sm" value="编辑" id="btn_EditNickName" />
                         </td>
                     </tr>
                     <tr>
@@ -49,39 +49,42 @@
                             <span id="showSex">@Model.Sex</span>
                         </td>
                         <td>
-                            <input type="button" class="btn" value="编辑" id="btn_EditSex" />
+                            <input type="button" class="btn btn-success btn-sm" value="编辑" id="btn_EditSex" />
                         </td>
                     </tr>
                     <tr>
                         <td>所在城市:</td>
                         <td>
-                            <span  id="showAddress">@Model.Address</span>
+                            <span id="showAddress">@Model.Address</span>
                         </td>
                         <td>
-                            <input type="button" class="btn" value="编辑" id="btn_EditAddress"  />
+                            <input type="button" class="btn btn-success btn-sm" value="编辑" id="btn_EditAddress" />
                         </td>
                     </tr>
                     <tr>
                         <td>个人标签:</td>
                         <td>
-                            <span  id="showTags">@Model.Tags</span>
+                            <span id="showTags">@Model.Tags</span>
                         </td>
                         <td>
-                            <input type="button" class="btn" value="编辑" id="btn_EditTags"  />
+                            <input type="button" class="btn btn-success btn-sm" value="编辑" id="btn_EditTags" />
                         </td>
                     </tr>
                 </tbody>
             </table>
+
         </div>
-        
     </div>
+
 </div>
+
 @section Scripts{
-<script src="~/lib/artdialog/dialog.min.js"></script>
-<script src="~/lib/jquery/jquery.validator.min.js"></script>
-<script src="~/lib/jquery/jquery.form.js"></script>
- <script src="~/lib/flyupload/upload.js"></script>
-<script type="text/javascript">
+    <script src="~/lib/artdialog/dialog.js"></script>
+    <script src="~/lib/jquery/jquery.validator.min.js"></script>
+    <script src="~/lib/jquery/jquery.form.js"></script>
+    <script src="~/lib/mango/file/config.js"></script>
+    <script src="~/lib/mango/file/jquery-upload.min.js"></script>
+    <script type="text/javascript">
 //修改个人标签
 $("#btn_EditTags").click(function () {
     var html = ' <form class="form-horizontal" id="formTags" method="post">';
@@ -345,13 +348,15 @@ $("#btn_EditPassword").click(function () {
         $('#showInputImageFile').trigger('click');
     });
     var oldAvatar = '@Model.HeadUrl';
+    var headUrlIndex;
     $.FlyUpload({
         url: '',
         id: 'showInputImageFile',
         auto: true,
         preview: function (url) {
-            $("#avatar").removeAttr("style");
-            $("#avatar").attr('src', '/images/loading.gif');
+            headUrlIndex = layer.load(1, {
+                shade: [0.1, '#fff'] //0.1透明度的白色背景
+            });
         },
         success: function (url) {
             url = ImageServerUrl + url;
@@ -362,16 +367,17 @@ $("#btn_EditPassword").click(function () {
                 success: function (result) {
                     if (result) {
                         $("#avatar").attr('src', url);
-                        $("#avatar").attr('style', 'width:120px;height:120px;');
+                        $("#avatar").attr('style', 'width:60px;height:60px;');
                     }
-                    else { 
+                    else {
                         $("#avatar").attr('src', oldAvatar);
-                        $("#avatar").attr('style', 'width:120px;height:120px;');
+                        $("#avatar").attr('style', 'width:60px;height:60px;');
                     }
+                    layer.close(headUrlIndex);
                 },
-                error: function (ex) { 
+                error: function (ex) {
                     $("#avatar").attr('src', oldAvatar);
-                    $("#avatar").attr('style', 'width:120px;height:120px;');
+                    $("#avatar").attr('style', 'width:60px;height:60px;');
                 }
             });
         }

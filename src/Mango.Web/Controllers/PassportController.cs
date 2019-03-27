@@ -30,10 +30,10 @@ namespace Mango.Web.Controllers
         public string Login(ViewModels.LoginViewModel model)
         {
             UserRepository repository = new UserRepository();
-            Models.UserInfoModel _UserInfoViewModel = repository.UserLogin(model.UserName.Trim(),Framework.Core.TextHelper.MD5Encrypt(model.Password.Trim()));
+            Mango.Models.UserInfoModel _UserInfoViewModel = repository.UserLogin(model.UserName.Trim(),Framework.Core.TextHelper.MD5Encrypt(model.Password.Trim()));
             if (_UserInfoViewModel == null)
             {
-                return "请属于正确的账号与密码!";
+                return "请输入正确的账号与密码!";
             }
             if (!_UserInfoViewModel.IsStatus)
             {
@@ -75,7 +75,7 @@ namespace Mango.Web.Controllers
             }
             //注册新用户
             Entity.m_User userModel = new Entity.m_User();
-            userModel.HeadUrl = "/images/avatar.jpg";
+            userModel.HeadUrl = "/images/avatar.png";
             userModel.GroupId = 1;
             userModel.IsStatus = true;
             userModel.LastLoginDate = DateTime.Now;

@@ -1,0 +1,93 @@
+﻿@{
+}
+@model Mango.Manager.ViewModels.DocsThemeViewModel
+
+<table class="table">
+    <tbody>
+        <tr>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+<table class="table table-sm table-hover table-list table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>标题</th>
+            <th>发布用户</th>
+            <th>发布时间</th>
+            <th>最后更新时间</th>
+            <th>浏览数</th>
+            <th>+1数</th>
+            <th>是否显示</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListData)
+        {
+            <tr>
+                <td>
+                    @item.ThemeId
+                </td>
+                <td>
+                    @item.Title
+                </td>
+                <td>
+                    @item.NickName
+                </td>
+                <td>
+                    @item.AppendTime
+                </td>
+                <td>
+                    @item.LastTime
+                </td>
+                <td>
+                    @item.ReadCount
+                </td>
+                <td>
+                    @item.PlusCount
+                </td>
+                <td>
+                    @(item.IsShow ? "是" : "否")
+                </td>
+                <td>
+                    <a href="javascript:SetShow(@item.ThemeId, @(item.IsShow?"false":"true"));"> @(item.IsShow ? "设为隐藏" : "设为显示")</a>
+                    <a href="javascript:OpenDocsListPage(@item.ThemeId);">文档管理</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="row">
+    <div class="col-12">
+        <ul class="pagination  justify-content-center">
+            @Html.MPager(ViewContext.HttpContext.Request, Model.TotalCount)
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    function SetShow(themeId, isShow) {
+        $.ajax({
+            type: 'post',
+            url: '/Docs/SetThemeShow',
+            data: 'themeId=' + themeId + '&isShow=' + isShow,
+            success: function (res) {
+                if (res) {
+                    window.location.href = window.location.href;
+                }
+            }
+        });
+    }
+    //打开文档管理列表页
+    function OpenDocsListPage(themeId) {
+        layer.open({
+            type: 2,
+            title: '文档管理',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['1600px', '768px'],
+            content: '/Docs/List/' + themeId
+        });
+    }
+</script>
