@@ -1,5 +1,4 @@
-# sns
-51core社区项目
+# 51core社区项目
 2019年3月27号 更新版本
 本项目基于 ASP.NET CORE 3.0+EF CORE 3.0开发
 
