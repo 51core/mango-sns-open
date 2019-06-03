@@ -15,18 +15,23 @@
         $.Validator.Create = function () {
             var r = [], result = false;
             for (var i = 0; i < config.items.length; i++) {
-                r.push({
-                    tf: Start(parseInt($(config.items[i].id).attr("data-validate")))
-                });
-            }
-            var count = 0;
-            for (var j = 0; j < r.length; j++) {
-                if (r[j].tf == false) {
-                    count += 1;
+                //r.push({
+                //    tf: Start(parseInt($(config.items[i].id).attr("data-validate")))
+                //});
+                result = Start(parseInt($(config.items[i].id).attr("data-validate")));
+                if (!result) {
+                    break;
                 }
             }
-            if (count == 0)
-                result = true
+            //var count = 0;
+            //for (var j = 0; j < r.length; j++) {
+            //    if (r[j].tf == false) {
+            //        count += 1;
+            //    }
+            //}
+            //if (count == 0)
+            //    result = true
+            
             return result;
         };
         //启动验证
@@ -90,7 +95,7 @@
                     if ((item[name].tipid != undefined && item[name].tipid != null && item[name].tipid != "")) {
                         tipid = item[name].tipid;
                     }
-                    Tips($(item.id),tip, tipid, false);
+                    Tips(item.id,tip, tipid, false);
                     break;
                 }
             }
@@ -180,13 +185,8 @@
         }
     }
     //输出提示信息
-    function Tips(vobject, tip, tipid, tf) {
-        var tip = new $.zui.Messager(tip, {
-            icon: 'info-sign',
-            type: 'info',
-            placement: 'center', // 定义显示位置
-            time: 1500
-        }).show();
+    function Tips(obj, tip, tipid, tf) {
+        layer.msg(tip);
     }
     function Trim(str)    
     {    

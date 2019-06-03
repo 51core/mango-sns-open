@@ -5,9 +5,7 @@
 <table class="table">
     <tbody>
         <tr>
-            <td>
-                
-            </td>
+            <td></td>
         </tr>
     </tbody>
 </table>
@@ -15,7 +13,7 @@
     <thead>
         <tr>
             <th>Id</th>
-            <th>用户名</th>
+            <th>账号名</th>
             <th>用户昵称</th>
             <th>注册时间</th>
             <th>最后登录时间</th>
@@ -36,7 +34,7 @@
                     @row["UserId"]
                 </td>
                 <td>
-                    @row["UserName"]
+                    @row["AccountName"]
                 </td>
                 <td>
                     @row["NickName"]
@@ -66,7 +64,7 @@
                     @(row["IsStatus"].ToString().ToLower() == "true" ? "正常" : "禁用")
                 </td>
                 <td>
-                    <a href="javascript:;" class="del" data-id="@row["UserId"]">禁止</a>
+                    <a href="javascript:SetUserState( @row["UserId"],@(row["IsStatus"].ToString().ToLower() == "true" ? "false" : "true"));" class="del">@(row["IsStatus"].ToString().ToLower() == "true" ? "设为禁止" : "设为正常")</a>
                 </td>
             </tr>
         }
@@ -79,3 +77,17 @@
         </ul>
     </div>
 </div>
+<script type="text/javascript">
+    function SetUserState(userId, stateCode) {
+        $.ajax({
+            type: 'post',
+            url: '/User/SetUserState',
+            data: 'userId=' + userId + '&stateCode=' + stateCode,
+            success: function (res) {
+                if (res) {
+                    window.location.href = window.location.href;
+                }
+            }
+        });
+    }
+</script>

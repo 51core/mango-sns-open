@@ -16,6 +16,87 @@ namespace Mango.Repository
             _dbContext = new EFDbContext();
         }
         /// <summary>
+        /// 添加用户点赞消息
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public int AddUserPlusRecords(Entity.m_UserPlusRecords model, Entity.m_Message message)
+        {
+            //记录类型 1 帖子点赞 2 帖子回答点赞 3 帖子评论点赞 4 文档主题点赞 5 文档点赞
+            int result = 0;
+            //加载是否已经存在点赞记录
+            var queryCount = _dbContext.m_UserPlusRecords.Where(m => m.ObjectId == model.ObjectId && m.UserId == model.UserId && m.RecordsType == model.RecordsType).Count();
+            using (var tran = _dbContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    if (queryCount > 0)
+                    {
+                        //存在则撤回点赞记录
+                        _dbContext.MangoRemove<Entity.m_UserPlusRecords>(m => m.ObjectId == model.ObjectId && m.UserId == model.UserId && m.RecordsType == model.RecordsType);
+                        //
+                        switch (model.RecordsType.Value)
+                        {
+                            case 1:
+                                _dbContext.MangoUpdate<Entity.m_Posts>(m => m.PlusCount == m.PlusCount - 1, m => m.PostsId == model.ObjectId);
+                                break;
+                            case 2:
+                                _dbContext.MangoUpdate<Entity.m_PostsAnswer>(m => m.Plus == m.Plus - 1, m => m.AnswerId == model.ObjectId);
+                                break;
+                            case 3:
+                                _dbContext.MangoUpdate<Entity.m_PostsComments>(m => m.Plus == m.Plus - 1, m => m.CommentId == model.ObjectId);
+                                break;
+                            case 4:
+                                _dbContext.MangoUpdate<Entity.m_DocsTheme>(m => m.PlusCount == m.PlusCount - 1, m => m.ThemeId == model.ObjectId);
+                                break;
+                            case 5:
+                                _dbContext.MangoUpdate<Entity.m_Docs>(m => m.PlusCount == m.PlusCount - 1, m => m.DocsId == model.ObjectId);
+                                break;
+                        }
+                        tran.Commit();
+                        result = -1;
+                    }
+                    else
+                    {
+                        //不存在则新增点赞记录
+                        _dbContext.Add(message);
+                        _dbContext.SaveChanges();
+                        //
+                        _dbContext.Add(model);
+                        _dbContext.SaveChanges();
+                        //
+                        switch (model.RecordsType.Value)
+                        {
+                            case 1:
+                                _dbContext.MangoUpdate<Entity.m_Posts>(m => m.PlusCount == m.PlusCount + 1, m => m.PostsId == model.ObjectId);
+                                break;
+                            case 2:
+                                _dbContext.MangoUpdate<Entity.m_PostsAnswer>(m => m.Plus == m.Plus + 1, m => m.AnswerId == model.ObjectId);
+                                break;
+                            case 3:
+                                _dbContext.MangoUpdate<Entity.m_PostsComments>(m => m.Plus == m.Plus + 1, m => m.CommentId == model.ObjectId);
+                                break;
+                            case 4:
+                                _dbContext.MangoUpdate<Entity.m_DocsTheme>(m => m.PlusCount == m.PlusCount + 1, m => m.ThemeId == model.ObjectId);
+                                break;
+                            case 5:
+                                _dbContext.MangoUpdate<Entity.m_Docs>(m => m.PlusCount == m.PlusCount + 1, m => m.DocsId == model.ObjectId);
+                                break;
+                        }
+                        tran.Commit();
+                        result = 1;
+                    }
+                }
+                catch
+                {
+                    tran.Rollback();
+                    result = 0;
+                }
+            }
+            return result;
+        }
+        /// <summary>
         /// 获取用户信息列表
         /// </summary>
         /// <returns></returns>
@@ -25,8 +106,9 @@ namespace Mango.Repository
                         join ug in _dbContext.m_UserGroup
                         on u.GroupId equals ug.GroupId
                         select new {
-                            u.HeadUrl,u.Email,u.GroupId,u.IsStatus,u.LastLoginDate,u.LastLoginIP,u.NickName,u.OpenId,u.Password,u.Phone,u.RegisterDate,u.RegisterIP,u.UserId,u.UserName
-                            ,ug.GroupName
+                            u.HeadUrl,u.Email,u.GroupId,u.IsStatus,u.LastLoginDate,u.LastLoginIP,u.NickName,u.OpenId,u.Password,u.Phone,u.RegisterDate,u.RegisterIP,u.UserId,u.AccountName
+                            ,
+                            ug.GroupName
                         };
             return query;
         }
@@ -42,7 +124,7 @@ namespace Mango.Repository
                         {
                             UserId = u.UserId.Value,
                             GroupId = u.GroupId.Value,
-                            UserName = u.UserName,
+                            AccountName = u.AccountName,
                             NickName = u.NickName,
                             HeadUrl = u.HeadUrl,
                             RegisterDate = u.RegisterDate.Value,
@@ -63,24 +145,28 @@ namespace Mango.Repository
         /// <param name="phone"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public Models.UserInfoModel UserLogin(string userName,string password)
+        public Models.UserInfoModel UserLogin(string accountName,string password)
         {
             var query = from u in _dbContext.m_User
                         select new Models.UserInfoModel()
                         {
-                            UserId=u.UserId.Value,
-                            GroupId=u.GroupId.Value,
-                            UserName=u.UserName,
-                            Password=u.Password,
-                            NickName=u.NickName,
+                            UserId = u.UserId.Value,
+                            GroupId = u.GroupId.Value,
+                            AccountName = u.AccountName,
+                            NickName = u.NickName,
                             HeadUrl = u.HeadUrl,
-                            RegisterDate=u.RegisterDate.Value,
-                            LastLoginDate=u.LastLoginDate.Value,
-                            LastLoginIP=u.LastLoginIP,
-                            RegisterIP=u.RegisterIP,
-                            IsStatus=u.IsStatus.Value
+                            RegisterDate = u.RegisterDate.Value,
+                            LastLoginDate = u.LastLoginDate.Value,
+                            LastLoginIP = u.LastLoginIP,
+                            RegisterIP = u.RegisterIP,
+                            IsStatus = u.IsStatus.Value,
+                            Address = u.AddressInfo,
+                            Birthday = u.Birthday,
+                            Sex = u.Sex,
+                            Tags = u.Tags,
+                            Password=u.Password
                         };
-            return query.Where(m => m.UserName == userName && m.Password == password).FirstOrDefault();
+            return query.Where(m => m.AccountName == accountName && m.Password == password).FirstOrDefault();
         }
         /// <summary>
         /// 新增用户
@@ -113,7 +199,7 @@ namespace Mango.Repository
         /// <returns>true 表示已经注册过,false 表示未注册过</returns>
         public bool IsExistUser(string phone)
         {
-            var query = _dbContext.m_User.Where(m => m.UserName == phone);
+            var query = _dbContext.m_User.Where(m => m.AccountName == phone);
             return query.Count() > 0 ? true : false;
         }
         /// <summary>
@@ -169,6 +255,15 @@ namespace Mango.Repository
                 return false;
             }
             return true;
+        }
+        /// <summary>
+        /// 根据用户ID获取昵称信息
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public string GetUserNickName(int userId)
+        {
+            return _dbContext.m_User.Where(m => m.UserId == userId).Select(m => m.NickName).FirstOrDefault();
         }
     }
 }

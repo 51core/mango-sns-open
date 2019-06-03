@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Mango.Repository;
 using System.Linq;
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkId=397860
+using Mango.Models;
 
 namespace Mango.Manager.Controllers
 {
@@ -56,7 +56,7 @@ namespace Mango.Manager.Controllers
         public IActionResult Tags()
         {
             PostsTagsRepository repository = new PostsTagsRepository();
-            List<Models.PostsTagsModel> model = repository.GetList();
+            List<PostsTagsModel> model = repository.GetList();
             return View(model);
         }
         /// <summary>
@@ -89,7 +89,7 @@ namespace Mango.Manager.Controllers
         public IActionResult Channel()
         {
             PostsChannelRepository repository = new PostsChannelRepository();
-            List<Models.PostsChannelModel> model = repository.GetPostsChannels().ToList();
+            List<PostsChannelModel> model = repository.GetPostsChannels().ToList();
             return View(model);
         }
         /// <summary>

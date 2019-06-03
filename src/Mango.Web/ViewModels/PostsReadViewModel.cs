@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Mango.Models;
 namespace Mango.Web.ViewModels
 {
     public class PostsReadViewModel
     {
-        public Models.PostsModel PostsData { get; set; }
+        public PostsModel PostsData { get; set; }
 
         /// <summary>
         /// 分页返回总记录
@@ -15,14 +15,14 @@ namespace Mango.Web.ViewModels
         /// <summary>
         /// 分页数据返回集合
         /// </summary>
-        public List<Models.PostsAnswerModel> AnswerListData { get; set; }
+        public List<PostsAnswerModel> AnswerListData { get; set; }
         /// <summary>
         /// 帖子频道
         /// </summary>
-        public List<Models.PostsChannelModel> PostsChannelData { get; set; }
+        public List<PostsChannelModel> PostsChannelData { get; set; }
         /// <summary>
         /// 一周热门帖子
         /// </summary>
-        public List<Models.PostsModel> HotListData { get; set; }
+        public List<PostsModel> HotListData { get; set; }
     }
 }

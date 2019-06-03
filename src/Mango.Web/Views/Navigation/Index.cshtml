@@ -3,21 +3,22 @@
 }
 
 @model Mango.Web.ViewModels.NavigationViewModel
-<div class="container-fixed" id="showNavigationMain">
-    @foreach (var item in Model.ClassifyListData)
-    {
-    <div class="row" data-id="@item.CId" data-type="classify">
-        <div class="col-lg-12">
-            <ul class="nav  nav-secondary">
-                <li class="col-lg-12" ><a href="#">@item.ClassifyName</a></li>
-            </ul>
-        </div>
-        <div class="col-lg-12" style="margin-top:5px;" id="showNavigationList@(item.CId)">
-           
+    <div class="row">
+        
+        <div class="col-lg-12" id="showNavigationMain">
+            @foreach (var item in Model.ClassifyListData)
+            {
+                <div class="my-2 p-1 bg-white rounded box-shadow" data-id="@item.CId">
+                    <h5 class="border-bottom border-gray pb-2 mb-0">@item.ClassifyName</h5>
+                    <div class="row text" style="padding-top:5px;" id="showNavigationList@(item.CId)">
+                        
+                       
+                    </div>
+                </div>
+            }
+            
         </div>
     </div>
-    }
-</div>
 @section Scripts{
     <script type="text/javascript">
         $(window).ready(function () {
@@ -36,21 +37,19 @@
                             }
                         });
                     });
-                    console.log(result);
                 }
             });
         });
         function CreateHtml(d) { 
             var html = '<div class="col-lg-3">';
-            html += '<a class="card" href="javascript:UpdateCount(' + d.NavigationId + ',\'' + d.NavigationUrl+'\');" >';
-            //html += '<img src="docs/img/img2.jpg" alt="">';
-            html += '<div class="card-heading"><strong>' + d.NavigationName +'</strong></div>';
-            html += '<div class="card-content text-muted">'+d.Remark+'</div>';
-            html += '<div class="card-actions">';
-            //html += '<button type="button" class="btn btn-danger"><i class="icon-heart"></i> 喜欢</button>';
-            html += '<div class="pull-right text-danger" style="margin-right:8px;"><i class="icon-external-link"></i> '+d.ClickCount+'</div>';
-            html += '</div>';
-            html += '</a>';
+                            html+='<div class="card">';
+                                html+='<div class="card-body">';
+                                    html+='<h6 class="card-title">' + d.NavigationName +'</h6>';
+                                    html+='<p class="card-text" style="font-size:12px;">'+d.Remark+'</p>';
+                                    html+='<a href="javascript:UpdateCount(' + d.NavigationId + ',\'' + d.NavigationUrl+'\');" class="btn btn-primary">点击浏览<span class="badge badge-light" style="margin-left:3px;">'+d.ClickCount+'</span></a>';
+                                html+='</div>';
+                            html+='</div>';
+                        html+='</div>';
             return html;
         }
         function UpdateCount(id,url) {
@@ -64,7 +63,7 @@
                     }
                 }
             });
-            window.open(url,"buyunguLink");
+            window.open(url,"51coreLink");
         }
     </script>
 }

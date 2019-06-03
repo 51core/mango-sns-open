@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Mango.Repository;
+using Mango.Models;
 namespace Mango.Manager.Controllers
 {
     public class WebSiteController : Controller
@@ -69,7 +70,7 @@ namespace Mango.Manager.Controllers
         public IActionResult Navigation()
         {
             WebSiteRepository repository = new WebSiteRepository();
-            List<Models.WebSiteNavigationModel> model = repository.GetWebSiteNavigations().ToList();
+            List<WebSiteNavigationModel> model = repository.GetWebSiteNavigations().ToList();
             return View(model);
         }
         /// <summary>
@@ -79,7 +80,7 @@ namespace Mango.Manager.Controllers
         public IActionResult Config()
         {
             WebSiteRepository repository = new WebSiteRepository();
-            Models.WebSiteConfigModel model = repository.GetWebSiteConfig();
+            WebSiteConfigModel model = repository.GetWebSiteConfig();
             return View(model);
         }
         [HttpPost]

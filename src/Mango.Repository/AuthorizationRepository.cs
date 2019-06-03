@@ -14,6 +14,7 @@ namespace Mango.Repository
         {
             _dbContext = new EFDbContext();
         }
+
         /// <summary>
         /// 根据用户组获取权限
         /// </summary>

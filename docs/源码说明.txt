@@ -1,4 +1,4 @@
-本项目基于 ASP.NET CORE 2.2+EF CORE 2.2开发
+本项目基于 ASP.NET CORE 3.0PRV5+EF CORE 3.0PRV5开发
 
 使用vs2017 15.9.3 +sqlserver 2017(数据库脚本最低支持sql server 2012/+)
 
@@ -12,4 +12,4 @@
 
 https://www.51core.net 
 
-记于2018年12月10号-喻平勇
+记于2019年06月03号-喻平勇

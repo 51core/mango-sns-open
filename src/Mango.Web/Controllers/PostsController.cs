@@ -40,8 +40,8 @@ namespace Mango.Web.Controllers
             PostsRepository repository = new PostsRepository();
             var query = repository.GetPostsPageList();
 
-            model.ListData = query.Where(m => (id > 0 ? m.ChannelId == id : m.ChannelId > 0)).Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToList();
-            model.TotalCount = query.Where(m => (id > 0 ? m.ChannelId == id : m.ChannelId > 0)).Count();
+            model.ListData = query.Where(m => (id > 0 ? m.ChannelId == id : m.ChannelId > 0)&&m.IsShow==true).Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToList();
+            model.TotalCount = query.Where(m => (id > 0 ? m.ChannelId == id : m.ChannelId > 0) && m.IsShow == true).Count();
 
             //加载帖子频道
             Common.PostsChannel postsProperty = new Common.PostsChannel();
@@ -73,183 +73,12 @@ namespace Mango.Web.Controllers
                 Common.PostsChannel postsProperty = new Common.PostsChannel();
                 model.PostsChannelData = postsProperty.GetListByCache();
                 //加载热门帖子
-                model.HotListData = repository.GetPostsListByHot().OrderByDescending(m => m.PlusCount).Where(m => m.PostDate >= DateTime.Now.AddDays(-7)).Skip(0).Take(10).ToList();
+                model.HotListData = repository.GetPostsListByHot().OrderByDescending(m => m.PlusCount).Where(m => m.PostDate >= DateTime.Now.AddDays(-7)&&m.IsShow==true).Skip(0).Take(10).ToList();
             }
             return View(model);
         }
-        /// <summary>
-        /// 帖子编辑
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Edit(string id)
-        {
-            ViewModels.PostsEditViewModel model = new ViewModels.PostsEditViewModel();
-            int postsId = Framework.Core.Transform.GetInt(id, 0);
-            int userId = Framework.Core.Transform.GetInt(HttpContext.Session.GetString("UserId"), 0);
-            //加载帖子数据
-            PostsRepository repository = new PostsRepository();
-            model.PostsData = repository.GetPostsByEdit(postsId, userId);
-            if (model.PostsData != null)
-            {
-                //加载帖子频道数据
-                Common.PostsChannel postsProperty = new Common.PostsChannel();
-                model.PostsChannels = postsProperty.GetListByCache();
-
-                return View(model);
-            }
-            return new ContentResult()
-            {
-                Content = "您的请求未得到授权!",
-                StatusCode = 401
-            };
-        }
-        [HttpPost]
-        public bool Edit(ViewModels.EditPostsRequestModel model)
-        {
-            //
-            Entity.m_Posts m = new Entity.m_Posts();
-            m.PostsId = model.PostsId;
-            m.Contents = model.Contents;//Framework.Core.HtmlFilter.SanitizeHtml(model.Contents);
-            m.LastDate = DateTime.Now;
-            m.Title = Framework.Core.HtmlFilter.StripHtml(model.Title);
-            m.ChannelId = model.ChannelId;
-            CommonRepository repository = new CommonRepository();
-            return repository.Update(m);
-        }
-        /// <summary>
-        /// 发布帖子
-        /// </summary>
-        /// <returns></returns>
-        public IActionResult Add()
-        {
-            Common.PostsChannel postsProperty = new Common.PostsChannel();
-            var model = postsProperty.GetListByCache();
-            return View(model);
-        }
-        [HttpPost]
-        public bool Add(ViewModels.AddPostsViewModel model)
-        {
-            //
-            Entity.m_Posts m = new Entity.m_Posts();
-            m.Contents = model.Contents;//Framework.Core.HtmlFilter.SanitizeHtml(model.Contents);
-            m.ImgUrl = string.Empty;
-            m.IsReply = true;
-            m.IsShow = true;
-            m.LastDate = DateTime.Now;
-            m.PlusCount = 0;
-            m.PostDate = DateTime.Now;
-            m.Tags = "";
-            m.ReadCount = 0;
-            m.Title = Framework.Core.HtmlFilter.StripHtml(model.Title);
-            m.UserId = Framework.Core.Transform.GetInt(HttpContext.Session.GetString("UserId"), 0);
-            m.AnswerCount = 0;
-            m.ChannelId = model.ChannelId;
-            CommonRepository repository = new CommonRepository();
-            return repository.Add(m);
-        }
-
-        /// <summary>
-        /// 帖子点赞
-        /// </summary>
-        /// <param name="postsId"></param>
-        /// <param name="title"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public int AddPostsPlus(int postsId, string title)
-        {
-            PostsRepository repository = new PostsRepository();
-
-            Entity.m_PostsRecords model = new Entity.m_PostsRecords();
-            model.PostsId = postsId;
-            model.AppendTime = DateTime.Now;
-            model.RecordsType = 1;
-            model.UserId = Framework.Core.Transform.GetInt(HttpContext.Session.GetString("UserId"), 0);
-
-            //消息通知
-            Entity.m_Message message = new Entity.m_Message();
-            message.AppendUserId = model.UserId;
-            message.Contents = Common.MessageHtml.GetMessageContent(HttpContext.Session.GetString("NickName"), postsId, title, 12);
-            message.IsRead = false;
-            message.MessageType = 12;
-            message.ObjId = postsId;
-            message.PostDate = DateTime.Now;
-            message.UserId = repository.GetPostsByUserId(postsId);
-            //消息推送
-            int resultCount = repository.AddPostsRecordsByPlus(model, message);
-            if (resultCount > 0)
-            {
-                Extensions.SignalRCore.PushUserMessage(message.UserId.ToString(), _messageHubContext);
-            }
-            return resultCount;
-        }
+        
         #region 帖子回答
-        /// <summary>
-        /// 添加回答点赞
-        /// </summary>
-        /// <param name="answerId"></param>
-        /// <returns>-1 表示取消点赞 1表示增加点赞 0表示异常</returns>
-        [HttpPost]
-        public int AddAnswerPlus(int answerId,int postsId,string title)
-        {
-            PostsRepository repository = new PostsRepository();
-
-            Entity.m_PostsAnswerRecords model = new Entity.m_PostsAnswerRecords();
-            model.AnswerId = answerId;
-            model.AppendTime = DateTime.Now;
-            model.RecordsType = 1;
-            model.UserId = Framework.Core.Transform.GetInt(HttpContext.Session.GetString("UserId"), 0);
-
-            //消息通知
-            Entity.m_Message message = new Entity.m_Message();
-            message.AppendUserId = model.UserId;
-            message.Contents = Common.MessageHtml.GetMessageContent(HttpContext.Session.GetString("NickName"), postsId, title, 13);
-            message.IsRead = false;
-            message.MessageType = 13;
-            message.ObjId = postsId;
-            message.PostDate = DateTime.Now;
-            message.UserId = repository.GetPostsAnswerByUserId(answerId);
-            //消息推送
-            int resultCount= repository.AddAnswerRecordsByPlus(model, message);
-            if (resultCount > 0)
-            {
-                Extensions.SignalRCore.PushUserMessage(message.UserId.ToString(), _messageHubContext);
-            }
-            return resultCount;
-        }
-        /// <summary>
-        /// 添加回答点赞
-        /// </summary>
-        /// <param name="PostsId"></param>
-        /// <returns>-1 表示取消点赞 1表示增加点赞 0表示异常</returns>
-        [HttpPost]
-        public int AddCommentsPlus(int commentId, int postsId, string title)
-        {
-            PostsRepository repository = new PostsRepository();
-            Entity.m_PostsCommentsRecords model = new Entity.m_PostsCommentsRecords();
-            model.CommentId = commentId;
-            model.AppendTime = DateTime.Now;
-            model.RecordsType = 1;
-            model.UserId = Framework.Core.Transform.GetInt(HttpContext.Session.GetString("UserId"), 0);
-            //消息通知
-            Entity.m_Message message = new Entity.m_Message();
-            message.AppendUserId = model.UserId;
-            message.Contents = Common.MessageHtml.GetMessageContent(HttpContext.Session.GetString("NickName"), postsId, title, 14);
-            message.IsRead = false;
-            message.MessageType = 14;
-            message.ObjId = postsId;
-            message.PostDate = DateTime.Now;
-            message.UserId = repository.GetPostsCommentsByUserId(commentId);
-
-            int resultCount= repository.AddCommentsRecordsByPlus(model, message);
-            //消息推送
-            if (resultCount > 0)
-            {
-                Extensions.SignalRCore.PushUserMessage(message.UserId.ToString(), _messageHubContext);
-            }
-            return resultCount;
-        }
         /// <summary>
         /// 添加回复
         /// </summary>

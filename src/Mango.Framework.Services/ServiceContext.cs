@@ -14,9 +14,9 @@ namespace Mango.Framework.Services
         /// 初始化对象
         /// </summary>
         /// <param name="IServiceProvider"></param>
-        public static void RegisterServices(IServiceCollection serviceCollection)
+        public static void RegisterServices(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceCollection.BuildServiceProvider();
+            _serviceProvider = serviceProvider;
         }
         /// <summary>
         /// 获取指定注册服务

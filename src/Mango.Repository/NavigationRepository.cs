@@ -54,6 +54,23 @@ namespace Mango.Repository
         /// 获取导航数据
         /// </summary>
         /// <returns></returns>
+        public IQueryable<Models.NavigationModel> GetNavigationQuery()
+        {
+            return _dbContext.m_Navigation.Select(m => new Models.NavigationModel()
+            {
+                CId = m.CId.Value,
+                ClickCount = m.ClickCount.Value,
+                IsShow = m.IsShow.Value,
+                NavigationId = m.NavigationId.Value,
+                NavigationName = m.NavigationName,
+                NavigationUrl = m.NavigationUrl,
+                Remark = m.Remark
+            });
+        }
+        /// <summary>
+        /// 获取导航数据
+        /// </summary>
+        /// <returns></returns>
         public List<Models.NavigationModel> GetNavigationList()
         {
             return _dbContext.m_Navigation.Select(m=>new Models.NavigationModel()

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Mango.Common.Upyun;
 using Mango.Framework.Core;
+using Mango.Models;
 namespace Mango.Web.Controllers
 {
     public class FileController : Controller
@@ -22,7 +23,7 @@ namespace Mango.Web.Controllers
         {
             if (HttpContext.Session.GetString("UserId") != null)
             {
-                Models.UPYunModel model = new Models.UPYunModel();
+                UPYunModel model = new UPYunModel();
 
                 model.Expiration = UPYunHelper.GetTimeStamp();
                 model.Path = string.Format("/{0}/{1}/{2}/{3}{4}", HttpContext.Session.GetString("UserId"),DateTime.Now.Year,DateTime.Now.Month,System.Guid.NewGuid().ToString().Replace("-",""),Path.GetExtension(fileName));//文件存储地址
@@ -38,7 +39,7 @@ namespace Mango.Web.Controllers
         /// <param name="env"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public string Upload([FromServices]IHostingEnvironment env, IFormFile file)
+        public string Upload([FromServices]IWebHostEnvironment env, IFormFile file)
         {
             string result = string.Empty;
             if (file.Length > 0)
@@ -59,7 +60,7 @@ namespace Mango.Web.Controllers
         /// <param name="_hostingEnvironment"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public IActionResult Download([FromServices]IHostingEnvironment _hostingEnvironment, string file)
+        public IActionResult Download([FromServices]IWebHostEnvironment _hostingEnvironment, string file)
         {
             string DownLoadFilePath = Path.Combine(_hostingEnvironment.WebRootPath, file);
             try

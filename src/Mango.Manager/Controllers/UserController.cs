@@ -7,8 +7,7 @@ using Mango.Repository;
 using Newtonsoft.Json;
 using Mango.Framework.EFCore;
 using System.Linq;
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkId=397860
-
+using Mango.Models;
 namespace Mango.Manager.Controllers
 {
     public class UserController : Controller
@@ -124,7 +123,7 @@ namespace Mango.Manager.Controllers
         public IActionResult GetGroupPower(int groupId)
         {
             AuthorizationRepository repository = new AuthorizationRepository();
-            List<Models.UserGroupPowerModel> result= repository.GetPowerData(groupId);
+            List<UserGroupPowerModel> result= repository.GetPowerData(groupId);
             return Json(result);
         }
         /// <summary>
@@ -139,6 +138,21 @@ namespace Mango.Manager.Controllers
         {
             UserRepository repository = new UserRepository();
             return repository.UpdateGroupPower(groupId, powerData);
+        }
+        /// <summary>
+        /// 设置用户状态
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="stateCode"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public bool SetUserState(int userId, bool stateCode)
+        {
+            Entity.m_User model = new Entity.m_User();
+            model.UserId = userId;
+            model.IsStatus = stateCode;
+            CommonRepository repository = new CommonRepository();
+            return repository.Update(model);
         }
         #endregion
         // GET: /<controller>/

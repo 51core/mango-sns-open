@@ -1,4 +1,34 @@
-﻿//显示评论回复列表
+﻿//提交回答
+$("#btn_PostAnswer").click(function () {
+    $("#contents").val(tinymce.get('contents').getContent());
+    //加载验证
+    var config = new Array();
+    config.push({
+        id: $("#contents"),
+        required: {},
+        length: { min: 1, max: 20000 }
+    });
+    var v = $.Validator({
+        items: config
+    });
+    if (v.Create()) {
+        var tipIndex = layer.load(2);
+        $("#AnswerForm").ajaxSubmit({
+            success: function (result) {
+                layer.close(tipIndex);
+                if (result) {
+                    layer.msg("发布成功", function () {
+                        window.location.href = window.location.href;
+                    });
+                }
+            }
+        });
+    }
+    else {
+        return false;
+    }
+});
+
 //定义一个全部变量
 var cmtCinfig = new Array();
 function ShowAnswerList(answerId) {
@@ -206,194 +236,5 @@ function CreateCommentsHtml(d) {
     });
     $("#showCommentsPageList_" + d.AnswerId).append(html);
 }
-//提交回答
-$("#btn_PostAnswer").click(function () {
-    $("#contents").val(tinymce.get('contents').getContent());
-    //加载验证
-    var config = new Array();
-    config.push({
-        id: $("#contents"),
-        required: {},
-        length: { min: 1, max: 20000 }
-    });
-    var v = $.Validator({
-        items: config
-    });
-    if (v.Create()) {
-        var tipIndex = layer.load(2);
-        $("#AnswerForm").ajaxSubmit({
-            success: function (result) {
-                layer.close(tipIndex);
-                if (result) {
-                    var tip = new $.zui.Messager('发布成功', {
-                        icon: 'ok-sign',
-                        type: 'success',
-                        placement: 'center', // 定义显示位置
-                        time: 0
-                    }).show();
-                    setTimeout(function () {
-                        tip.hide(function () {
-                            window.location.href = window.location.href;
-                        });
-                    }, 1500);
-                }
-            }
-        });
-    }
-    else {
-        return false;
-    }
-});
 
-//添加回答点赞
-function AddAnswerPlus(answerId) {
-    if (IsLogin) {
-        var postsId = $("#msg_posts_data").attr("data-id");
-        var title = $("#msg_posts_data").attr("data-title");
-        $.ajax({
-            type: 'post',
-            url: '/Posts/AddAnswerPlus',
-            data: 'answerId=' + answerId + '&postsId=' + postsId + '&title=' + title,
-            success: function (res) {
-                var plus = parseInt($("#answerPlus_" + answerId).text());
-                if (res == 0) {
-                    var tip = new $.zui.Messager('点赞异常,请稍后尝试', {
-                        icon: 'ok-sign',
-                        type: 'success',
-                        placement: 'center', // 定义显示位置
-                        time: 0
-                    }).show();
-                    setTimeout(function () {
-                        tip.hide(function () {
-
-                        });
-                    }, 1500);
-                }
-                else if (res == 1) {
-
-                    plus = plus + 1;
-                    $("#answerPlus_" + answerId).text(plus);
-                }
-                else if (res == -1) {
-                    plus = plus - 1;
-                    $("#answerPlus_" + answerId).text(plus);
-                }
-            }
-        });
-    }
-    else {
-        var tip = new $.zui.Messager('请您先登录.', {
-            icon: 'ok-sign',
-            type: 'success',
-            placement: 'center', // 定义显示位置
-            time: 0
-        }).show();
-        setTimeout(function () {
-            tip.hide(function () {
-
-            });
-        }, 1500);
-    }
-}
-//添加评论点赞
-function AddCommentsPlus(commentId) {
-    if (IsLogin) {
-        var postsId = $("#msg_posts_data").attr("data-id");
-        var title = $("#msg_posts_data").attr("data-title");
-        $.ajax({
-            type: 'post',
-            url: '/Posts/AddCommentsPlus',
-            data: 'commentId=' + commentId + '&postsId=' + postsId + '&title=' + title,
-            success: function (res) {
-                var plus = parseInt($("#commentsPlus_" + commentId).text());
-                if (res == 0) {
-                    var tip = new $.zui.Messager('点赞异常,请稍后尝试', {
-                        icon: 'ok-sign',
-                        type: 'success',
-                        placement: 'center', // 定义显示位置
-                        time: 0
-                    }).show();
-                    setTimeout(function () {
-                        tip.hide(function () {
-
-                        });
-                    }, 1500);
-                }
-                else if (res == 1) {
-
-                    plus = plus + 1;
-                    $("#commentsPlus_" + commentId).text(plus);
-                }
-                else if (res == -1) {
-                    plus = plus - 1;
-                    $("#commentsPlus_" + commentId).text(plus);
-                }
-            }
-        });
-    }
-    else {
-        var tip = new $.zui.Messager('请您先登录.', {
-            icon: 'ok-sign',
-            type: 'success',
-            placement: 'center', // 定义显示位置
-            time: 0
-        }).show();
-        setTimeout(function () {
-            tip.hide(function () {
-
-            });
-        }, 1500);
-    }
-}
-
-//添加帖子点赞数
-function AddPostsPlus() {
-    if (IsLogin) {
-        var postsId = $("#msg_posts_data").attr("data-id");
-        var title = $("#msg_posts_data").attr("data-title");
-        $.ajax({
-            type: 'post',
-            url: '/Posts/AddPostsPlus',
-            data: 'postsId=' + postsId + '&title=' + title,
-            success: function (res) {
-                var plus = parseInt($("#msg_posts_pluscount").text());
-                if (res == 0) {
-                    var tip = new $.zui.Messager('点赞异常,请稍后尝试', {
-                        icon: 'ok-sign',
-                        type: 'success',
-                        placement: 'center', // 定义显示位置
-                        time: 0
-                    }).show();
-                    setTimeout(function () {
-                        tip.hide(function () {
-
-                        });
-                    }, 1500);
-                }
-                else if (res == 1) {
-
-                    plus = plus + 1;
-                    $("#msg_posts_pluscount").text(plus);
-                }
-                else if (res == -1) {
-                    plus = plus - 1;
-                    $("#msg_posts_pluscount").text(plus);
-                }
-            }
-        });
-    }
-    else {
-        var tip = new $.zui.Messager('请您先登录.', {
-            icon: 'ok-sign',
-            type: 'success',
-            placement: 'center', // 定义显示位置
-            time: 0
-        }).show();
-        setTimeout(function () {
-            tip.hide(function () {
-
-            });
-        }, 1500);
-    }
-}
 
