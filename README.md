@@ -1,6 +1,6 @@
 # 51core社区项目
-2019年3月27号 更新版本
-本项目基于 ASP.NET CORE 3.0+EF CORE 3.0开发
+2019年6月03号 更新版本
+本项目基于 ASP.NET CORE 3.0 PR5 +EF CORE 3.0 PR5开发
 
 使用vs2019 +sqlserver 2017(数据库脚本最低支持sql server 2012/+)
 
