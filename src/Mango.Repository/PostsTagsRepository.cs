@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Mango.Framework.EFCore;
 using Microsoft.EntityFrameworkCore;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Data;
 namespace Mango.Repository
 {

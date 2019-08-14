@@ -72,6 +72,5 @@ namespace Mango.Entity
         /// </summary>
         
         public bool? IsShow { get; set; }
-		
     }
 }

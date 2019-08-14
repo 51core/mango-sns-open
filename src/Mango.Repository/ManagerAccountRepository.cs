@@ -4,7 +4,7 @@ using System.Text;
 using System.Linq;
 using Mango.Framework.EFCore;
 using Microsoft.EntityFrameworkCore;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Data;
 namespace Mango.Repository
 {
@@ -82,18 +82,11 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<MangoData> GetAccountList()
         {
-            var query = from a in _dbContext.m_ManagerAccount
-                        join r in _dbContext.m_ManagerRole
-                        on a.RoleId equals r.RoleId
-                        select new {
-                            a.AdminId,
-                            a.AdminName,
-                            a.IsStatus,
-                            a.Password,
-                            a.RoleId,
-                            r.RoleName
-                        };
-            return query.ToMangoDataList();
+            return _dbContext.m_ManagerAccount
+                .Join(_dbContext.m_ManagerRole, a=> a.RoleId, r=> r.RoleId,(a,r)=> new {
+                a.AdminId,a.AdminName,a.IsStatus,a.Password,a.RoleId,r.RoleName
+            })
+            .ToMangoDataList();
         }
         /// <summary>
         /// 根据角色Id获取权限
@@ -102,21 +95,11 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<MangoData> GetCompetence(int roleId)
         {
-            var query = from p in _dbContext.m_ManagerPower
-                        join m in _dbContext.m_ManagerMenu
-                        on p.MenuId equals m.MenuId
-                        select new {
-                            p.PowerId,
-                            p.RoleId,
-                            m.MenuId,
-                            m.MenuName,
-                            m.ControllerName,
-                            m.ActionName,
-                            m.AreaName,
-                            m.IsPower,
-                            m.ParentId
-                        };
-            return query.Where(m=>m.RoleId==roleId).ToMangoDataList();
+            return _dbContext.m_ManagerPower.Join(_dbContext.m_ManagerMenu, p => p.MenuId, m => m.MenuId, (p, m) => new {
+                p.PowerId, p.RoleId, m.MenuId, m.MenuName, m.ControllerName, m.ActionName, m.AreaName, m.IsPower, m.ParentId
+            })
+            .Where(m => m.RoleId == roleId)
+            .ToMangoDataList();
         }
         /// <summary>
         /// 用户登录
@@ -126,19 +109,18 @@ namespace Mango.Repository
         /// <returns></returns>
         public List<MangoData> Login(string adminName, string password)
         {
-            var query = from a in _dbContext.m_ManagerAccount
-                        join r in _dbContext.m_ManagerRole
-                        on a.RoleId equals r.RoleId
-                        select new
-                        {
-                           a.AdminId,
-                           a.AdminName,
-                           a.IsStatus,
-                           a.Password,
-                           a.RoleId,
-                           r.RoleName
-                        };
-            return query.Where(m => m.AdminName == adminName && m.Password == password).ToMangoDataList(); ;
+            return _dbContext.m_ManagerAccount
+                .Join(_dbContext.m_ManagerRole, a => a.RoleId, r => r.RoleId, (a, r) => new
+                {
+                    a.AdminId,
+                    a.AdminName,
+                    a.IsStatus,
+                    a.Password,
+                    a.RoleId,
+                    r.RoleName
+                })
+                .Where(m => m.AdminName == adminName && m.Password == password)
+                .ToMangoDataList();
         }
     }
 }

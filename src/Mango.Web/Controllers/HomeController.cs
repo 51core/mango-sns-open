@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Mango.Repository;
+
 namespace Mango.Web.Controllers
 {
     public class HomeController : Controller
@@ -35,6 +38,23 @@ namespace Mango.Web.Controllers
         public IActionResult Test()
         {
             return View();
+        }
+        /// <summary>
+        /// 首页
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult Index()
+        {
+            ViewModels.HomeViewModel viewModel = new ViewModels.HomeViewModel();
+            int pageSize = 5;
+            //加载帖子数据
+            PostsRepository repository = new PostsRepository();
+            var query = repository.GetPostsPageList();
+            viewModel.PostsDatas = query.Where(m => m.IsShow == true).Take(pageSize).ToList();
+            //加载文档主题数据
+            DocsRepository docsRepository = new DocsRepository();
+            viewModel.DocsDatas = docsRepository.GetDocsByPage().OrderByDescending(m=>m.DocsId).Where(m => m.IsShow == true).Take(pageSize).ToList();
+            return View(viewModel);
         }
     }
 }

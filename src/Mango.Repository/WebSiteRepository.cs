@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Mango.Framework.EFCore;
 using Microsoft.EntityFrameworkCore;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text;
 using System.Linq;
@@ -21,22 +21,22 @@ namespace Mango.Repository
         /// <returns></returns>
         public Models.WebSiteConfigModel GetWebSiteConfig()
         {
-            var query = from cfg in _dbContext.m_WebSiteConfig
-                        orderby cfg.ConfigId ascending
-                        select new Models.WebSiteConfigModel()
-                        {
-                            ConfigId = cfg.ConfigId.Value,
-                            CopyrightText = cfg.CopyrightText,
-                            FilingNo = cfg.FilingNo,
-                            IsLogin = cfg.IsLogin.Value,
-                            IsRegister = cfg.IsRegister.Value,
-                            WebSiteDescription = cfg.WebSiteDescription,
-                            WebSiteKeyWord = cfg.WebSiteKeyWord,
-                            WebSiteName=cfg.WebSiteName,
-                            WebSiteTitle=cfg.WebSiteTitle,
-                            WebSiteUrl=cfg.WebSiteUrl
-                        };
-            return query.FirstOrDefault();
+            return _dbContext.m_WebSiteConfig
+                .OrderBy(cfg=>cfg.ConfigId)
+                .Select(cfg => new Models.WebSiteConfigModel()
+                {
+                    ConfigId = cfg.ConfigId.Value,
+                    CopyrightText = cfg.CopyrightText,
+                    FilingNo = cfg.FilingNo,
+                    IsLogin = cfg.IsLogin.Value,
+                    IsRegister = cfg.IsRegister.Value,
+                    WebSiteDescription = cfg.WebSiteDescription,
+                    WebSiteKeyWord = cfg.WebSiteKeyWord,
+                    WebSiteName = cfg.WebSiteName,
+                    WebSiteTitle = cfg.WebSiteTitle,
+                    WebSiteUrl = cfg.WebSiteUrl
+                })
+                .FirstOrDefault();
         }
         /// <summary>
         /// 获取网站顶部导航数据
@@ -44,18 +44,18 @@ namespace Mango.Repository
         /// <returns></returns>
         public IQueryable<Models.WebSiteNavigationModel> GetWebSiteNavigations()
         {
-            var query = from nav in _dbContext.m_WebSiteNavigation
-                        orderby nav.SortCount ascending
-                        select new Models.WebSiteNavigationModel() {
-                            AppendTime=nav.AppendTime.Value,
-                            IsShow=nav.IsShow.Value,
-                            IsTarget=nav.IsTarget.Value,
-                            LinkUrl=nav.LinkUrl,
-                            NavigationId=nav.NavigationId.Value,
-                            NavigationName=nav.NavigationName,
-                            SortCount=nav.SortCount.Value
-                        };
-            return query;
+            return _dbContext.m_WebSiteNavigation
+                .OrderBy(nav => nav.SortCount)
+                .Select(nav => new Models.WebSiteNavigationModel()
+                {
+                    AppendTime = nav.AppendTime.Value,
+                    IsShow = nav.IsShow.Value,
+                    IsTarget = nav.IsTarget.Value,
+                    LinkUrl = nav.LinkUrl,
+                    NavigationId = nav.NavigationId.Value,
+                    NavigationName = nav.NavigationName,
+                    SortCount = nav.SortCount.Value
+                });
         }
     }
 }

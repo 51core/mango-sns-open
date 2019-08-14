@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Mango.Framework.EFCore;
 using Microsoft.EntityFrameworkCore;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Linq;
 namespace Mango.Repository
@@ -33,22 +33,28 @@ namespace Mango.Repository
         /// <returns></returns>
         public IQueryable<object> GetNavigationPageList()
         {
-            var query = from nav in _dbContext.m_Navigation
-                        join nc in _dbContext.m_NavigationClassify
-                        on nav.CId equals nc.CId
-
-                        select new
-                        {
-                            nav.CId,
-                            nav.ClickCount,
-                            nav.IsShow,
-                            nav.NavigationId,
-                            nav.NavigationName,
-                            nav.NavigationUrl,
-                            nav.Remark,
-                            nc.ClassifyName
-                        }; 
-            return query;
+            return _dbContext.m_Navigation
+                .Join(_dbContext.m_NavigationClassify, nav => nav.CId, nc => nc.CId, (nav, nc) => new
+                {
+                    nav.CId,nav.ClickCount,nav.IsShow,nav.NavigationId,nav.NavigationName,nav.NavigationUrl,nav.Remark,nc.ClassifyName
+                });
+        }
+        /// <summary>
+        /// 获取导航数据
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<Models.NavigationModel> GetNavigationQuery()
+        {
+            return _dbContext.m_Navigation.Select(m => new Models.NavigationModel()
+            {
+                CId = m.CId.Value,
+                ClickCount = m.ClickCount.Value,
+                IsShow = m.IsShow.Value,
+                NavigationId = m.NavigationId.Value,
+                NavigationName = m.NavigationName,
+                NavigationUrl = m.NavigationUrl,
+                Remark = m.Remark
+            });
         }
         /// <summary>
         /// 获取导航数据

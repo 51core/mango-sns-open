@@ -73,7 +73,7 @@ namespace Mango.Web.Controllers
                 Common.PostsChannel postsProperty = new Common.PostsChannel();
                 model.PostsChannelData = postsProperty.GetListByCache();
                 //加载热门帖子
-                model.HotListData = repository.GetPostsListByHot().OrderByDescending(m => m.PlusCount).Where(m => m.PostDate >= DateTime.Now.AddDays(-7)).Skip(0).Take(10).ToList();
+                model.HotListData = repository.GetPostsListByHot().OrderByDescending(m => m.PlusCount).Where(m => m.PostDate >= DateTime.Now.AddDays(-7)&&m.IsShow==true).Skip(0).Take(10).ToList();
             }
             return View(model);
         }

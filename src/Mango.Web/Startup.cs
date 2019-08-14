@@ -30,17 +30,17 @@ namespace Mango.Web
             //{
             //    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
             //    options.CheckConsentNeeded = context => true;
-            //    options.MinimumSameSitePolicy = SameSiteMode.None;
             //});
             //添加SignalR
             services.AddSignalR();
 
-            services.AddMvc(options => {
-                options.Filters.Add(new Extensions.AuthorizationActionFilter());
-            }).AddNewtonsoftJson();
-
             services.AddSession();
             services.AddMemoryCache();
+
+            services.AddControllersWithViews(options => {
+                options.Filters.Add(new Extensions.AuthorizationActionFilter());
+            }).AddNewtonsoftJson();
+            services.AddRazorPages();
             //
             services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
             //添加Session访问容器
@@ -70,26 +70,30 @@ namespace Mango.Web
 
             //启用会话存储(Session)
             app.UseSession();
-            //启用Signalr
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<Extensions.MessageHub>("/MessageHub");
-            });
-            app.UseRouting(routes =>
-            {
-                routes.MapAreaControllerRoute(
-                   name: "area",
-                   areaName:"User",
-                   template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-                routes.MapControllerRoute(
-                    name: "default",
-                   template: "{controller=Posts}/{action=Index}/{id?}");
-                routes.MapRazorPages();
-            });
-
+            
             app.UseCookiePolicy();
 
             app.UseAuthorization();
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                //设置SignalR
+                endpoints.MapHub<Extensions.MessageHub>("/MessageHub");
+                //
+                endpoints.MapAreaControllerRoute(
+                   name: "area",
+                   areaName: "User",
+                   pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+
+            });
+
             //数据库连接字符串
             Framework.Core.Configuration.AddItem("ConnectionStrings", Configuration.GetSection("ConnectionStrings").Value);
             //又拍云配置项

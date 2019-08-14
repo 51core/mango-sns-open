@@ -16,7 +16,7 @@ namespace Mango.Models
         /// <summary>
         /// 用户名
         /// </summary>
-        public string UserName { get; set; }
+        public string AccountName { get; set; }
         /// <summary>
         /// 登录密码
         /// </summary>

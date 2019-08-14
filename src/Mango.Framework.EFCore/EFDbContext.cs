@@ -24,6 +24,8 @@ namespace Mango.Framework.EFCore
             }
         }
         #region Entity DbSet<>
+        public virtual DbSet<m_AppManager> m_AppManager { get; set; }
+
         public virtual DbSet<m_UserPlusRecords> m_UserPlusRecords { get; set; }
         public virtual DbSet<m_DocsTheme> m_DocsTheme { get; set; }
         public virtual DbSet<m_Docs> m_Docs { get; set; }

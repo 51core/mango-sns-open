@@ -14,10 +14,10 @@ namespace Mango.Entity
         public int? UserId { get; set; }
 		
         /// <summary>
-        /// 用户名
+        /// 用户账号名
         /// </summary>
         
-        public string UserName { get; set; }
+        public string AccountName { get; set; }
 		
         /// <summary>
         /// 登陆密码

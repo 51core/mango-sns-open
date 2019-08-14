@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Mango.Framework.EFCore;
 using Microsoft.EntityFrameworkCore;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Linq;
 namespace Mango.Repository
@@ -42,25 +42,21 @@ namespace Mango.Repository
         /// <returns></returns>
         public IQueryable<Models.MessageModel>  GetMessageList()
         {
-            var query = from msg in _dbContext.m_Message
-                        join u in _dbContext.m_User
-                        on msg.UserId equals u.UserId
-                        orderby msg.MessageId descending
-                        select new Models.MessageModel(){
-                            AppendUserId= msg.AppendUserId.Value
-                            ,Contents= msg.Contents
-                            ,IsRead= msg.IsRead.Value
-                            ,MessageId= msg.MessageId.Value
-                            ,MessageType= msg.MessageType.Value
-                            ,ObjId= msg.ObjId.Value
-                            ,PostDate= msg.PostDate.Value
-                            ,UserId= msg.UserId.Value
-                            ,
-                            HeadUrl = u.HeadUrl
-                            ,
-                            NickName= u.NickName
-                        };
-            return query;
+            return _dbContext.m_Message
+                .Join(_dbContext.m_User, msg => msg.UserId, u => u.UserId, (msg, u) => new Models.MessageModel()
+                {
+                    AppendUserId = msg.AppendUserId.Value,
+                    Contents = msg.Contents,
+                    IsRead = msg.IsRead.Value,
+                    MessageId = msg.MessageId.Value,
+                    MessageType = msg.MessageType.Value,
+                    ObjId = msg.ObjId.Value,
+                    PostDate = msg.PostDate.Value,
+                    UserId = msg.UserId.Value,
+                    HeadUrl = u.HeadUrl,
+                    NickName = u.NickName
+                })
+                .OrderByDescending(q => q.MessageId);
         }
     }
 }

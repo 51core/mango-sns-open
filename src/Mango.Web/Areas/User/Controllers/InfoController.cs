@@ -22,44 +22,41 @@ namespace Mango.Web.Areas.User.Controllers
             return View(model);
         }
         /// <summary>
-        /// 编辑资料
+        /// 设置用户资料
         /// </summary>
-        /// <param name="FieldName"></param>
-        /// <param name="FieldValue"></param>
+        /// <param name="infoType">资料信息类型(1.用户昵称 2.用户头像 3.用户标签 4.用户所在地 5.性别)</param>
+        /// <param name="infoValue">信息值</param>
         /// <returns></returns>
-        public bool Edit(string fieldName,string fieldValue)
+        [HttpPost]
+        public bool SetUserInfo(int infoType, string infoValue)
         {
-            if (!string.IsNullOrEmpty(fieldName) && !string.IsNullOrEmpty(fieldValue))
-            {
-                int userId = Framework.Core.Transform.GetInt(HttpContext.Session.GetString("UserId"), 0);
-
-                Entity.m_User model = new Entity.m_User();
-                model.UserId = userId;
-                switch (fieldName)
-                {
-                    case "Tags":
-                        model.Tags = fieldValue;
-                        break;
-                    case "Address":
-                        model.AddressInfo = fieldValue;
-                        break;
-                    case "Sex":
-                        model.Sex = fieldValue;
-                        break;
-                    case "NickName":
-                        model.NickName = fieldValue;
-                        break;
-                    case "avatar":
-                        model.HeadUrl= fieldValue;
-                        break;
-                }
-                CommonRepository repository = new CommonRepository();
-                return repository.Update(model);
-            }
-            else
+            if (string.IsNullOrEmpty(infoValue))
             {
                 return false;
             }
+            int userId = Framework.Core.Transform.GetInt(HttpContext.Session.GetString("UserId"), 0);
+            Entity.m_User model = new Entity.m_User();
+            model.UserId = userId;
+            switch (infoType)
+            {
+                case 3:
+                    model.Tags = infoValue;
+                    break;
+                case 4:
+                    model.AddressInfo = infoValue;
+                    break;
+                case 5:
+                    model.Sex = infoValue;
+                    break;
+                case 1:
+                    model.NickName = infoValue;
+                    break;
+                case 2:
+                    model.HeadUrl = infoValue;
+                    break;
+            }
+            CommonRepository repository = new CommonRepository();
+            return repository.Update(model);
         }
         /// <summary>
         /// 更改密码

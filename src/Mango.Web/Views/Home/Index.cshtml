@@ -1,8 +1,87 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "首页";
+}
+@model Mango.Web.ViewModels.HomeViewModel
+@section Style{
+    <style>
+        .jumbotron {
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+            border-radius: .3rem;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="my-3 p-2 bg-white rounded box-shadow">
+            <h5 class="border-bottom border-gray pb-1 mb-0">最新知问</h5>
+            @foreach (var item in Model.PostsDatas)
+            {
+                <div class="media pt-2 border-bottom border-gray ">
+                    <img src="@(item.HeadUrl)" alt="" class="mr-2 rounded" style="width:40px;height:40px;">
+                    <div class="media-body pb-3 mb-0 small lh-125">
+                        <a href="/posts/read/@item.PostsId" target="_blank" style="color:black;"><h6 class="d-block">@item.Title</h6></a>
+                        <span><img src="~/style/bootstrap/dist/icons/clock.svg" style="width:12px;height:12px;" title="发布时间" />：@item.PostDate.ToString("yyyy-MM-dd HH:mm:ss")</span>
+
+                        <span style="margin-left:10px;"><img src="~/style/bootstrap/dist/icons/eye.svg" style="width:12px;height:12px;" title="浏览次数" />：@item.ReadCount</span>
+
+                        <span style="margin-left:10px;"><img src="~/style/bootstrap/dist/icons/comment.svg" style="width:12px;height:12px;" title="回复数" />：@item.AnswerCount</span>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="my-3 p-2 bg-white rounded box-shadow">
+            <h5 class="border-bottom border-gray pb-2 mb-0">最新文档教程</h5>
+            @foreach (var item in Model.DocsDatas)
+            {
+                <div class="media pt-2 border-bottom border-gray ">
+                    <img src="@(item.HeadUrl)" alt="" class="mr-2 rounded" style="width:40px;height:40px;">
+                    <div class="media-body pb-3 mb-0 small lh-125">
+                        <a href="/docs/read/@item.ThemeId/@item.DocsId" target="_blank" style="color:black;"><h6 class="d-block">@item.Title</h6></a>
+                        <span><img src="~/style/bootstrap/dist/icons/clock.svg" style="width:12px;height:12px;" title="发布时间" />：@item.AppendTime.ToString("yyyy-MM-dd HH:mm:ss")</span>
+
+                        <span style="margin-left:10px;"><img src="~/style/bootstrap/dist/icons/eye.svg" style="width:12px;height:12px;" title="浏览次数" />：@item.ReadCount</span>
+
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <!--右边部分-->
+    <div class="col-lg-4">
+        <div class="my-3 p-2 bg-white rounded box-shadow">
+            <h5 class="border-bottom border-gray pb-2 mb-0">开源GitHub地址</h5>
+            <div class="media pt-2 border-bottom border-gray ">
+                <div class="media-body pb-3 mb-0 small lh-125">
+                    <a href="https://github.com/51core/mango-sns-open" target="_blank" style="color:black;"><h6 class="d-block">51Core技术网源代码</h6></a>
+                    <p>
+                        <!-- Place this tag where you want the button to render. -->
+                        <a class="github-button" href="https://github.com/51core/mango-sns-open" data-size="large" data-show-count="true" aria-label="Star 51core/mango-sns-open on GitHub">Star</a>
+                        <!-- Place this tag where you want the button to render. -->
+                        <a class="github-button" href="https://github.com/51core/mango-sns-open/archive/master.zip" data-size="large" aria-label="Download 51core/mango-sns-open on GitHub">Download</a>
+                    </p>
+                </div>
+            </div>
+            <div class="media pt-2 border-bottom border-gray ">
+                <div class="media-body pb-3 mb-0 small lh-125">
+                    <a href="https://github.com/51core/mango-docs" target="_blank" style="color:black;"><h6 class="d-block">51Core技术网教程案例源代码</h6></a>
+                    <p>
+                        <!-- Place this tag where you want the button to render. -->
+                        <a class="github-button" href="https://github.com/51core/mango-docs" data-size="large" data-show-count="true" aria-label="Star 51core/mango-docs on GitHub">Star</a>
+                        <!-- Place this tag where you want the button to render. -->
+                        <a class="github-button" href="https://github.com/51core/mango-docs/archive/master.zip" data-size="large" aria-label="Download 51core/mango-docs on GitHub">Download</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script type="text/javascript">
+    </script>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Mango.Framework.EFCore;
 using Microsoft.EntityFrameworkCore;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 namespace Mango.Repository
 {
     public class ManagerRepository

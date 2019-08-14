@@ -29,20 +29,22 @@ namespace Mango.Manager
             //{
             //    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
             //    options.CheckConsentNeeded = context => true;
-            //    options.MinimumSameSitePolicy = SameSiteMode.None;
             //});
+            services.AddSession();
 
-            services.AddMvc(options => {
+            services.AddControllersWithViews(options => {
                 options.Filters.Add(new Extensions.AuthorizationFilter());
             }).AddNewtonsoftJson();
+            services.AddRazorPages();
 
-            services.AddSession();
             //注册自定义服务
             services.AddSingleton(typeof(ICacheService), new RedisCacheService(new RedisCacheOptions()
             {
                 Configuration = Configuration.GetSection("Cache:ConnectionString").Value,
                 InstanceName = Configuration.GetSection("Cache:InstanceName").Value
             }));
+            
+
             //注册自定义服务
             Framework.Services.ServiceContext.RegisterServices(services.BuildServiceProvider());
         }
@@ -61,17 +63,20 @@ namespace Mango.Manager
 
             app.UseStaticFiles();
             app.UseSession();
-            app.UseRouting(routes =>
-            {
-                routes.MapControllerRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-                routes.MapRazorPages();
-            });
 
             app.UseCookiePolicy();
 
             app.UseAuthorization();
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+            });
             //数据库连接字符串
             Framework.Core.Configuration.AddItem("ConnectionStrings", Configuration.GetSection("ConnectionStrings").Value);
         }

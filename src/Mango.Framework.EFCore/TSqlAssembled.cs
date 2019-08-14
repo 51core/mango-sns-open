@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Text;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 namespace Mango.Framework.EFCore

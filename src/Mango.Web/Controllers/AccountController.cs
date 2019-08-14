@@ -42,7 +42,7 @@ namespace Mango.Web.Controllers
             //将登陆的用户Id存储到会话中
             HttpContext.Session.SetString("UserId", _UserInfoViewModel.UserId.ToString());
             HttpContext.Session.SetString("GroupId", _UserInfoViewModel.GroupId.ToString());
-            HttpContext.Session.SetString("UserName", _UserInfoViewModel.UserName);
+            HttpContext.Session.SetString("UserName", _UserInfoViewModel.AccountName);
             HttpContext.Session.SetString("NickName", _UserInfoViewModel.NickName);
             HttpContext.Session.SetString("HeadUrl", _UserInfoViewModel.HeadUrl);
             HttpContext.Session.SetString("UserLogin", JsonConvert.SerializeObject(_UserInfoViewModel));
@@ -86,7 +86,7 @@ namespace Mango.Web.Controllers
             userModel.Phone = "";
             userModel.RegisterDate = DateTime.Now;
             userModel.RegisterIP = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            userModel.UserName = model.UserName;
+            userModel.AccountName = model.UserName;
             userModel.Email = "";
             userModel.AddressInfo = "";
             userModel.Birthday = "";

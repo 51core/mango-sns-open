@@ -100,19 +100,16 @@
                 $("#formAddPosts").ajaxSubmit({
                     url: '/user/MyPosts/Add',
                     success: function (result) {
-                        layer.close(tipIndex);
                         if (result) {
-                            var tip = new $.zui.Messager('发布成功', {
-                                icon: 'ok-sign',
-                                type: 'success',
-                                placement: 'center', // 定义显示位置
-                                time: 0
-                            }).show();
-                            setTimeout(function () {
-                                tip.hide(function () {
-                                    window.location.href = '/posts';
-                                });
-                            }, 1500);
+                            layer.msg("发布成功", function () {
+                                layer.close(tipIndex);
+                                window.location.href = '/posts';
+                            });
+                        }
+                        else {
+                            layer.msg("发布失败,请稍后再尝试提交.", function () {
+                                layer.close(tipIndex);
+                            });
                         }
                     }
                 });

@@ -18,7 +18,7 @@
                     <tr>
                         <td style="width:100px;">用户名:</td>
                         <td>
-                            <span>@Model.UserName</span>
+                            <span>@Model.AccountName</span>
                         </td>
                         <td>
                             <input type="button" class="btn btn-success btn-sm" value="修改密码" id="btn_EditPassword" />
@@ -90,8 +90,8 @@ $("#btn_EditTags").click(function () {
     var html = ' <form class="form-horizontal" id="formTags" method="post">';
     html += '<div class="form-group">';
     html += '<div class="col-md-10">';
-    html += '<input type="hidden" class="form-control" id="FieldName" name="fieldName" value="Tags">';
-    html += '<input type="text" class="form-control" id="FieldValue" name="fieldValue" placeholder="请输入个人标签(签名)(必填)" value="@Model.Tags">';
+    html += '<input type="hidden" class="form-control" id="infoType" name="infoType" value="3">';
+    html += '<input type="text" class="form-control" id="infoValue" name="infoValue" placeholder="请输入个人标签(签名)(必填)" value="@Model.Tags">';
     html += '</div>';
     html += '</div>';
     html += '</form>';
@@ -115,11 +115,11 @@ $("#btn_EditTags").click(function () {
             });
             if (v.Create()) {
                 $("#formTags").ajaxSubmit({
-                    url: '/user/info/edit',
+                    url: '/user/info/SetUserInfo',
                     success: function (result) {
                         if (result) {
                             alert("修改成功");
-                            $("#showTags").text($("#FieldValue").val());
+                            $("#showTags").text($("#infoValue").val());
                             window.location.href = window.location.href;
                         }
                     }
@@ -138,8 +138,8 @@ $("#btn_EditAddress").click(function () {
     var html = ' <form class="form-horizontal" id="formAddress" method="post">';
     html += '<div class="form-group">';
     html += '<div class="col-md-10">';
-    html += '<input type="hidden" class="form-control" id="FieldName" name="fieldName" value="Address">';
-    html += '<input type="text" class="form-control" id="FieldValue" name="fieldValue" placeholder="请输入所在城市(必填)" value="@Model.Address">';
+    html += '<input type="hidden" class="form-control" id="infoType" name="infoType" value="4">';
+    html += '<input type="text" class="form-control" id="infoValue" name="infoValue" placeholder="请输入所在城市(必填)" value="@Model.Address">';
     html += '</div>';
     html += '</div>';
     html += '</form>';
@@ -163,11 +163,11 @@ $("#btn_EditAddress").click(function () {
             });
             if (v.Create()) {
                 $("#formAddress").ajaxSubmit({
-                    url: '/user/info/edit',
+                    url: '/user/info/SetUserInfo',
                     success: function (result) {
                         if (result) {
                             alert("修改成功");
-                            $("#showAddress").text($("#FieldValue").val());
+                            $("#showAddress").text($("#infoValue").val());
                             window.location.href = window.location.href;
                         }
                     }
@@ -186,8 +186,8 @@ $("#btn_EditSex").click(function () {
     var html = ' <form class="form-horizontal" id="formSex" method="post">';
     html += '<div class="form-group">';
     html += '<div class="col-md-10">';
-    html += '<input type="hidden" class="form-control" id="FieldName" name="fieldName" value="Sex">';
-    html += '<select type="text" class="form-control" id="FieldValue" name="fieldValue" placeholder="请输入昵称(必填)" ><option value="男" @(Model.Sex.Contains("男")?"selected=selected":"")>男</option><option value="女" @(Model.Sex.Contains("女")?"selected=selected":"")>女</option></select>';
+    html += '<input type="hidden" class="form-control" id="infoType" name="infoType" value="5">';
+    html += '<select type="text" class="form-control" id="infoValue" name="infoValue" placeholder="请输入昵称(必填)" ><option value="男" @(Model.Sex.Contains("男")?"selected=selected":"")>男</option><option value="女" @(Model.Sex.Contains("女")?"selected=selected":"")>女</option></select>';
     html += '</div>';
     html += '</div>';
     html += '</form>';
@@ -210,11 +210,11 @@ $("#btn_EditSex").click(function () {
             });
             if (v.Create()) {
                 $("#formSex").ajaxSubmit({
-                    url: '/user/info/edit',
+                    url: '/user/info/SetUserInfo',
                     success: function (result) {
                         if (result) {
                             alert("修改成功");
-                            $("#showSex").text($("#FieldValue").val());
+                            $("#showSex").text($("#infoValue").val());
                             window.location.href = window.location.href;
                         }
                     }
@@ -233,8 +233,8 @@ $("#btn_EditNickName").click(function () {
     var html = ' <form class="form-horizontal" id="formNickName" method="post">';
     html += '<div class="form-group">';
     html += '<div class="col-md-10">';
-    html += '<input type="hidden" class="form-control" id="FieldName" name="fieldName" value="NickName">';
-    html += '<input type="text" class="form-control" id="FieldValue" name="fieldValue" placeholder="请输入昵称(必填)" value="@Model.NickName">';
+    html += '<input type="hidden" class="form-control" id="infoType" name="infoType" value="1">';
+    html += '<input type="text" class="form-control" id="infoValue" name="infoValue" placeholder="请输入昵称(必填)" value="@Model.NickName">';
     html += '</div>';
     html += '</div>';
     html += '</form>';
@@ -249,7 +249,7 @@ $("#btn_EditNickName").click(function () {
             //加载验证
             var config = new Array();
             config.push({
-                id: $("#FieldValue"),
+                id: $("#infoValue"),
                 required: {},
                 length: { min: 2, max: 15 }
             });
@@ -258,11 +258,11 @@ $("#btn_EditNickName").click(function () {
             });
             if (v.Create()) {
                 $("#formNickName").ajaxSubmit({
-                    url: '/user/info/edit',
+                    url: '/user/info/SetUserInfo',
                     success: function (result) {
                         if (result) {
                             alert("修改成功");
-                            $("#showNickName").text($("#FieldValue").val());
+                            $("#showNickName").text($("#infoValue").val());
                             window.location.href = window.location.href;
                         }
                     }
@@ -362,8 +362,8 @@ $("#btn_EditPassword").click(function () {
             url = ImageServerUrl + url;
             $.ajax({
                 type: 'post',
-                url: '/user/info/edit',
-                data: 'fieldName=avatar&fieldValue=' + url,
+                url: '/user/info/SetUserInfo',
+                data: 'infoType=2&infoValue=' + url,
                 success: function (result) {
                     if (result) {
                         $("#avatar").attr('src', url);

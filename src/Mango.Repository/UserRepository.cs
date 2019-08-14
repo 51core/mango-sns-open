@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Mango.Framework.EFCore;
 using Microsoft.EntityFrameworkCore;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text;
 using System.Linq;
@@ -102,14 +102,12 @@ namespace Mango.Repository
         /// <returns></returns>
         public IQueryable<object> GetUserPageList()
         {
-            var query = from u in _dbContext.m_User
-                        join ug in _dbContext.m_UserGroup
-                        on u.GroupId equals ug.GroupId
-                        select new {
-                            u.HeadUrl,u.Email,u.GroupId,u.IsStatus,u.LastLoginDate,u.LastLoginIP,u.NickName,u.OpenId,u.Password,u.Phone,u.RegisterDate,u.RegisterIP,u.UserId,u.UserName
-                            ,ug.GroupName
-                        };
-            return query;
+            return _dbContext.m_User
+                .Join(_dbContext.m_UserGroup, u => u.GroupId, ug => ug.GroupId, (u, ug) => new
+                {
+                    u.HeadUrl,u.Email,u.GroupId,u.IsStatus,u.LastLoginDate,u.LastLoginIP,u.NickName,u.OpenId,u.Password,u.Phone,u.RegisterDate,
+                    u.RegisterIP,u.UserId,u.AccountName,ug.GroupName
+                });
         }
         /// <summary>
         /// 获取用户信息
@@ -118,25 +116,26 @@ namespace Mango.Repository
         /// <returns></returns>
         public Models.UserInfoModel GetUserInfo(int userId)
         {
-            var query = from u in _dbContext.m_User
-                        select new Models.UserInfoModel()
-                        {
-                            UserId = u.UserId.Value,
-                            GroupId = u.GroupId.Value,
-                            UserName = u.UserName,
-                            NickName = u.NickName,
-                            HeadUrl = u.HeadUrl,
-                            RegisterDate = u.RegisterDate.Value,
-                            LastLoginDate = u.LastLoginDate.Value,
-                            LastLoginIP = u.LastLoginIP,
-                            RegisterIP = u.RegisterIP,
-                            IsStatus = u.IsStatus.Value,
-                            Address=u.AddressInfo,
-                            Birthday=u.Birthday,
-                            Sex=u.Sex,
-                            Tags=u.Tags
-                        };
-            return query.Where(m => m.UserId == userId).FirstOrDefault();
+            return _dbContext.m_User
+                .Where(u => u.UserId == userId)
+                .Select(u => new Models.UserInfoModel()
+                {
+                    UserId = u.UserId.Value,
+                    GroupId = u.GroupId.Value,
+                    AccountName = u.AccountName,
+                    NickName = u.NickName,
+                    HeadUrl = u.HeadUrl,
+                    RegisterDate = u.RegisterDate.Value,
+                    LastLoginDate = u.LastLoginDate.Value,
+                    LastLoginIP = u.LastLoginIP,
+                    RegisterIP = u.RegisterIP,
+                    IsStatus = u.IsStatus.Value,
+                    Address = u.AddressInfo,
+                    Birthday = u.Birthday,
+                    Sex = u.Sex,
+                    Tags = u.Tags
+                })
+                .FirstOrDefault();
         }
         /// <summary>
         /// 用户登录
@@ -144,24 +143,28 @@ namespace Mango.Repository
         /// <param name="phone"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public Models.UserInfoModel UserLogin(string userName,string password)
+        public Models.UserInfoModel UserLogin(string accountName,string password)
         {
-            var query = from u in _dbContext.m_User
-                        select new Models.UserInfoModel()
-                        {
-                            UserId=u.UserId.Value,
-                            GroupId=u.GroupId.Value,
-                            UserName=u.UserName,
-                            Password=u.Password,
-                            NickName=u.NickName,
-                            HeadUrl = u.HeadUrl,
-                            RegisterDate=u.RegisterDate.Value,
-                            LastLoginDate=u.LastLoginDate.Value,
-                            LastLoginIP=u.LastLoginIP,
-                            RegisterIP=u.RegisterIP,
-                            IsStatus=u.IsStatus.Value
-                        };
-            return query.Where(m => m.UserName == userName && m.Password == password).FirstOrDefault();
+            return _dbContext.m_User
+                .Where(m => m.AccountName == accountName && m.Password == password)
+                .Select(u => new Models.UserInfoModel()
+                {
+                    UserId = u.UserId.Value,
+                    GroupId = u.GroupId.Value,
+                    AccountName = u.AccountName,
+                    NickName = u.NickName,
+                    HeadUrl = u.HeadUrl,
+                    RegisterDate = u.RegisterDate.Value,
+                    LastLoginDate = u.LastLoginDate.Value,
+                    LastLoginIP = u.LastLoginIP,
+                    RegisterIP = u.RegisterIP,
+                    IsStatus = u.IsStatus.Value,
+                    Address = u.AddressInfo,
+                    Birthday = u.Birthday,
+                    Sex = u.Sex,
+                    Tags = u.Tags
+                })
+                .FirstOrDefault();
         }
         /// <summary>
         /// 新增用户
@@ -194,7 +197,7 @@ namespace Mango.Repository
         /// <returns>true 表示已经注册过,false 表示未注册过</returns>
         public bool IsExistUser(string phone)
         {
-            var query = _dbContext.m_User.Where(m => m.UserName == phone);
+            var query = _dbContext.m_User.Where(m => m.AccountName == phone);
             return query.Count() > 0 ? true : false;
         }
         /// <summary>
@@ -250,6 +253,15 @@ namespace Mango.Repository
                 return false;
             }
             return true;
+        }
+        /// <summary>
+        /// 根据用户ID获取昵称信息
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public string GetUserNickName(int userId)
+        {
+            return _dbContext.m_User.Where(m => m.UserId == userId).Select(m => m.NickName).FirstOrDefault();
         }
     }
 }

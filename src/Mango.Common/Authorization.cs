@@ -9,7 +9,31 @@ namespace Mango.Common
 {
     public class Authorization
     {
-
+        /// <summary>
+        /// 获取应用管理数据
+        /// </summary>
+        /// <returns></returns>
+        public static List<Models.AppManagerModel> GetAppManagerData()
+        {
+            List<Models.AppManagerModel> resultData = null;
+            ICacheService CacheService = ServiceContext.GetService<ICacheService>();
+            string appManagerDataCache = CacheService.Get("AppManagerDataCache");
+            if (string.IsNullOrEmpty(appManagerDataCache))
+            {
+                AppManagerRepository repository = new AppManagerRepository();
+                resultData = repository.GetAppManagers();
+                appManagerDataCache = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(resultData)));
+                //写入缓存
+                CacheService.Add("AppManagerDataCache", appManagerDataCache);
+            }
+            else
+            {
+                appManagerDataCache = Encoding.UTF8.GetString(Convert.FromBase64String(appManagerDataCache.Replace("\"", "")));
+                //从缓存中获取
+                resultData = JsonConvert.DeserializeObject<List<Models.AppManagerModel>>(appManagerDataCache);
+            }
+            return resultData;
+        }
         /// <summary>
         /// 用户组授权验证
         /// </summary>
