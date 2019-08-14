@@ -1,0 +1,62 @@
+body { font:12px/1.2em Microsoft YaHei;}
+
+a,
+a:link { color:#000; text-decoration:none; outline:none;}
+a:hover,
+a:focus { text-decoration:none; color:#39f;}
+
+.pd3 { padding:3px;}
+.pd5 { padding:5px;}
+.pd10 { padding:10px;}
+
+label,
+button,
+input,
+select,
+textarea { font-size:12px; vertical-align: middle;}
+
+input,
+button,
+select,
+textarea { font:12px/1.2em Microsoft YaHei;}
+
+select,
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"],
+input[type="radio"],
+input[type="checkbox"] { cursor: pointer;}
+
+.tabs-tool { border-top:0;display: none !important;/*2017-5-24添加*/}
+.wu-text,
+.wu-textarea { padding:3px; border:1px #95b8e7 solid; width:260px;}
+.wu-text { height:14px; line-height:14px; }
+
+.wu-header {
+  height:60px !important;
+  position:relative;
+  z-index:0;
+  overflow:hidden;
+  /*border-bottom:1px #eceadf solid;*/
+  background: #066ad1;;
+  /*border-color: #cbc7bd;*/
+}
+.wu-header-left { position:absolute; z-index:1; left:15px; top:0;}
+.wu-header-left h1 { font:20px/20px Verdana; color:#fff;}
+.wu-header-right { position:absolute; z-index:1; right:5px; top:0; color:#fff; text-align:right;}
+.wu-header-right p { line-height:0.7em;}
+.wu-header-right a { color:#fff; margin:0 5px;}
+
+.wu-sidebar { width:160px;}
+.wu-side-tree .tree-node { padding:6px 0px; }
+.wu-side-tree a { display:block;}
+.wu-side-tree .tree-node-selected {
+  padding:6px 0;
+  /*border:1px #fade23 solid;2015-5-24改*/
+ }
+
+.wu-toolbar-button,
+.wu-toolbar-search { padding:3px 5px;}
+
+.wu-footer { height:20px; padding:5px; text-align:center; overflow:hidden; color:#fff;}

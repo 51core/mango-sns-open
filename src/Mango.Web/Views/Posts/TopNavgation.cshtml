@@ -1,0 +1,13 @@
+﻿@model List<Mango.Models.PostsChannelModel>
+
+    <div class="nav-scroller bg-white box-shadow">
+        <nav class="nav nav-underline" id="channelList">
+            <a class="nav-link" href="/posts" data-id="0">全部频道</a>
+            @foreach (var item in Model)
+            {
+                <a class="nav-link active" data-id="@item.ChannelId" href="/posts/channel/@item.ChannelId">@item.ChannelName</a>
+            }
+        </nav>
+        
+    </div>
+

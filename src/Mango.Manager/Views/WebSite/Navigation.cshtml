@@ -1,0 +1,229 @@
+﻿@{
+    ViewData["Title"] = "系统导航管理";
+}
+@model List<Mango.Models.WebSiteNavigationModel>
+
+
+<table class="table">
+    <tbody>
+        <tr>
+            <td>
+                <input type="button" class="btn btn-success" id="btn_Add" value="添加导航" data-toggle="modal" data-target="#exampleModal" />
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table  table-sm table-hover table-list table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>导航名称</th>
+            <th>链接地址</th>
+            <th>是否打开新页面</th>
+            <th>排序(从小到大)</th>
+            <th>是否显示</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.NavigationId
+                </td>
+                <td>
+                    @item.NavigationName
+                </td>
+                <td>
+                    @item.LinkUrl
+                </td>
+                <td>
+                    @(item.IsTarget ? "是" : "否")
+                </td>
+                <td>
+                    @item.SortCount
+                </td>
+                <td>
+                    @(item.IsShow ? "是" : "否")
+                </td>
+                <td>
+                    <a href="javascript:Edit(@item.NavigationId, '@item.NavigationName', '@item.LinkUrl', @item.IsTarget.ToString().ToLower(), @item.SortCount, @item.IsShow.ToString().ToLower());" class="edit">编辑</a>
+                    <a href="javascript:Delete(@item.NavigationId);" class="del">删除</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!--添加网站导航-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/WebSite/AddNavigation" method="post" id="FormAdd">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">导航名称</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="navigationName" value="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">链接地址</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="linkUrl" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">排序(从小到大)</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" name="sortCount" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">是否打开新窗口</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" name="isTarget">
+                                <option value="false">否</option>
+                                <option value="true">是</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">是否显示</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" name="isShow">
+                                <option value="true">是</option>
+                                <option value="false">否</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btn_SaveForAdd">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--编辑网站导航-->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/WebSite/EditNavigation" method="post" id="FormEdit">
+                    <input type="hidden" name="navigationId" value="0" />
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">导航名称</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="navigationName" value="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">链接地址</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="linkUrl" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">排序(从小到大)</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" name="sortCount" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">是否打开新窗口</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" name="isTarget">
+                                <option value="false">否</option>
+                                <option value="true">是</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">是否显示</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" name="isShow">
+                                <option value="true">是</option>
+                                <option value="false">否</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btn_SaveForEdit">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //删除
+    function Delete(navigationId) {
+        if (!confirm("确定删除该数据？")) {
+            $(this).attr("href", "#");
+        }
+        else {
+            var id = $(this).find(" .hidId").val();
+            $.ajax({
+                type: 'post',
+                url: '/WebSite/DeleteNavigation',
+                data: 'navigationId=' + navigationId,
+                success: function (result) {
+                    if (result) {
+                        alert("删除成功");
+                        window.location.href = window.location.href;
+                    }
+                }
+            });
+        }
+    }
+    //编辑
+    function Edit(navigationId, navigationName, linkUrl, isTarget, sortCount, isShow) {
+        
+        //
+        $("#FormEdit").find('[name=navigationId]').val(navigationId);
+        $("#FormEdit").find('[name=navigationName]').val(navigationName);
+        $("#FormEdit").find('[name=linkUrl]').val(linkUrl);
+        $("#FormEdit").find('[name=sortCount]').val(sortCount);
+        $("#FormEdit").find("[name=isTarget] option[value=" + isTarget + "]").attr("selected", true);
+        $("#FormEdit").find("[name=isShow] option[value=" + isShow + "]").attr("selected", true);
+        $("#editModal").modal('show');
+    }
+    $("#btn_SaveForEdit").click(function () {
+        $("#FormEdit").ajaxSubmit({
+            success: function (res) {
+                if (res) {
+                    alert('修改成功');
+                    window.location.href = window.location.href;
+                }
+            }
+        });
+    });
+    //
+    $("#btn_SaveForAdd").click(function () {
+        $("#FormAdd").ajaxSubmit({
+            success: function (res) {
+                if (res) {
+                    alert('添加成功');
+                    window.location.href = window.location.href;
+                }
+            }
+        });
+    });
+</script>
+

@@ -1,0 +1,189 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model Mango.Web.ViewModels.PostsReadViewModel
+@{
+    ViewData["Title"] = Model.PostsData.Title;
+}
+@section Style{
+    <link href="~/lib/code/prism.css" rel="stylesheet" />
+    <style>
+        pre .comment:before,
+        pre .comment:after {
+            /* 1 */
+            display: table;
+            content: " ";
+            display: none;
+            /* 2 */
+        }
+
+        pre .comment:after {
+            clear: both;
+        }
+
+        pre .comment:before,
+        pre .comment:after {
+            /* 1 */
+            display: table;
+            content: " ";
+            display: none;
+            /* 2 */
+        }
+
+        pre .comment {
+            border: 0;
+        }
+    </style>
+}
+@Html.PartialAsync("~/Views/Posts/TopNavgation.cshtml", Model.PostsChannelData).Result
+
+
+
+
+    <input type="hidden" data-id="@Model.PostsData.PostsId" data-title="@Model.PostsData.Title" id="msg_posts_data" />
+
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="my-3 p-3 bg-white rounded box-shadow">
+                <h5 class="border-bottom border-gray pb-2 mb-0">@Model.PostsData.Title</h5>
+                <div class="media pt-3  border-gray ">
+                    <img src="@(Model.PostsData.HeadUrl)" alt="" class="mr-2 rounded" style="width:40px;height:40px;">
+                    <div class="media-body pb-3 mb-0 small lh-125">
+                        <h6 class="d-block">@Model.PostsData.NickName</h6>
+                        <span><img src="~/style/bootstrap/dist/icons/clock.svg" style="width:12px;height:12px;" title="发布时间" />：@Model.PostsData.PostDate.ToString("yyyy-MM-dd HH:mm:ss")</span>
+
+                        <span style="margin-left:10px;"><img src="~/style/bootstrap/dist/icons/eye.svg" style="width:12px;height:12px;" title="浏览次数" />：@Model.PostsData.ReadCount</span>
+
+                        <span style="margin-left:10px;"><img src="~/style/bootstrap/dist/icons/comment.svg" style="width:12px;height:12px;" title="回复数" />：@Model.PostsData.AnswerCount</span>
+                    </div>
+                </div>
+                <div class="text">
+                    @if (Model.PostsData.IsShow)
+                    {
+                        <div style="font-size:15px;">@Html.Raw(Model.PostsData.Contents)</div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <div class="content">该内容已经失联,我们在火星发现了Ta的踪迹...</div>
+                        </div>
+                    }
+                </div>
+
+                <footer id="mfooter">
+                    <p class="center text" style="text-align:center">
+                        <button class="btn btn-info" style="font-size:20px;" onclick="AddUserPlus(@(Model.PostsData.PostsId), '@(Model.PostsData.Title)', 1, @(Model.PostsData.UserId), 0,$('#msg_posts_pluscount'))">
+                            <img src="~/style/bootstrap/dist/icons/thumbsup.svg" style="width:20px;height:20px;margin-bottom:2px;" title="给Ta点个赞吧..." />
+                            <span style="margin-left:2px;"  class="badge badge-light" id="msg_posts_pluscount"> @(Model.PostsData.PlusCount)</span>
+                        </button>
+                    </p>
+                </footer>
+
+            </div>
+            @foreach (var item in Model.AnswerListData)
+            {
+        <div class="my-2 p-1 bg-white rounded box-shadow">
+            <div class="media pt-1 border-bottom border-gray ">
+                <img src="@(item.HeadUrl)" alt="" class="mr-2 rounded" style="width:40px;height:40px;">
+                <div class="media-body pb-1 mb-0 small lh-125">
+                    <h6 class="d-block">@item.NickName</h6>
+                    <span><img src="~/style/bootstrap/dist/icons/clock.svg" style="width:12px;height:12px;" title="发布时间" />：@item.PostDate.ToString("yyyy-MM-dd HH:mm:ss")</span>
+                </div>
+
+            </div>
+            <div class="text" style="padding-left:5px; padding-top:5px;">
+                @if (item.IsShow)
+                {
+                    @Html.Raw(item.Contents)
+                }
+                else
+                {
+                <div class="alert alert-info">
+                    <div class="content">该内容已经失联,我们在火星发现了Ta的踪迹...</div>
+                </div>
+                }
+            </div>
+            <div class="row" style="margin-left:5px;">
+                <button onclick="javascript:AddUserPlus(@(item.AnswerId), '@(Model.PostsData.Title)', 1, @(item.UserId), 0,$('#answerPlus_'+@(item.AnswerId)))" class="btn btn-link" style="padding:1px;color:#808080;">
+                    <img src="~/style/bootstrap/dist/icons/thumbsup.svg" class="align-center" style="width:15px;height:15px;margin-bottom:2px;" title="给Ta点个赞吧..." />
+                    <span class="badge badge-light" id="answerPlus_@item.AnswerId">@item.Plus</span>
+                </button>
+            </div>
+        </div>
+            }
+            <div class="my-2 p-1 bg-white rounded box-shadow" style="@(Html.ViewContext.HttpContext.Session.GetString("UserLogin") != null?"":"display:none;")">
+                <form class="form-horizontal" method="post" id="AnswerForm" action="/Posts/AddAnswer">
+                    <div class="form-group">
+                            <input type="hidden" id="PostsId" name="PostsId" value="@Model.PostsData.PostsId" />
+                            <input type="hidden" name="title" value="@Model.PostsData.Title" />
+                            <textarea style="height:120px;width:780px;" id="contents" name="contents" placeholder="输入你要说的..."></textarea>
+                    </div>
+                    <div class="form-group" style="margin-top:10px;">
+                            <button type="button" class="btn btn-primary" id="btn_PostAnswer">提交回答</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <!--右边部分-->
+        <div class="col-lg-3">
+            <div class="my-3 p-3 bg-white rounded box-shadow">
+                <h6 class="border-bottom border-gray pb-2 mb-0">热门话题...</h6>
+                @foreach (var item in Model.HotListData)
+                {
+                    <div class="media pt-1 border-gray ">
+                        <div class="media-body pb-1 mb-0 small lh-125">
+                            <a href="/posts/read/@item.PostsId" target="_blank" style="color:black;"><span class="d-block" style="font-size:15px;">@item.Title</span></a>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+@section Scripts{
+    <script src="~/lib/jquery/jquery.validator.min.js"></script>
+    <script src="~/lib/jquery/jquery.form.js"></script>
+
+
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script src="~/lib/tinymce/langs/zh_CN.js"></script>
+
+    <script src="~/lib/tinymce/plugins/codesample/plugin.min.js"></script>
+    <script src="~/lib/tinymce/plugins/link/plugin.min.js"></script>
+
+    <script src="~/lib/tinymce/plugins/image/plugin.min.js"></script>
+
+    <script src="~/lib/tinymce/plugins/imageupload/upyun.plugin.min.js"></script>
+
+    <script src="~/js/answer.min.js"></script>
+
+    <script src="~/lib/code/prism.js"></script>
+
+
+
+    <script>
+        tinymce.init({
+            selector: '#contents',
+            language: "zh_CN",
+            themes: "modern",
+            menubar: false,
+            toolbar: [
+                'removeformat | bold italic underline strikethrough | codesample link imageupload | alignleft aligncenter alignright',
+            ],
+            plugins: [
+                'codesample', 'link', 'image', 'imageupload'
+            ],
+            upload_image_url: 'https://v0.api.upyun.com/51core',
+            file_server_url: 'https://file.51core.net'
+        });
+
+    </script>
+    <script type="text/javascript">
+        var id =@Html.ViewContext.RouteData.Values["id"];
+        $(window).ready(function () {
+            //重新设置所有代码块的基础样式
+            //$("body").find("pre").attr("class", "pre-scrollable prettyprint linenums");
+            //window.prettyPrint();
+        });
+
+    </script>
+}

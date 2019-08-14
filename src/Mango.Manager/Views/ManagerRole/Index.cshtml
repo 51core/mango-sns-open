@@ -1,0 +1,217 @@
+﻿@model Mango.Manager.ViewModels.ManagerPageViewModel
+@section Style{
+    <link href="~/lib/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+}
+<table class="table">
+    <tbody>
+        <tr>
+            <td>
+                <input type="button" class="btn btn-success" id="btn_Add" value="添加角色" />
+            </td>
+        </tr>
+    </tbody>
+</table>
+<table class="table  table-sm table-hover table-list table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>角色名称</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model.ListData)
+        {
+            <tr>
+                <td>
+                    @row["RoleId"]
+                </td>
+                <td>
+                    @row["RoleName"]
+                </td>
+                <td>
+                    <a href="javascript:SetPower(@row["RoleId"]) ;">设置权限</a>
+                    <a href="javascript:;" class="edit" data-name="@row["RoleName"]"><input type="hidden" class="hidId" value="@row["RoleId"]" />修改</a>
+                    <a href="javascript:;" class="del"><input type="hidden" class="hidId" value="@row["RoleId"]" />删除</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script src="~/lib/ztree/js/jquery.ztree.core.min.js"></script>
+<script src="~/lib/ztree/js/jquery.ztree.excheck.min.js"></script>
+<script type="text/javascript">
+    var setting = {
+        check: {
+            enable: true
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        }
+    };
+
+    var zNodes = new Array();
+
+    var code;
+
+    function setCheck() {
+        var zTree = $.fn.zTree.getZTreeObj("showTree");
+        zTree.setting.check.chkboxType = { "Y": "ps", "N": "ps" };
+    }
+
+    $(document).ready(function () {
+        //加载菜单信息
+        $.ajax({
+            type: 'get',
+            url: '/ManagerRole/GetMenuByAll',
+            success: function (result) {
+                var json = result;
+                console.log(json);
+                $.each(json, function (i) {
+                    zNodes.push({
+                        id: json[i].data.MenuId, pId: json[i].data.ParentId, name: json[i].data.MenuName, open: true, checked: false
+                    });
+                });
+            }
+        });
+    });
+    //权限设置
+    function SetPower(roleId) {
+        var html = '<div id="showTree" class="ztree"></div>';
+        var layIndex = layer.open({
+            type: 1,
+            title: '设置权限:',
+            shadeClose: true,
+            content: html,
+            area: ['300px', '400px'],
+            btn: ['保 存'],
+            btn1: function () {
+                var zTree = $.fn.zTree.getZTreeObj("showTree");
+                var sc = zTree.getCheckedNodes();
+                var mid = new Array();
+                for (var i = 0; i < sc.length; i++) {
+                    if (sc[i].checked) {
+                        mid.push(sc[i].id);
+                    }
+                }
+                $.ajax({
+                    type: 'post',
+                    url: '/ManagerRole/SetRolePower',
+                    data: { 'roleId': roleId, 'powerData': mid },
+                    success: function (res) {
+                        //console.log(res);
+                        if (res) {
+                            //信息框-例2
+                            layer.msg('保存成功!', {
+                                time: 2000 //不自动关闭
+                            });
+                            setTimeout(function () {
+                                layer.close(layIndex);
+                                window.location.href = window.location.href;
+                            }, 2000);
+
+                        }
+                    }
+                });
+            }
+        });
+        //清空原有选择
+        for (var j = 0; j < zNodes.length; j++) {
+            zNodes[j].checked = false;
+        }
+        //加载现有权限信息
+        $.ajax({
+            type: 'get',
+            url: '/ManagerRole/GetRolePower',
+            data: 'roleId=' + roleId,
+            success: function (result) {
+                var json = result;
+                var zTree = $.fn.zTree.getZTreeObj("showTree");
+                for (var j = 0; j < zNodes.length; j++) {
+                    $.each(json, function (i) {
+                        if (json[i].data.MenuId == zNodes[j].id) {
+                            zNodes[j].checked = true;
+                        }
+                    });
+                }
+            },
+            async: false
+        });
+        $.fn.zTree.init($("#showTree"), setting, zNodes);
+        setCheck();
+
+    }
+</script>
+<script type="text/javascript">
+    $("#btn_Add").click(function () {
+        layer.prompt({ title: '角色名称:' }, function (val, index) {
+            if (val != "") {
+                $.ajax({
+                    type: 'post',
+                    url: '/ManagerRole/Add',
+                    data: 'roleName=' + val,
+                    success: function (result) {
+                        if (result) {
+                            alert("添加成功");
+                            window.location.href = window.location.href;
+                        }
+                        layer.close(index);
+                    }
+                });
+            }
+            else {
+                alert("请输入分类内容");
+            }
+        });
+    });
+    //修改数据
+    $(".edit").click(function () {
+        var id = $(this).find(" .hidId").val();
+        var name = $(this).attr("data-name");
+        var html = '<table class="table"><tr><td>角色名称:</td>';
+        html += '<td><input type="text" id="edit_' + id + '" class="dfinput" style="width:200px;" value="' + name + '">';
+        html += '</td></tr></table>';
+        layer.open({
+            type: 1,
+            title: '编辑:',
+            shadeClose: true,
+            content: html,
+            btn: ['保 存'],
+            btn1: function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/ManagerRole/Edit',
+                    data: 'roleId=' + id + '&roleName=' + $("#edit_" + id).val(),
+                    success: function (result) {
+                        if (result) {
+                            alert("修改成功");
+                            window.location.href = window.location.href;
+                        }
+                    }
+                });
+            }
+        });
+    });
+    //删除数据
+    $(".del").click(function () {
+        if (!confirm("确定删除该数据？")) {
+            $(this).attr("href", "#");
+        }
+        else {
+            var id = $(this).find(" .hidId").val();
+            $.ajax({
+                type: 'post',
+                url: '/ManagerRole/Delete',
+                data: 'roleId=' + id,
+                success: function (result) {
+                    if (result) {
+                        alert("删除成功");
+                        window.location.href = window.location.href;
+                    }
+                }
+            });
+        }
+    });
+</script>

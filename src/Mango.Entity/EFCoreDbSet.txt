@@ -1,0 +1,1 @@
+public virtual DbSet<m_AppManager> m_AppManager { get; set; }
